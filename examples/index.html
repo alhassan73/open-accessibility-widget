@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Open Accessibility Widget — Demo</title>
+    <meta name="description" content="Live demo of open-accessibility-widget: every adjustment, theming, logo, languages and the JavaScript API." />
+    <style>
+      :root {
+        --ink: #0f172a; --muted: #475569; --line: #e2e8f0; --bg: #f8fafc; --card: #fff;
+        --brand: #0f766e; --brand-ink: #fff; --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Tahoma, sans-serif; color: var(--ink); background: var(--bg); }
+      a { color: var(--brand); }
+      img { max-width: 100%; display: block; }
+      code, pre, kbd { font-family: ui-monospace, Consolas, monospace; }
+      kbd { padding: 1px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; background: #fff; font-size: .85em; }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+      /* Header */
+      .site-header { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+      .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+      .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--ink); text-decoration: none; }
+      .brand svg { width: 30px; height: 30px; }
+      .site-nav ul { display: flex; gap: 18px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+      .site-nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+      .site-nav a:hover { color: var(--brand); }
+
+      /* Hero */
+      .hero { padding: 64px 0 40px; background: linear-gradient(135deg, #eff6ff, #f5f3ff); border-bottom: 1px solid var(--line); }
+      .hero h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; margin: 0 0 16px; max-width: 18ch; }
+      .hero p { font-size: 1.15rem; color: var(--muted); max-width: 60ch; margin: 0 0 24px; }
+      .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px; border: 2px solid var(--brand); background: var(--brand); color: var(--brand-ink); font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; }
+      .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(22,98,221,.25); }
+      .btn.ghost { background: transparent; color: var(--brand); }
+      .btn.small { padding: 8px 14px; font-size: .9rem; }
+      .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+      /* Layout */
+      .layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; padding: 32px 0 64px; align-items: start; }
+      @media (max-width: 960px) { .layout { grid-template-columns: 1fr; } }
+      section.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
+      section.card > h2 { margin-top: 0; }
+      .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+      .hint { font-size: .9rem; color: var(--muted); background: #f1f5f9; border-inline-start: 4px solid var(--brand); padding: 10px 14px; border-radius: 8px; }
+      table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+      th, td { text-align: start; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+      th { background: #f8fafc; }
+      blockquote { margin: 16px 0; padding: 12px 18px; border-inline-start: 4px solid #a78bfa; background: #faf5ff; border-radius: 8px; }
+      pre { background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 10px; overflow-x: auto; font-size: .85rem; }
+
+      /* Media */
+      .gallery figure { margin: 0; }
+      .gallery img, .bg-tile { border-radius: 10px; aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
+      .bg-tile { background: url("https://picsum.photos/seed/bgtile/480/360") center / cover; display: grid; place-items: end start; padding: 10px; color: #fff; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+      figcaption { font-size: .85rem; color: var(--muted); margin-top: 6px; }
+      video, audio { width: 100%; border-radius: 10px; }
+
+      /* Animations */
+      .spinner { width: 36px; height: 36px; border: 4px solid #c7d2fe; border-top-color: #4f46e5; border-radius: 50%; animation: spin 1s linear infinite; }
+      .pulse { width: 36px; height: 36px; border-radius: 50%; background: #f43f5e; animation: pulse 1.2s ease-in-out infinite; }
+      .ticker { overflow: hidden; white-space: nowrap; border: 1px solid var(--line); border-radius: 8px; padding: 8px 0; }
+      .ticker span { display: inline-block; padding-inline-start: 100%; animation: ticker 12s linear infinite; }
+      .flash { padding: 8px 12px; border-radius: 8px; background: #fde047; animation: flash .5s steps(2) infinite; font-weight: 700; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes pulse { 50% { transform: scale(.6); opacity: .5; } }
+      @keyframes ticker { to { transform: translateX(-100%); } }
+      @keyframes flash { 50% { background: #fb923c; } }
+      .anim-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; }
+
+      /* Forms */
+      form { display: grid; gap: 14px; }
+      label { font-weight: 600; display: block; margin-bottom: 4px; }
+      input[type="text"], input[type="email"], select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #94a3b8; border-radius: 8px; font: inherit; background: #fff; }
+      fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+      fieldset label { display: inline-flex; gap: 6px; font-weight: 400; margin-inline-end: 16px; }
+
+      /* Playground */
+      .playground { position: sticky; top: 84px; }
+      @media (max-width: 960px) { .playground { position: static; } }
+      .playground h2 { font-size: 1.15rem; margin: 0 0 4px; }
+      .playground h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 18px 0 8px; }
+      .swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+      .swatch { width: 36px; height: 36px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
+      .swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--ink); }
+      .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+      .seg button { border: 0; background: #fff; padding: 8px 14px; font: inherit; cursor: pointer; }
+      .seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+      .stack { display: flex; flex-wrap: wrap; gap: 8px; }
+      .state { max-height: 260px; overflow: auto; margin: 0; font-size: .75rem; }
+      .log { font-size: .8rem; color: var(--muted); min-height: 1.6em; }
+
+      footer.site-footer { border-top: 1px solid var(--line); background: #fff; padding: 28px 0; color: var(--muted); }
+      footer.site-footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="#top" aria-label="Acme Store home">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0f766e"/><path d="M9 22 16 8l7 14M12 17h8" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Acme Store
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <ul>
+            <li><a href="#typography">Typography</a></li>
+            <li><a href="#media">Media</a></li>
+            <li><a href="#motion">Motion</a></li>
+            <li><a href="#form">Form</a></li>
+            <li><a href="#article">Article</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <div class="hero">
+        <div class="wrap">
+          <h1>An accessibility menu for every website</h1>
+          <p>
+            This page exercises every feature of <strong>open-accessibility-widget</strong>. Open the menu with the round button,
+            press <kbd>Alt</kbd> + <kbd>A</kbd>, or press <kbd>Tab</kbd> once to find the “Skip to main content” link.
+          </p>
+          <div class="actions">
+            <button class="btn" type="button" id="open-menu">Open accessibility menu</button>
+            <a class="btn ghost" href="#article">Read the sample article</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrap layout">
+        <div>
+          <!-- Typography -->
+          <section class="card" id="typography" aria-labelledby="typography-title">
+            <h2 id="typography-title">Typography &amp; links</h2>
+            <p class="hint">Try <em>Text size</em>, <em>Line spacing</em>, <em>Letter spacing</em>, <em>Readable font</em>, <em>Alignment</em>, <em>Highlight headings</em> and <em>Highlight links</em>.</p>
+            <h3>Paragraphs</h3>
+            <p>
+              Good typography helps everyone. People with low vision often need larger text, people with dyslexia benefit from
+              extra spacing, and older adults appreciate more contrast. Read our <a href="#article">accessibility guide</a>
+              or browse the <a href="#form">contact form</a>.
+            </p>
+            <p style="font-size: 14px">This paragraph has a smaller inline font size (14px) — it scales proportionally, without compounding.</p>
+            <h3>Lists</h3>
+            <ul>
+              <li>Free delivery on orders over $50</li>
+              <li>30-day returns, no questions asked</li>
+              <li>Support available in English and العربية</li>
+            </ul>
+            <ol>
+              <li>Choose a product</li>
+              <li>Add it to your cart</li>
+              <li>Check out securely</li>
+            </ol>
+            <blockquote>“Accessibility is essential for some and useful for all.” — a common design principle</blockquote>
+            <h3>Table</h3>
+            <table>
+              <caption class="hint" style="caption-side: bottom; text-align: start; margin-top: 8px">Monthly plans</caption>
+              <thead><tr><th scope="col">Plan</th><th scope="col">Price</th><th scope="col">Support</th></tr></thead>
+              <tbody>
+                <tr><td>Starter</td><td>$9</td><td>Email</td></tr>
+                <tr><td>Business</td><td>$29</td><td>Chat &amp; email</td></tr>
+                <tr><td>Enterprise</td><td>Custom</td><td>Dedicated manager</td></tr>
+              </tbody>
+            </table>
+            <h3>Code</h3>
+            <pre><code>A11yWidget.init({ position: "right", theme: { primary: "#0f766e" } });</code></pre>
+            <p><button class="btn small" type="button" id="add-content">Add content dynamically</button></p>
+            <div id="dynamic" aria-live="polite"></div>
+          </section>
+
+          <!-- Media -->
+          <section class="card" id="media" aria-labelledby="media-title">
+            <h2 id="media-title">Images &amp; media</h2>
+            <p class="hint">Try <em>Hide images</em>, the contrast modes (images keep their colors in Dark/Light contrast), <em>Mute media</em> and <em>Stop animations</em> (pauses the playing video).</p>
+            <div class="grid-3 gallery">
+              <figure>
+                <img src="https://picsum.photos/seed/mountain/480/360" alt="Snowy mountain range at sunrise" loading="lazy" />
+                <figcaption>&lt;img&gt;</figcaption>
+              </figure>
+              <figure>
+                <picture>
+                  <source srcset="https://picsum.photos/seed/forest/480/360.webp" type="image/webp" />
+                  <img src="https://picsum.photos/seed/forest/480/360" alt="Path through a green forest" loading="lazy" />
+                </picture>
+                <figcaption>&lt;picture&gt;</figcaption>
+              </figure>
+              <figure>
+                <div class="bg-tile" role="img" aria-label="City skyline at night">CSS background</div>
+                <figcaption>background-image</figcaption>
+              </figure>
+            </div>
+            <h3>Video (autoplays muted, loops)</h3>
+            <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" autoplay muted loop playsinline controls aria-label="Flower blooming, time-lapse"></video>
+            <h3>Audio</h3>
+            <audio src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" controls aria-label="Sample audio clip"></audio>
+          </section>
+
+          <!-- Motion -->
+          <section class="card" id="motion" aria-labelledby="motion-title">
+            <h2 id="motion-title">Motion &amp; animation</h2>
+            <p class="hint">Turn on the <em>Motion sensitivity</em> profile or <em>Stop animations</em> — everything below stops.</p>
+            <div class="anim-row">
+              <div class="spinner" aria-hidden="true"></div>
+              <div class="pulse" aria-hidden="true"></div>
+              <span class="flash">Flashing sale banner</span>
+            </div>
+            <div class="ticker"><span>🚚 Free shipping this week · 🎁 Gift wrapping available · ⭐ 4.9/5 from 2,000 reviews</span></div>
+          </section>
+
+          <!-- Form -->
+          <section class="card" id="form" aria-labelledby="form-title">
+            <h2 id="form-title">Contact form</h2>
+            <p class="hint">Tab through the fields with <em>Highlight focus</em> on, or turn on the <em>Keyboard user</em> profile.</p>
+            <form onsubmit="event.preventDefault(); document.getElementById('form-status').textContent = 'Thanks! (demo only — nothing was sent)';">
+              <div><label for="f-name">Full name</label><input id="f-name" type="text" autocomplete="name" /></div>
+              <div><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" /></div>
+              <div>
+                <label for="f-topic">Topic</label>
+                <select id="f-topic"><option>Order question</option><option>Returns</option><option>Accessibility feedback</option></select>
+              </div>
+              <fieldset>
+                <legend>Preferred contact</legend>
+                <label><input type="radio" name="contact" checked /> Email</label>
+                <label><input type="radio" name="contact" /> Phone</label>
+              </fieldset>
+              <div><label for="f-msg">Message</label><textarea id="f-msg" rows="4"></textarea></div>
+              <label style="font-weight: 400"><input type="checkbox" /> Subscribe to the newsletter</label>
+              <div><button class="btn" type="submit">Send message</button></div>
+              <p id="form-status" role="status"></p>
+            </form>
+          </section>
+
+          <!-- Article -->
+          <section class="card" id="article" aria-labelledby="article-title">
+            <h2 id="article-title">Sample article</h2>
+            <p class="hint">Open <em>Reading aids</em> and try <em>Reading line</em>, <em>Focus window</em>, <em>Text magnifier</em> (hover any text) or <em>Open read mode</em>, which shows this page as clean text.</p>
+            <h3>Why accessibility matters</h3>
+            <p>
+              Around one in six people worldwide live with a significant disability. Many more experience temporary or situational
+              limitations: a broken arm, bright sunlight on a phone screen, or a noisy train. Designing for accessibility means
+              designing for all of these people at once.
+            </p>
+            <p>
+              Accessible websites are also easier to use for everyone else. Clear headings help people scan, good contrast helps in
+              bright light, and keyboard support helps power users move faster. Search engines benefit from the same structure.
+            </p>
+            <h3>What a widget can and cannot do</h3>
+            <p>
+              A widget lets each visitor adapt the page to their needs: bigger text, calmer colors, fewer distractions. It cannot
+              fix missing alternative text, unlabeled buttons or a broken heading order. Those still need to be fixed in the
+              website itself — the widget is a complement, not a replacement.
+            </p>
+            <h4>Checklist</h4>
+            <ul>
+              <li>Every image has meaningful alternative text</li>
+              <li>Every form field has a visible label</li>
+              <li>Text has a contrast ratio of at least 4.5:1</li>
+              <li>Everything works with a keyboard alone</li>
+            </ul>
+          </section>
+        </div>
+
+        <!-- Playground -->
+        <aside class="playground" aria-labelledby="pg-title">
+          <section class="card">
+            <h2 id="pg-title">Developer playground</h2>
+            <p class="hint" style="margin: 8px 0 0">These controls call the widget's JavaScript API.</p>
+
+            <h3 id="pg-color">Brand color</h3>
+            <div class="swatches" role="group" aria-labelledby="pg-color" id="swatches"></div>
+
+            <h3 id="pg-logo">Launcher logo</h3>
+            <div class="seg" role="group" aria-labelledby="pg-logo" id="logo-seg">
+              <button type="button" data-logo="default" aria-pressed="true">Default</button>
+              <button type="button" data-logo="custom" aria-pressed="false">Custom logo</button>
+            </div>
+
+            <h3 id="pg-side">Position</h3>
+            <div class="seg" role="group" aria-labelledby="pg-side" id="side-seg">
+              <button type="button" data-side="left" aria-pressed="false">Left</button>
+              <button type="button" data-side="right" aria-pressed="true">Right</button>
+            </div>
+
+            <h3 id="pg-lang">Language</h3>
+            <div class="seg" role="group" aria-labelledby="pg-lang" id="lang-seg">
+              <button type="button" data-lang="en" aria-pressed="true">English</button>
+              <button type="button" data-lang="ar" aria-pressed="false">العربية</button>
+            </div>
+
+            <h3>Actions</h3>
+            <div class="stack">
+              <button class="btn small" type="button" data-action="open">Open</button>
+              <button class="btn small ghost" type="button" data-action="vision">Toggle “Low vision”</button>
+              <button class="btn small ghost" type="button" data-action="dark">Toggle Dark Contrast</button>
+              <button class="btn small ghost" type="button" data-action="reset">Reset</button>
+            </div>
+            <p class="log" id="log" role="status"></p>
+
+            <h3>Current settings</h3>
+            <pre class="state" id="state" tabindex="0" aria-label="Current settings as JSON"></pre>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>
+          Demo page for <strong>open-accessibility-widget</strong> ·
+          <a href="https://github.com/alhassan73/open-accessibility-widget">GitHub</a> ·
+          <a href="https://www.npmjs.com/package/open-accessibility-widget">npm</a>
+        </p>
+        <p><a href="#" id="footer-a11y">Accessibility options</a> · <a href="#article">Accessibility statement</a></p>
+      </div>
+    </footer>
+
+    <!-- Run `npm run build` first: this loads the <script> build from ../dist -->
+    <script src="../dist/open-accessibility-widget.global.js"></script>
+    <script>
+      if (!window.A11yWidget) {
+        document.body.insertAdjacentHTML(
+          "afterbegin",
+          '<p style="margin:0;padding:12px 20px;background:#fee2e2;color:#7f1d1d;font-weight:600">Widget bundle not found — run <code>npm run build</code> in the project root, then reload.</p>'
+        );
+      }
+
+      const LOGO =
+        "data:image/svg+xml," +
+        encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#0f172a"/><path d="M18 44 32 16l14 28M24 34h16" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        );
+      const COLORS = [
+        { name: "Teal", primary: "#0f766e" },
+        { name: "Purple", primary: "#6d28d9" },
+        { name: "Blue", primary: "#1d4ed8" },
+        { name: "Rose", primary: "#be123c" },
+        { name: "Slate", primary: "#0f172a" },
+      ];
+
+      const options = {
+        position: "right",
+        theme: { primary: COLORS[0].primary },
+        statementUrl: "#article",
+        onChange: (settings) => log(`onChange → ${settings.profiles.length} profile(s) active`),
+      };
+      const widget = window.A11yWidget?.init(options);
+
+      const stateEl = document.getElementById("state");
+      const render = ({ settings, isOpen }) => (stateEl.textContent = JSON.stringify({ isOpen, ...settings }, null, 2));
+      if (widget) {
+        render(widget.getState());
+        widget.subscribe(render);
+      }
+
+      function log(message) {
+        document.getElementById("log").textContent = message;
+      }
+
+      // Segmented controls
+      function segmented(id, onPick) {
+        const group = document.getElementById(id);
+        group.addEventListener("click", (e) => {
+          const btn = e.target.closest("button");
+          if (!btn) return;
+          group.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+          onPick(btn.dataset);
+        });
+      }
+      segmented("logo-seg", ({ logo }) => {
+        widget.setOptions({ icon: logo === "custom" ? LOGO : undefined, logo: logo === "custom" ? LOGO : null });
+        log(logo === "custom" ? "setOptions({ icon, logo })" : "Default icon restored");
+      });
+      segmented("side-seg", ({ side }) => {
+        widget.setOptions({ position: side });
+        log(`setOptions({ position: "${side}" })`);
+      });
+      segmented("lang-seg", ({ lang }) => {
+        widget.setOptions({ language: lang });
+        log(`setOptions({ language: "${lang}" })`);
+      });
+
+      // Color swatches
+      const swatches = document.getElementById("swatches");
+      COLORS.forEach((c, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "swatch";
+        b.style.background = c.primary;
+        b.setAttribute("aria-label", c.name);
+        b.setAttribute("aria-pressed", String(i === 0));
+        b.addEventListener("click", () => {
+          swatches.querySelectorAll(".swatch").forEach((s) => s.setAttribute("aria-pressed", String(s === b)));
+          widget.setOptions({ theme: { primary: c.primary } });
+          document.documentElement.style.setProperty("--brand", c.primary);
+          log(`setOptions({ theme: { primary: "${c.primary}" } })`);
+        });
+        swatches.appendChild(b);
+      });
+
+      // Actions
+      document.querySelector(".stack").addEventListener("click", (e) => {
+        const action = e.target.closest("button")?.dataset.action;
+        if (action === "open") widget.open();
+        if (action === "vision") widget.toggleProfile("visionImpaired");
+        if (action === "dark")
+          widget.setSettings((s) => ({ colorMode: s.colorMode === "dark-contrast" ? "default" : "dark-contrast" }));
+        if (action === "reset") widget.reset();
+      });
+
+      for (const id of ["open-menu", "footer-a11y"]) {
+        document.getElementById(id).addEventListener("click", (e) => {
+          e.preventDefault();
+          widget.open();
+        });
+      }
+
+      // New content is picked up by font scaling automatically
+      let added = 0;
+      document.getElementById("add-content").addEventListener("click", () => {
+        const p = document.createElement("p");
+        p.textContent = `Dynamically added paragraph #${++added}. Increase the font size: this text scales too.`;
+        document.getElementById("dynamic").appendChild(p);
+      });
+    </script>
+  </body>
+</html>

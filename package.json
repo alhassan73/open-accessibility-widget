@@ -1,0 +1,86 @@
+{
+  "name": "open-accessibility-widget",
+  "version": "1.0.0",
+  "description": "Framework-agnostic accessibility preferences widget for any website: plain JS, React, Next.js, Vue, Angular, Svelte. Profiles, text/color/navigation adjustments, themable, RTL-ready, TypeScript types included.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/open-accessibility-widget.global.js",
+  "jsdelivr": "./dist/open-accessibility-widget.global.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./react": {
+      "import": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "require": {
+        "types": "./dist/react.d.cts",
+        "default": "./dist/react.cjs"
+      }
+    },
+    "./global": "./dist/open-accessibility-widget.global.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "wcag",
+    "widget",
+    "react",
+    "vue",
+    "angular",
+    "svelte",
+    "vanilla-js",
+    "screen-reader",
+    "dyslexia",
+    "contrast",
+    "rtl"
+  ],
+  "author": "alhassan-ahmed",
+  "homepage": "https://alhassan73.github.io/open-accessibility-widget/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alhassan73/open-accessibility-widget.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alhassan73/open-accessibility-widget/issues"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "react": "^19.3.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}
