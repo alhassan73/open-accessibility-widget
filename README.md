@@ -322,6 +322,10 @@ Open `examples/index.html` in a browser after building to try every feature on a
 
 ## Changelog
 
+### 1.0.1
+
+- Docs: link to the [live demo](https://alhassan73.github.io/open-accessibility-widget/) on GitHub Pages. No code changes.
+
 ### 1.0.0
 
 First release:
