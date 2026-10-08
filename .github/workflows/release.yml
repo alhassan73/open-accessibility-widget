@@ -23,7 +23,11 @@ jobs:
       - run: npm ci
       - name: Tag matches package.json version
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - name: Skip versions already on npm (e.g. published by hand)
+        id: npm
+        run: echo "published=$(npm view "$(node -p "require('./package.json').name")@${GITHUB_REF_NAME#v}" version 2>/dev/null)" >> "$GITHUB_OUTPUT"
       # prepublishOnly runs `npm run check` (typecheck, build, size, tests) before publishing.
-      - run: npm publish --provenance --access public
+      - if: steps.npm.outputs.published == ''
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

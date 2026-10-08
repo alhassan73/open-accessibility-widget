@@ -27,6 +27,7 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
   const hadStyleAttr = html.hasAttribute("style");
   const font = createFontScaler(doc, options.nonce);
   const pointer = createPointerTools(doc, options.zIndex ?? DEFAULT_Z);
+  const backdrop = createBackdrop(doc, options.zIndex ?? DEFAULT_Z);
   const media = createMediaControl(doc);
   let last: AccessibilitySettings = DEFAULT_SETTINGS;
   const classes = new Set<string>();
@@ -82,6 +83,7 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
       s.saturationMode === "high-saturation" && "saturate(2)",
     ].filter(Boolean);
     flag("filter", filters.length > 0 && filters.join(" "));
+    backdrop.set(filters.length > 0);
 
     font.set(s.fontSize);
     pointer.set({ guide: s.readingGuide, mask: s.readingMask, magnifier: s.textMagnifier });
@@ -109,7 +111,10 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
       apply(settings);
       guard.takeRecords();
     },
-    setZIndex: pointer.setZIndex,
+    setZIndex(zIndex) {
+      pointer.setZIndex(zIndex);
+      backdrop.setZIndex(zIndex);
+    },
     destroy() {
       guard.disconnect();
       apply(DEFAULT_SETTINGS);
@@ -255,6 +260,34 @@ function createFontScaler(doc: Document, nonce?: string) {
     intact: () =>
       !observer ||
       (html.classList.contains("a11yw-font") && !!html.style.getPropertyValue("--a11yw-font") && !!sheet?.isConnected),
+  };
+}
+
+/**
+ * Color filters (saturation, high contrast) live on a page-wide `backdrop-filter` layer
+ * stacked just below the widget: it recolors everything behind it — fixed headers included —
+ * but never the widget. (A `filter` on <html> would recolor the widget too.)
+ */
+function createBackdrop(doc: Document, zIndex: number) {
+  let el: HTMLDivElement | null = null;
+  let z = String(zIndex - 2);
+  return {
+    set(on: boolean) {
+      if (on && !el?.isConnected) {
+        el = doc.createElement("div");
+        el.className = "a11yw-ignore a11yw-backdrop";
+        el.setAttribute("aria-hidden", "true");
+        el.style.zIndex = z;
+        doc.body.appendChild(el);
+      } else if (!on && el) {
+        el.remove();
+        el = null;
+      }
+    },
+    setZIndex(next: number) {
+      z = String(next - 2);
+      if (el) el.style.zIndex = z;
+    },
   };
 }
 

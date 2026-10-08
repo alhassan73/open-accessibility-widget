@@ -17,7 +17,8 @@ An accessibility, robustness and host-safety release based on a full WCAG 2.2 au
 - **Dark / light / custom background modes** set `color-scheme`, keep selected/pressed states visible with an outline, keep links underlined when a custom text color is chosen, switch off in forced-colors mode, and don't apply when printing.
 - **Read mode** reads the page in its own language and direction, keeps links, table cells, image alt text and text in `<div>`s, and its title is "Read mode".
 - **Steppers** announce "Text size 120%" (name + value) and their buttons reference the current value; percentages are formatted for the widget's language (`Intl.NumberFormat`).
-- The panel text grows with the Text size setting (up to 150%) and follows the browser's default font size.
+- **The widget is never changed by its own adjustments.** Saturation and high-contrast filters now sit on a page-wide `backdrop-filter` layer below the widget instead of on `<html>`, and the large cursor, stop animations and dark/light `color-scheme` no longer reach the panel.
+- The panel follows the browser's default font size.
 - The launcher's "adjustments are on" dot is also exposed to screen readers and has enough contrast.
 - The large cursor keeps its meaning: a large hand on links and buttons, the text bar in fields.
 - Letter spacing is not applied to Arabic and other cursive scripts.

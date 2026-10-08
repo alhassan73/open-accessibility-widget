@@ -34,7 +34,8 @@ The widget itself follows WAI-ARIA, and every release is tested in headless Chro
 - The panel is a dialog with a focus trap. Escape, the close button or a click outside closes it, and focus returns to the launcher.
 - Sections are an accordion (`aria-expanded`), toggles are `role="switch"`, profile cards are toggle buttons (`aria-pressed`), and segmented choices are radio groups with arrow-key support.
 - Steppers announce the new value with its name ("Text size 120%"); reset is announced too.
-- Touch targets are at least 30×30px (WCAG 2.2 asks for 24px), and the panel text grows with the visitor's Text size setting (up to 150%).
+- Touch targets are at least 30×30px (WCAG 2.2 asks for 24px), and the panel follows the browser's default font size.
+- The widget never changes itself: every adjustment (text, spacing, colors, filters, cursor, animations) applies to the page only, so the panel always looks and behaves the same.
 - It respects `prefers-reduced-motion` and Windows High Contrast (`forced-colors`), where its color filters switch off so the system colors win.
 - The `Alt+A` shortcut never fires while the visitor is typing a character with it (e.g. macOS Option+A → "å").
 
@@ -316,7 +317,7 @@ The global build exposes the same exports on `window.A11yWidget`, for example `A
 
 - Every page adjustment is a class on `<html>` plus a CSS variable, from one injected stylesheet, so adjustments never compound and turning one off is a class removal. If your framework re-renders `<html class>` or `<html style>`, the widget puts its flags back.
 - Font size measures each text element's original size once and stores it in a `data-a11yw-fs` attribute; one generated CSS rule per size scales it. No inline styles are written, and content added later (SPA route changes, lazy lists) is picked up automatically.
-- The widget lives in `.a11yw-ignore`, a `display: contents` wrapper, so it never takes part in your layout (grid or flex `<body>` included). Text, spacing, color-mode and highlight adjustments skip it; the saturation / high-contrast filters and the large cursor apply to the whole page, widget included.
+- The widget lives in `.a11yw-ignore`, a `display: contents` wrapper, so it never takes part in your layout (grid or flex `<body>` included), and every adjustment skips it. The saturation and high-contrast filters sit on a page-wide `backdrop-filter` layer just below the widget, so they recolor the page (fixed headers included) but not the widget; elements you stack above the widget's `zIndex` are not filtered.
 - `destroy()` removes everything it added: classes, variables, attributes, styles and listeners.
 - It works with SSR: nothing touches `window` until `init()` runs.
 - It runs under strict CSPs: pass `nonce` for the injected `<style>` tags; no `eval`, no `innerHTML` (Trusted Types safe).

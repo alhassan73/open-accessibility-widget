@@ -318,7 +318,7 @@ test("color filters are off in forced-colors mode", async () => {
   await page.send("Emulation.setEmulatedMedia", { features: [{ name: "forced-colors", value: "active" }] });
   await init();
   await page.eval(`__w().setSettings({ saturationMode: 'monochrome', colorMode: 'high-contrast' }); 1`);
-  assert.equal(await page.eval(`getComputedStyle(document.documentElement).filter`), "none");
+  assert.equal(await page.eval(`getComputedStyle(document.querySelector('.a11yw-backdrop')).display`), "none");
 });
 
 test("reflow: panel fits a 320px-wide viewport without horizontal scrolling", async () => {
@@ -332,13 +332,45 @@ test("reflow: panel fits a 320px-wide viewport without horizontal scrolling", as
   assert.deepEqual(out, { fits: true, hScroll: false });
 });
 
-test("panel text grows with the text size setting", async () => {
+test("the widget itself is never changed by its own adjustments", async () => {
   await page.goto(HOST_URL);
   await init();
-  const size = `parseFloat(getComputedStyle(document.querySelector('.a11yw-title')).fontSize)`;
-  const before = await page.eval(size);
-  await page.eval(`__w().setSettings({ fontSize: 150 }); 1`);
-  assert.ok((await page.eval(size)) > before * 1.4);
+  await openPanelAllSections();
+  await sleep(300);
+  const snapshot = `(() => {
+    const props = ['fontSize', 'fontFamily', 'fontWeight', 'lineHeight', 'letterSpacing', 'wordSpacing', 'textAlign', 'color',
+      'backgroundColor', 'backgroundImage', 'borderColor', 'outlineStyle', 'cursor', 'colorScheme', 'transitionDuration',
+      'opacity', 'visibility', 'zoom', 'filter', 'textDecorationLine'];
+    const els = ['.a11yw-panel', '.a11yw-header', '.a11yw-title', '.a11yw-profile', '.a11yw-profile-label', '.a11yw-profile-desc',
+      '.a11yw-acc-btn', '.a11yw-row', '.a11yw-row-label', '.a11yw-field-label', '.a11yw-step-value', '.a11yw-step-btn',
+      '.a11yw-btn', '.a11yw-link', '.a11yw-launcher', '.a11yw-launcher svg', '.a11yw-badge'];
+    const out = {};
+    for (const sel of els) { const c = getComputedStyle(document.querySelector(sel)); out[sel] = props.map((p) => p + '=' + c[p]).join('; '); }
+    const filters = [];
+    for (let el = document.querySelector('.a11yw-panel'); el; el = el.parentElement) {
+      const f = getComputedStyle(el).filter;
+      if (f !== 'none') filters.push(el.tagName + ' ' + f);
+    }
+    out.ancestorFilters = filters.join(', ');
+    return out;
+  })()`;
+  const before = await page.eval(snapshot);
+  await page.eval(`__w().setSettings({ fontSize: 200, contentScale: 150, lineHeight: 200, letterSpacing: 200, textAlign: 'center',
+    readableFont: true, highlightTitles: true, highlightLinks: true, highlightHover: true, highlightFocus: true,
+    colorMode: 'dark-contrast', saturationMode: 'monochrome', textColor: '#ff0000', titleColor: '#00ff00', backgroundColor: '#0000ff',
+    hideImages: true, stopAnimations: true, cursor: 'black' }); 1`);
+  await sleep(300);
+  assert.deepEqual(await page.eval(snapshot), before);
+});
+
+test("color filters recolor the page through a layer below the widget", async () => {
+  await page.goto(HOST_URL);
+  await init();
+  await page.eval(`__w().setSettings({ saturationMode: 'monochrome', colorMode: 'high-contrast' }); 1`);
+  const out = await page.eval(`(() => { const b = document.querySelector('.a11yw-backdrop'), c = getComputedStyle(b);
+    return { filter: c.backdropFilter, display: c.display, below: Number(c.zIndex) < Number(getComputedStyle(document.querySelector('.a11yw-launcher')).zIndex),
+      htmlFilter: getComputedStyle(document.documentElement).filter }; })()`);
+  assert.deepEqual(out, { filter: "contrast(1.4) grayscale(1)", display: "block", below: true, htmlFilter: "none" });
 });
 
 test("stepper announces the new value with its name", async () => {
@@ -362,10 +394,10 @@ test("destroy() restores the page", async () => {
   await page.goto(HOST_URL);
   await init();
   const out = await page.eval(`(() => {
-    __w().setSettings({ fontSize: 150, highlightLinks: true, letterSpacing: 120, readingGuide: true, colorMode: 'dark-contrast' });
+    __w().setSettings({ fontSize: 150, highlightLinks: true, letterSpacing: 120, readingGuide: true, colorMode: 'dark-contrast', saturationMode: 'monochrome' });
     __w().destroy();
     return { classes: [...document.documentElement.classList].filter((c) => c.startsWith('a11yw')), style: document.documentElement.getAttribute('style'),
-      attrs: document.querySelectorAll('[data-a11yw-fs]').length, nodes: document.querySelectorAll('.a11yw-root,.a11yw-layer,#a11yw-styles,#a11yw-font-sizes').length };
+      attrs: document.querySelectorAll('[data-a11yw-fs]').length, nodes: document.querySelectorAll('.a11yw-root,.a11yw-layer,.a11yw-backdrop,#a11yw-styles,#a11yw-font-sizes').length };
   })()`);
   assert.deepEqual(out, { classes: [], style: null, attrs: 0, nodes: 0 });
 });

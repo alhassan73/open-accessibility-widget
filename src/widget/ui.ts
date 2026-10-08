@@ -629,8 +629,6 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       const active = !isDefaultSettings(s);
       launcher.toggleAttribute("data-active", active);
       activeNote.textContent = active ? L.activeAdjustments : "";
-      // The panel's own text grows with the page text size (up to 150%).
-      widget.style.setProperty("--a11yw-ui-scale", String(Math.min(1.5, Math.max(1, s.fontSize / 100))));
       if (prev && state.isOpen === prev.isOpen) return;
 
       launcher.setAttribute("aria-expanded", String(state.isOpen));
