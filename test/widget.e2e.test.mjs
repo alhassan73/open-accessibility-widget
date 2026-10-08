@@ -334,7 +334,8 @@ test("reflow: panel fits a 320px-wide viewport without horizontal scrolling", as
 
 test("the widget itself is never changed by its own adjustments", async () => {
   await page.goto(HOST_URL);
-  await init();
+  // A statement link guarantees an `.a11yw-link` (the "Hide widget" link only appears with a fine pointer).
+  await init(`{ statementUrl: '#main' }`);
   await openPanelAllSections();
   await sleep(300);
   const snapshot = `(() => {
