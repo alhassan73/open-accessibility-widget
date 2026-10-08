@@ -1,5 +1,8 @@
-# Publishes to npm with provenance when a version tag (v1.2.3) is pushed.
-# Requires an NPM_TOKEN repository secret (an npm automation token).
+# Publishes to npm when a version tag (v1.2.3) is pushed.
+# Uses npm Trusted Publishing: GitHub proves the workflow's identity to npm (OIDC), so no npm
+# token or 2FA code is needed, and the package gets a provenance attestation. One-time setup on
+# npmjs.com → package → Settings → Trusted Publisher: GitHub Actions, user `alhassan73`,
+# repository `open-accessibility-widget`, workflow `release.yml`.
 name: Release
 
 on:
@@ -8,7 +11,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # npm provenance
+  id-token: write # npm Trusted Publishing + provenance
 
 jobs:
   publish:
@@ -20,6 +23,8 @@ jobs:
           node-version: 22
           cache: npm
           registry-url: https://registry.npmjs.org
+      - name: npm with Trusted Publishing support (11.5.1+)
+        run: npm install -g npm@latest
       - run: npm ci
       - name: Tag matches package.json version
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
@@ -28,6 +33,4 @@ jobs:
         run: echo "published=$(npm view "$(node -p "require('./package.json').name")@${GITHUB_REF_NAME#v}" version 2>/dev/null)" >> "$GITHUB_OUTPUT"
       # prepublishOnly runs `npm run check` (typecheck, build, size, tests) before publishing.
       - if: steps.npm.outputs.published == ''
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public

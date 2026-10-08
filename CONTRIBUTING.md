@@ -35,4 +35,4 @@ Automated tests can't cover everything. Before a minor/major release, try the de
 
 1. Create the next version branch from `main` (e.g. `1.2.0`) and update `version` in `package.json` and `CHANGELOG.md`.
 2. When it's ready, merge it into `main` (this also deploys the demo).
-3. Tag `vX.Y.Z` and push the tag. The release workflow runs `npm run check` and publishes with npm provenance (needs the `NPM_TOKEN` secret). Tags keep the `v` prefix so they never share a name with a branch.
+3. Tag `vX.Y.Z` and push the tag. The release workflow runs `npm run check` and publishes through npm Trusted Publishing (no token or 2FA code; provenance included). It skips versions already on npm. Tags keep the `v` prefix so they never share a name with a branch.

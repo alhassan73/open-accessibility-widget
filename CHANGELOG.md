@@ -8,7 +8,7 @@ All notable changes to this project are documented here. The project follows [Se
 
 - **The widget is never changed by its own adjustments.** Saturation and high-contrast filters now sit on a page-wide `backdrop-filter` layer below the widget instead of on `<html>`, and the large cursor, stop animations and dark/light `color-scheme` no longer reach the panel.
 - The panel text no longer grows with the Text size setting (added in 1.1.0); it keeps following the browser's default font size.
-- The release workflow skips versions that are already published to npm.
+- The release workflow skips versions that are already published to npm and publishes through npm Trusted Publishing (no token or 2FA code needed).
 
 ## 1.1.0
 
