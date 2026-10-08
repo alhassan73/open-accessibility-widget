@@ -29,7 +29,10 @@ Automated tests can't cover everything. Before a minor/major release, try the de
 - Windows High Contrast, 200% and 400% browser zoom, and a phone in both orientations;
 - Arabic (RTL).
 
-## Releasing
+## Branches and releasing
 
-1. Update `version` in `package.json` and `CHANGELOG.md`.
-2. Commit, then tag `vX.Y.Z` and push the tag. The release workflow runs `npm run check` and publishes with npm provenance (needs the `NPM_TOKEN` secret).
+Branches are named after versions: each release line lives on a branch like `1.1.0`, and the repository's default branch is the latest version. Earlier branches (e.g. `1.0.1`) keep older releases.
+
+1. Create the next version branch from the default branch (e.g. `1.2.0`) and update `version` in `package.json` and `CHANGELOG.md`.
+2. When it's ready, make it the default branch on GitHub (this also deploys the demo).
+3. Tag `vX.Y.Z` and push the tag. The release workflow runs `npm run check` and publishes with npm provenance (needs the `NPM_TOKEN` secret). Tags keep the `v` prefix so they never share a name with a branch.

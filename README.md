@@ -390,7 +390,7 @@ npm run build      # dist/: ESM, CJS, .d.ts, and the <script> build
 npm run check
 ```
 
-Open `examples/index.html` in a browser after building to try every feature on a sample page, with a playground for theme, logo, position and language. Every push to `main` rebuilds that page and deploys it as the [live demo](https://alhassan73.github.io/open-accessibility-widget/) (`.github/workflows/pages.yml`).
+Open `examples/index.html` in a browser after building to try every feature on a sample page, with a playground for theme, logo, position and language. Every push to the default branch rebuilds that page and deploys it as the [live demo](https://alhassan73.github.io/open-accessibility-widget/) (`.github/workflows/pages.yml`).
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md) and the [changelog](./CHANGELOG.md).
 
