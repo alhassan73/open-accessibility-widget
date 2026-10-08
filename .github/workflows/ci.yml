@@ -4,7 +4,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: ["[0-9]*.[0-9]*.[0-9]*"] # version-named branches, e.g. 1.1.0
+    branches: [main, "[0-9]*.[0-9]*.[0-9]*"] # main and version branches, e.g. 1.1.0
 
 permissions:
   contents: read
