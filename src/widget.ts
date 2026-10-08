@@ -1,16 +1,17 @@
 import { removeStyles } from "./engine/css";
 import { createEngine } from "./engine/engine";
 import { builtInLanguages, defaultLabels, type AccessibilityLanguage } from "./labels";
-import { isDefaultSettings, sanitizeSettings, toggleProfileSettings } from "./settings";
+import { DEFAULT_SETTINGS, isDefaultSettings, mergeSettings, sanitizeSettings, toggleProfileSettings } from "./settings";
 import type {
   AccessibilitySettings,
   AccessibilityState,
   AccessibilityTheme,
   AccessibilityWidgetInstance,
   AccessibilityWidgetOptions,
+  SettingKey,
   SettingsUpdate,
 } from "./types";
-import { createUI, type UiApi, type UiLocale } from "./widget/ui";
+import { createUI, widgetZIndex, type UiApi, type UiLocale } from "./widget/ui";
 
 // Page adjustments are global, so only one widget may exist at a time. The registry
 // lives on globalThis so duplicate copies of the package (ESM + CJS) still share it.
@@ -22,9 +23,23 @@ const REGISTRY_KEY = Symbol.for("a11yw.registry");
 const globalStore = globalThis as unknown as Record<symbol, Registry | undefined>;
 const registry: Registry = (globalStore[REGISTRY_KEY] ??= { instance: null, listeners: new Set() });
 
+/** Bumped when the saved format changes, so old data can be migrated. */
+const STORAGE_VERSION = 1;
+/** Languages written right-to-left, for custom languages that don't set `dir`. */
+const RTL_LANGUAGES = /^(ar|arc|ckb|dv|fa|he|iw|ks|ku|ps|sd|syr|ug|ur|yi)(-|$)/i;
+
 const setActive = (instance: AccessibilityWidgetInstance | null) => {
   registry.instance = instance;
   registry.listeners.forEach((listener) => listener());
+};
+
+/** Run a consumer callback; an exception in it must never break the widget. */
+const safely = (fn: () => void) => {
+  try {
+    fn();
+  } catch (err) {
+    console.error("[open-accessibility-widget] A callback threw:", err);
+  }
 };
 
 /** The widget currently on the page, if any. */
@@ -63,44 +78,63 @@ export function createAccessibilityWidget(
   const locale = (): UiLocale => {
     const list = languages();
     const active = list.find((l) => l.code === language) ?? list[0];
+    const code = active?.code ?? "en";
     return {
       labels: { ...defaultLabels, ...active?.labels, ...opts.labels },
-      dir: opts.dir ?? active?.dir,
+      dir: opts.dir ?? active?.dir ?? (RTL_LANGUAGES.test(code) ? "rtl" : "ltr"),
       languages: list,
       language: active?.code,
     };
   };
 
-  let state: AccessibilityState = {
-    settings: persist() ? loadSettings(storageKey()) : sanitizeSettings(null),
-    isOpen: false,
+  /** Controls removed with `features: { key: false }` stay at their default. */
+  const restrict = (settings: AccessibilitySettings): AccessibilitySettings => {
+    const off = Object.entries(opts.features ?? {})
+      .filter(([key, on]) => on === false && key in DEFAULT_SETTINGS && key !== "profiles")
+      .map(([key]) => key as SettingKey);
+    if (!off.length) return settings;
+    return sanitizeSettings({ ...settings, ...Object.fromEntries(off.map((key) => [key, DEFAULT_SETTINGS[key]])) });
   };
+
+  const freezeState = (next: AccessibilityState): AccessibilityState => {
+    Object.freeze(next.settings.profiles);
+    return Object.freeze({ ...next, settings: Object.freeze(next.settings) });
+  };
+
+  const saved = persist() ? loadSettings(storageKey()) : null;
+  let state = freezeState({
+    settings: restrict(saved ?? mergeSettings(sanitizeSettings(null), opts.initialSettings ?? {})),
+    isOpen: false,
+  });
   let destroyed = false;
   const listeners = new Set<(state: AccessibilityState) => void>();
-  const engine = createEngine(document, opts.nonce);
+  const engine = createEngine(document, { nonce: opts.nonce, zIndex: widgetZIndex(opts) });
 
-  const commit = (next: AccessibilityState) => {
+  const commit = (next: AccessibilityState, save = true) => {
     if (destroyed) return;
     const prev = state;
-    state = next;
-    if (next.settings !== prev.settings) {
-      engine.apply(next.settings);
-      if (persist()) saveSettings(storageKey(), next.settings);
-      opts.onChange?.(next.settings);
+    state = freezeState(next);
+    const settingsChanged = state.settings !== prev.settings;
+    if (settingsChanged) {
+      engine.apply(state.settings);
+      if (save && persist()) saveSettings(storageKey(), state.settings);
     }
-    ui.update(next, prev);
-    listeners.forEach((listener) => listener(next));
+    ui.update(state, prev);
+    // Consumer code runs last, so the widget is always consistent even if it throws.
+    listeners.forEach((listener) => safely(() => listener(state)));
+    if (settingsChanged) safely(() => opts.onChange?.(state.settings));
   };
 
-  const commitSettings = (settings: AccessibilitySettings) => {
-    if (JSON.stringify(settings) !== JSON.stringify(state.settings)) commit({ ...state, settings });
+  const commitSettings = (settings: AccessibilitySettings, save = true) => {
+    const next = restrict(settings);
+    if (JSON.stringify(next) !== JSON.stringify(state.settings)) commit({ ...state, settings: next }, save);
   };
 
   const api: UiApi = {
     getState: () => state,
     setSettings(update: SettingsUpdate) {
       const patch = typeof update === "function" ? update(state.settings) : update;
-      commitSettings(sanitizeSettings({ ...state.settings, ...patch }));
+      commitSettings(mergeSettings(state.settings, patch ?? {}));
     },
     toggleProfile: (id) => commitSettings(toggleProfileSettings(state.settings, id)),
     reset: () => commitSettings(sanitizeSettings(null)),
@@ -118,12 +152,36 @@ export function createAccessibilityWidget(
 
   let ui = createUI(opts, api, locale());
   const rebuildUI = () => {
+    const hadFocus = ui.hasFocus();
     ui.destroy();
     ui = createUI(opts, api, locale());
     ui.update(state);
+    if (hadFocus) ui.restoreFocus();
   };
   engine.apply(state.settings);
   ui.update(state);
+
+  // Keep working when the page swaps <body> or its content (Turbo, htmx boost, Astro view transitions).
+  let body = document.body;
+  const onPageSwap = () => {
+    if (!document.body) return; // mid-swap; the new <body> triggers another call
+    if (document.body !== body) {
+      body = document.body;
+      domObserver.observe(body, { childList: true });
+    } else if (ui.isConnected()) return;
+    engine.refresh();
+    rebuildUI();
+  };
+  const domObserver = new MutationObserver(onPageSwap);
+  domObserver.observe(document.documentElement, { childList: true });
+  domObserver.observe(body, { childList: true });
+
+  // Settings changed in another tab of the same site.
+  const onStorage = (e: StorageEvent) => {
+    if (e.key !== storageKey() || !persist()) return;
+    commitSettings(e.newValue ? parseSettings(e.newValue) : sanitizeSettings(null), false);
+  };
+  window.addEventListener("storage", onStorage);
 
   const instance: AccessibilityWidgetInstance = {
     getState: () => state,
@@ -139,7 +197,9 @@ export function createAccessibilityWidget(
       opts = { ...opts, ...next };
       if (next.language) language = next.language;
       warnOnLowContrast(opts.theme);
+      engine.setZIndex(widgetZIndex(opts));
       rebuildUI();
+      commitSettings(state.settings); // newly removed features switch off
     },
     subscribe(listener) {
       listeners.add(listener);
@@ -148,6 +208,8 @@ export function createAccessibilityWidget(
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      domObserver.disconnect();
+      window.removeEventListener("storage", onStorage);
       ui.destroy();
       engine.destroy();
       removeStyles(document);
@@ -186,37 +248,61 @@ function matchPageLanguage(languages: AccessibilityLanguage[]): string | undefin
   return (match ?? languages[0])?.code;
 }
 
-function loadSettings(key: string): AccessibilitySettings {
+/** Saved JSON → settings. Unknown versions and corrupt data fall back to defaults. */
+function parseSettings(raw: string): AccessibilitySettings {
   try {
-    const raw = window.localStorage.getItem(key);
-    return sanitizeSettings(raw ? JSON.parse(raw) : null);
+    const data = JSON.parse(raw) as { v?: unknown } | null;
+    // Version 1 is the first versioned format; unversioned data (1.0.x) has the same shape.
+    if (data && typeof data === "object" && data.v !== undefined && data.v !== STORAGE_VERSION) return sanitizeSettings(null);
+    return sanitizeSettings(data);
   } catch {
-    return sanitizeSettings(null); // storage blocked or corrupted JSON
+    return sanitizeSettings(null);
   }
+}
+
+/** Saved settings, or `null` when nothing is saved (or storage is blocked). */
+function loadSettings(key: string): AccessibilitySettings | null {
+  const raw = readStorage(key);
+  return raw ? parseSettings(raw) : null;
 }
 
 function saveSettings(key: string, settings: AccessibilitySettings) {
   try {
     if (isDefaultSettings(settings)) window.localStorage.removeItem(key);
-    else window.localStorage.setItem(key, JSON.stringify(settings));
+    else window.localStorage.setItem(key, JSON.stringify({ v: STORAGE_VERSION, ...settings }));
   } catch {
     // Storage unavailable (private mode, quota, blocked) — settings still work for this page view.
   }
 }
 
-/** The widget must itself be accessible: warn when brand colors make the header unreadable. */
+/** The widget must itself be accessible: warn when brand colors make parts of it unreadable. */
 function warnOnLowContrast(theme: AccessibilityTheme | undefined) {
-  if (!theme?.primary && !theme?.onPrimary) return;
-  const a = luminance(theme.primary ?? "#0f766e");
-  const b = luminance(theme.onPrimary ?? "#ffffff");
-  if (a === null || b === null) return;
-  const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
-  if (ratio < 4.5) {
-    console.warn(
-      `[open-accessibility-widget] theme.primary and theme.onPrimary have a contrast ratio of ${ratio.toFixed(2)}:1. ` +
-        "WCAG requires at least 4.5:1 for the header text and icons."
-    );
+  if (!theme) return;
+  const primary = theme.primary ?? "#0f766e";
+  const background = theme.background ?? "#ffffff";
+  const checks: [string, string, string, number][] = [
+    [theme.onPrimary ?? "#ffffff", primary, "header, buttons and icons on the brand color", 4.5],
+    [primary, background, "focus outlines and selected options", 3],
+    [primary, theme.surface ?? "#f4f6f8", "footer links", 4.5],
+    [theme.text ?? "#0f172a", background, "panel text", 4.5],
+    [theme.mutedText ?? "#475569", background, "descriptions and section titles", 4.5],
+  ];
+  for (const [color, against, use, need] of checks) {
+    const ratio = contrast(color, against);
+    if (ratio !== null && ratio < need) {
+      console.warn(
+        `[open-accessibility-widget] theme contrast ${ratio.toFixed(2)}:1 is too low for ${use} ` +
+          `(${color} on ${against}); WCAG needs at least ${need}:1.`
+      );
+    }
   }
+}
+
+function contrast(a: string, b: string): number | null {
+  const la = luminance(a);
+  const lb = luminance(b);
+  if (la === null || lb === null) return null;
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
 }
 
 function luminance(color: string): number | null {

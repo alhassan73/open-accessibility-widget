@@ -1,5 +1,10 @@
-export const defaultLabels = {
+/**
+ * UI strings. `increase`, `decrease` and `reset` may contain `{label}` to place the
+ * setting name (e.g. "Increase {label}"); without it the name is appended.
+ */
+export const defaultLabels = Object.freeze({
   launcher: "Accessibility settings",
+  activeAdjustments: "Adjustments are on",
   title: "Accessibility",
   close: "Close accessibility settings",
   language: "Language",
@@ -22,8 +27,8 @@ export const defaultLabels = {
   cognitiveDisabilityDesc: "Marks headings and links, adds a reading line",
   keyboardNav: "Keyboard user",
   keyboardNavDesc: "Strong outline on the focused control",
-  screenReader: "Screen reader user",
-  screenReaderDesc: "Mutes media that would talk over your reader",
+  screenReader: "Quiet media",
+  screenReaderDesc: "Mutes media that starts playing on its own",
   olderAdults: "Comfortable reading",
   olderAdultsDesc: "Bigger text, more spacing, large cursor",
 
@@ -65,8 +70,10 @@ export const defaultLabels = {
   readingGuide: "Reading line",
   readingMask: "Focus window",
   readMode: "Open read mode",
+  readModeTitle: "Read mode",
   closeReadMode: "Close read mode",
   noReadableContent: "No readable content was found on this page.",
+  image: "Image",
 
   motionSection: "Motion & navigation",
   stopAnimations: "Stop animations",
@@ -78,12 +85,13 @@ export const defaultLabels = {
   cursorDefault: "Default",
   cursorBlack: "Large dark",
   cursorWhite: "Large light",
-};
+});
 
 export type AccessibilityLabels = { [K in keyof typeof defaultLabels]: string };
 
-export const arabicLabels: AccessibilityLabels = {
+export const arabicLabels: AccessibilityLabels = Object.freeze({
   launcher: "إعدادات إمكانية الوصول",
+  activeAdjustments: "توجد تعديلات مفعّلة",
   title: "إمكانية الوصول",
   close: "إغلاق إعدادات إمكانية الوصول",
   language: "اللغة",
@@ -106,8 +114,8 @@ export const arabicLabels: AccessibilityLabels = {
   cognitiveDisabilityDesc: "يميّز العناوين والروابط ويضيف خط قراءة",
   keyboardNav: "مستخدم لوحة المفاتيح",
   keyboardNavDesc: "إطار واضح حول العنصر المحدد",
-  screenReader: "مستخدم قارئ الشاشة",
-  screenReaderDesc: "يكتم الوسائط حتى لا تتداخل مع القارئ",
+  screenReader: "وسائط هادئة",
+  screenReaderDesc: "يكتم الوسائط التي تبدأ التشغيل تلقائيًا",
   olderAdults: "قراءة مريحة",
   olderAdultsDesc: "نص أكبر ومسافات أوسع ومؤشر كبير",
 
@@ -149,8 +157,10 @@ export const arabicLabels: AccessibilityLabels = {
   readingGuide: "خط القراءة",
   readingMask: "نافذة التركيز",
   readMode: "فتح وضع القراءة",
+  readModeTitle: "وضع القراءة",
   closeReadMode: "إغلاق وضع القراءة",
   noReadableContent: "لم يتم العثور على محتوى قابل للقراءة في هذه الصفحة.",
+  image: "صورة",
 
   motionSection: "الحركة والتنقل",
   stopAnimations: "إيقاف الحركة",
@@ -162,7 +172,7 @@ export const arabicLabels: AccessibilityLabels = {
   cursorDefault: "افتراضي",
   cursorBlack: "كبير داكن",
   cursorWhite: "كبير فاتح",
-};
+});
 
 export interface AccessibilityLanguage {
   /** BCP-47 code, matched against <html lang> to pick the initial language. */
@@ -173,7 +183,7 @@ export interface AccessibilityLanguage {
   dir?: "ltr" | "rtl";
 }
 
-export const builtInLanguages: AccessibilityLanguage[] = [
-  { code: "en", name: "English", labels: defaultLabels, dir: "ltr" },
-  { code: "ar", name: "العربية", labels: arabicLabels, dir: "rtl" },
-];
+export const builtInLanguages: AccessibilityLanguage[] = Object.freeze([
+  Object.freeze({ code: "en", name: "English", labels: defaultLabels, dir: "ltr" as const }),
+  Object.freeze({ code: "ar", name: "العربية", labels: arabicLabels, dir: "rtl" as const }),
+]) as AccessibilityLanguage[];

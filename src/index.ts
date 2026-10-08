@@ -15,10 +15,12 @@ export type {
   AccessibilityWidgetOptions,
   ColorMode,
   CursorMode,
+  FeatureKey,
   LogoSource,
   ProfileId,
   ProfilePreset,
   SaturationMode,
+  SettingKey,
   SettingsUpdate,
   TextAlign,
 } from "./types";

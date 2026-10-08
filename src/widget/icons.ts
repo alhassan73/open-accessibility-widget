@@ -1,4 +1,5 @@
-// 24×24 stroke icons. These are static strings owned by the library (never user input).
+// 24×24 stroke icons. These are static strings owned by the library (never user input),
+// written as self-closing shapes only.
 const ICONS = {
   accessibility:
     '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="6.8" r="1.5" fill="currentColor" stroke="none"/><path d="M7 9.6c1.7.5 3.3.7 5 .7s3.3-.2 5-.7M12 10.3v3.6m0 0-2.4 4.4m2.4-4.4 2.4 4.4"/>',
@@ -44,10 +45,33 @@ const ICONS = {
 
 export type IconName = keyof typeof ICONS;
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+const SVG_ATTRS = {
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  "stroke-width": "2",
+  "stroke-linecap": "round",
+  "stroke-linejoin": "round",
+  "aria-hidden": "true",
+  focusable: "false",
+};
+
+const svgEl = (tag: string, attrs: Record<string, string>) => {
+  const el = document.createElementNS(SVG_NS, tag);
+  for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
+  return el;
+};
+
+/**
+ * Built with createElementNS rather than innerHTML, so the widget also runs on pages
+ * that enforce Trusted Types. Icon markup is a flat list of self-closing shapes.
+ */
 export function icon(name: IconName, className?: string): SVGSVGElement {
-  const tpl = document.createElement("template");
-  tpl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[name]}</svg>`;
-  const svg = tpl.content.firstElementChild as SVGSVGElement;
+  const svg = svgEl("svg", SVG_ATTRS) as SVGSVGElement;
+  for (const [, tag, attrs] of ICONS[name].matchAll(/<(\w+)([^>]*)\/>/g)) {
+    svg.appendChild(svgEl(tag, Object.fromEntries(Array.from(attrs.matchAll(/([\w-]+)="([^"]*)"/g), (m) => [m[1], m[2]]))));
+  }
   if (className) svg.setAttribute("class", className);
   return svg;
 }

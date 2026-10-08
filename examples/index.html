@@ -76,6 +76,14 @@
       input[type="text"], input[type="email"], select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #94a3b8; border-radius: 8px; font: inherit; background: #fff; }
       fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
       fieldset label { display: inline-flex; gap: 6px; font-weight: 400; margin-inline-end: 16px; }
+      /* Custom-drawn controls, the kind that color modes and "Hide images" must not break */
+      .custom-check { appearance: none; width: 20px; height: 20px; margin: 0; vertical-align: middle; border: 2px solid #64748b; border-radius: 5px; background: #fff no-repeat center / 14px; }
+      .custom-check:checked { border-color: var(--brand); background-color: var(--brand); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8 3 3 7-7' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3C/svg%3E"); }
+      .tabs { display: flex; gap: 4px; }
+      .tabs button { border: 0; border-radius: 8px; padding: 8px 14px; font: inherit; background: #f1f5f9; cursor: pointer; }
+      .tabs button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
+      .icon-link { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 10px; background: #f1f5f9; }
+      .icon-link img { width: 24px; height: 24px; }
 
       /* Playground */
       .playground { position: sticky; top: 84px; }
@@ -138,9 +146,10 @@
             <p class="hint">Try <em>Text size</em>, <em>Line spacing</em>, <em>Letter spacing</em>, <em>Readable font</em>, <em>Alignment</em>, <em>Highlight headings</em> and <em>Highlight links</em>.</p>
             <h3>Paragraphs</h3>
             <p>
-              Good typography helps everyone. People with low vision often need larger text, people with dyslexia benefit from
-              extra spacing, and older adults appreciate more contrast. Read our <a href="#article">accessibility guide</a>
-              or browse the <a href="#form">contact form</a>.
+              Good typography helps everyone. People with low vision often need larger text, many readers find extra spacing
+              easier on the eyes, and older adults often prefer more contrast. Read our <a href="#article">accessibility guide</a>
+              or browse the <a href="#form">contact form</a>. With <em>Highlight links</em> on, press <kbd>Tab</kbd>: the focused
+              link still gets its own focus outline.
             </p>
             <p style="font-size: 14px">This paragraph has a smaller inline font size (14px) — it scales proportionally, without compounding.</p>
             <h3>Lists</h3>
@@ -174,7 +183,8 @@
           <!-- Media -->
           <section class="card" id="media" aria-labelledby="media-title">
             <h2 id="media-title">Images &amp; media</h2>
-            <p class="hint">Try <em>Hide images</em>, the contrast modes (images keep their colors in Dark/Light contrast), <em>Mute media</em> and <em>Stop animations</em> (pauses the playing video).</p>
+            <p class="hint">Try <em>Hide images</em> (images inside links and buttons stay, so the icon link below keeps its name), the contrast modes (images keep their colors in Dark/Light contrast), <em>Mute media</em> or the <em>Quiet media</em> profile (media you start or unmute yourself keeps its sound) and <em>Stop animations</em> (pauses the playing video).</p>
+            <p><a class="icon-link" href="#top"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='2'%3E%3Cpath d='M3 11 12 3l9 8v10H3z'/%3E%3C/svg%3E" alt="Back to top" /></a> ← icon-only link: its image is its name</p>
             <div class="grid-3 gallery">
               <figure>
                 <img src="https://picsum.photos/seed/mountain/480/360" alt="Snowy mountain range at sunrise" loading="lazy" />
@@ -201,7 +211,7 @@
           <!-- Motion -->
           <section class="card" id="motion" aria-labelledby="motion-title">
             <h2 id="motion-title">Motion &amp; animation</h2>
-            <p class="hint">Turn on the <em>Motion sensitivity</em> profile or <em>Stop animations</em> — everything below stops.</p>
+            <p class="hint">Turn on the <em>Motion sensitivity</em> profile or <em>Stop animations</em> — the CSS animations below stop. Animated GIFs, <code>&lt;canvas&gt;</code>, JavaScript animation and video inside iframes are not affected; a site has to handle those itself.</p>
             <div class="anim-row">
               <div class="spinner" aria-hidden="true"></div>
               <div class="pulse" aria-hidden="true"></div>
@@ -228,6 +238,14 @@
               </fieldset>
               <div><label for="f-msg">Message</label><textarea id="f-msg" rows="4"></textarea></div>
               <label style="font-weight: 400"><input type="checkbox" /> Subscribe to the newsletter</label>
+              <label style="font-weight: 400"><input type="checkbox" class="custom-check" checked /> Custom-drawn checkbox (try <em>Hide images</em> and <em>Dark</em> contrast: the tick stays)</label>
+              <div>
+                <span id="delivery-label" style="font-weight: 600; display: block; margin-bottom: 4px">Delivery speed</span>
+                <div class="tabs" role="group" aria-labelledby="delivery-label" id="delivery">
+                  <button type="button" aria-pressed="true">Standard</button>
+                  <button type="button" aria-pressed="false">Express</button>
+                </div>
+              </div>
               <div><button class="btn" type="submit">Send message</button></div>
               <p id="form-status" role="status"></p>
             </form>
@@ -236,7 +254,7 @@
           <!-- Article -->
           <section class="card" id="article" aria-labelledby="article-title">
             <h2 id="article-title">Sample article</h2>
-            <p class="hint">Open <em>Reading aids</em> and try <em>Reading line</em>, <em>Focus window</em>, <em>Text magnifier</em> (hover any text) or <em>Open read mode</em>, which shows this page as clean text.</p>
+            <p class="hint">Open <em>Reading aids</em> and try <em>Reading line</em>, <em>Focus window</em> or <em>Text magnifier</em> — they follow the mouse and keyboard focus (<kbd>Tab</kbd>); <kbd>Esc</kbd> hides the magnifier. <em>Open read mode</em> shows this page as clean text, with its links and tables, in the page's own language.</p>
             <h3>Why accessibility matters</h3>
             <p>
               Around one in six people worldwide live with a significant disability. Many more experience temporary or situational
@@ -290,10 +308,17 @@
               <button type="button" data-lang="ar" aria-pressed="false">العربية</button>
             </div>
 
+            <h3 id="pg-features">Controls offered</h3>
+            <div class="seg" role="group" aria-labelledby="pg-features" id="features-seg">
+              <button type="button" data-features="all" aria-pressed="true">All</button>
+              <button type="button" data-features="minimal" aria-pressed="false">Text &amp; color only</button>
+            </div>
+
             <h3>Actions</h3>
             <div class="stack">
               <button class="btn small" type="button" data-action="open">Open</button>
               <button class="btn small ghost" type="button" data-action="vision">Toggle “Low vision”</button>
+              <button class="btn small ghost" type="button" data-action="profiles">setSettings({ profiles })</button>
               <button class="btn small ghost" type="button" data-action="dark">Toggle Dark Contrast</button>
               <button class="btn small ghost" type="button" data-action="reset">Reset</button>
             </div>
@@ -381,6 +406,22 @@
         widget.setOptions({ language: lang });
         log(`setOptions({ language: "${lang}" })`);
       });
+      // `features` removes controls from the panel; a removed setting stays off.
+      const MINIMAL = {
+        profiles: false, readMode: false, textMagnifier: false, readingGuide: false, readingMask: false,
+        highlightTitles: false, highlightLinks: false, stopAnimations: false, muteSounds: false,
+        hideImages: false, highlightFocus: false, highlightHover: false, cursor: false,
+      };
+      segmented("features-seg", ({ features }) => {
+        widget.setOptions({ features: features === "minimal" ? MINIMAL : {} });
+        log(features === "minimal" ? "setOptions({ features: { profiles: false, … } })" : "setOptions({ features: {} })");
+      });
+
+      // Demo tabs: the selected state is shown with a background color only
+      document.getElementById("delivery").addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (btn) btn.parentElement.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      });
 
       // Color swatches
       const swatches = document.getElementById("swatches");
@@ -405,6 +446,10 @@
         const action = e.target.closest("button")?.dataset.action;
         if (action === "open") widget.open();
         if (action === "vision") widget.toggleProfile("visionImpaired");
+        if (action === "profiles") {
+          widget.setSettings({ profiles: ["keyboardNav", "olderAdults"] });
+          log('setSettings({ profiles: ["keyboardNav", "olderAdults"] }) — presets applied');
+        }
         if (action === "dark")
           widget.setSettings((s) => ({ colorMode: s.colorMode === "dark-contrast" ? "default" : "dark-contrast" }));
         if (action === "reset") widget.reset();

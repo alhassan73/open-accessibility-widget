@@ -49,6 +49,12 @@ export interface AccessibilitySettings {
 
 export type ProfilePreset = Partial<Omit<AccessibilitySettings, "profiles">>;
 
+/** Every adjustment except `profiles`. */
+export type SettingKey = Exclude<keyof AccessibilitySettings, "profiles">;
+
+/** A control that can be removed from the panel with `features: { key: false }`. */
+export type FeatureKey = SettingKey | "profiles" | "readMode";
+
 export interface AccessibilityState {
   settings: AccessibilitySettings;
   isOpen: boolean;
@@ -77,7 +83,7 @@ export type LogoSource = string | Element;
 export interface AccessibilityWidgetOptions {
   /** Screen side of the launcher and panel. Default `"left"`. */
   position?: "left" | "right";
-  /** Distance from the screen edges in px. Default `{ x: 24, y: 24 }`. */
+  /** Distance from the screen edges in px (0–1000). Default `{ x: 24, y: 24 }`. */
   offset?: { x?: number; y?: number };
   /** Widget colors and shape. */
   theme?: AccessibilityTheme;
@@ -85,7 +91,7 @@ export interface AccessibilityWidgetOptions {
   icon?: LogoSource;
   /** Logo shown next to the panel title. Hidden by default. */
   logo?: LogoSource | null;
-  /** Launcher diameter in px. Default `56`. */
+  /** Launcher diameter in px (24–160). Default `56`. */
   buttonSize?: number;
   /** Languages offered in the header menu, or `false` to hide the menu. Default: English + Arabic. */
   languages?: AccessibilityLanguage[] | false;
@@ -99,8 +105,15 @@ export interface AccessibilityWidgetOptions {
   shortcut?: string | false;
   /** Link to your accessibility statement, shown in the footer. */
   statementUrl?: string;
-  /** Render a "Skip to main content" link. Default `true`. */
+  /**
+   * Render a "Skip to main content" link. Default `true`. It is left out when the page has
+   * no `<main>` / `<h1>` to skip to, or already starts with its own in-page skip link.
+   */
   showSkipLink?: boolean;
+  /** Remove individual controls, e.g. `{ hideImages: false, readMode: false }`. A removed setting stays off. */
+  features?: Partial<Record<FeatureKey, boolean>>;
+  /** Starting settings for visitors with no saved preferences. "Reset all" still returns to the page as authored. */
+  initialSettings?: Partial<AccessibilitySettings>;
   /** Stacking order. Default `2147483000`. */
   zIndex?: number;
   /** Save settings in localStorage so they survive reloads. Default `true`. */
@@ -118,6 +131,7 @@ export type SettingsUpdate =
   | ((prev: AccessibilitySettings) => Partial<AccessibilitySettings>);
 
 export interface AccessibilityWidgetInstance {
+  /** Current state. The returned objects are frozen snapshots; change them with the methods below. */
   getState(): AccessibilityState;
   getSettings(): AccessibilitySettings;
   /** Merge changes into the settings. Input is validated; invalid values are dropped. */

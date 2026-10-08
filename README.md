@@ -14,8 +14,8 @@ A user-preference accessibility menu that works on **any website**: plain HTML/J
 
 | Area | What the visitor gets |
 | --- | --- |
-| **Quick profiles** | Motion sensitivity · Low vision · Focus mode · Easy reading · Keyboard user · Screen reader user · Comfortable reading |
-| **Text** | Text size · Page zoom · Line spacing · Letter spacing · Alignment · Readable font |
+| **Quick profiles** | Motion sensitivity · Low vision · Focus mode · Easy reading · Keyboard user · Quiet media · Comfortable reading |
+| **Text** | Text size · Page zoom · Line spacing · Letter spacing · Alignment (left / center / right) · Readable font |
 | **Color** | Contrast (dark / light / high) · Saturation (gray / low / high) · Custom text, heading and background colors |
 | **Reading aids** | Highlight headings · Highlight links · Text magnifier · Reading line · Focus window · Read mode |
 | **Motion & navigation** | Stop animations · Mute media · Hide images · Highlight focus · Highlight on hover · Large cursor (dark / light) |
@@ -29,13 +29,14 @@ The panel is a compact card that opens above the launcher with a short fade-and-
 
 A small dot on the launcher shows when any adjustment is active.
 
-The widget itself follows WAI-ARIA:
+The widget itself follows WAI-ARIA, and every release is tested in headless Chrome with axe-core and keyboard-only scripts (see [Testing](#testing)):
 
 - The panel is a dialog with a focus trap. Escape, the close button or a click outside closes it, and focus returns to the launcher.
 - Sections are an accordion (`aria-expanded`), toggles are `role="switch"`, profile cards are toggle buttons (`aria-pressed`), and segmented choices are radio groups with arrow-key support.
-- Value changes and reset are announced through live regions.
-- Touch targets are 44px.
-- It respects `prefers-reduced-motion` and Windows High Contrast (`forced-colors`).
+- Steppers announce the new value with its name ("Text size 120%"); reset is announced too.
+- Touch targets are at least 30×30px (WCAG 2.2 asks for 24px), and the panel text grows with the visitor's Text size setting (up to 150%).
+- It respects `prefers-reduced-motion` and Windows High Contrast (`forced-colors`), where its color filters switch off so the system colors win.
+- The `Alt+A` shortcut never fires while the visitor is typing a character with it (e.g. macOS Option+A → "å").
 
 ## Install
 
@@ -153,18 +154,20 @@ export default defineNuxtPlugin(() => {
 
 ```ts
 // app.component.ts
-import { AfterViewInit, Component, OnDestroy } from "@angular/core";
+import { AfterViewInit, Component, NgZone, OnDestroy, inject } from "@angular/core";
 import { init, type AccessibilityWidgetInstance } from "open-accessibility-widget";
 
 @Component({ selector: "app-root", templateUrl: "./app.component.html" })
 export class AppComponent implements AfterViewInit, OnDestroy {
+  private zone = inject(NgZone);
   private widget?: AccessibilityWidgetInstance;
-  ngAfterViewInit() { this.widget = init({ position: "right" }); }
+  // Outside the zone: the widget's pointer/keyboard listeners must not trigger change detection.
+  ngAfterViewInit() { this.widget = this.zone.runOutsideAngular(() => init({ position: "right" })); }
   ngOnDestroy() { this.widget?.destroy(); }
 }
 ```
 
-If you use Angular SSR, wrap the call in `afterNextRender(() => …)` or check `isPlatformBrowser`.
+If you use Angular SSR, wrap the call in `afterNextRender(() => …)` or check `isPlatformBrowser`. Zoneless apps don't need `runOutsideAngular`.
 
 ### Svelte / SvelteKit
 
@@ -188,6 +191,8 @@ If you use Angular SSR, wrap the call in `afterNextRender(() => …)` or check `
   init({ position: "right" });
 </script>
 ```
+
+Pages that swap `<body>` on navigation (Astro view transitions, Hotwire Turbo, htmx `hx-boost`) are supported: the widget re-attaches itself and re-applies the visitor's settings to the new page.
 
 ## Customization
 
@@ -215,7 +220,7 @@ init({
 });
 ```
 
-If `primary` and `onPrimary` have less than 4.5:1 contrast, a console warning tells you.
+A console warning tells you when the theme makes part of the widget fail WCAG contrast: `onPrimary` on `primary` (4.5:1), `primary` as the focus outline on `background` (3:1), footer links on `surface`, and `text` / `mutedText` on `background` (4.5:1). Only hex colors are checked.
 
 You can also theme it from CSS, which helps when it's injected by a CMS:
 
@@ -246,27 +251,42 @@ init({
 init({ labels: { title: "Accessibility tools" } });
 ```
 
-Strings missing from a language fall back to English.
+Strings missing from a language fall back to English. A custom language without `dir` is shown right-to-left when its code is an RTL language (`ar`, `he`, `fa`, `ur`…). `increase`, `decrease` and `reset` can place the setting name with `{label}` (e.g. `"{label} vergrößern"`); without it the name is appended. Percentages are formatted for the active language with `Intl.NumberFormat`.
+
+### Removing controls and setting defaults
+
+```js
+init({
+  // Remove controls you don't want to offer. A removed setting stays off.
+  features: { hideImages: false, cursor: false, readMode: false },
+  // First-visit settings (visitors' own saved choices win; "Reset all" returns to the page as authored).
+  initialSettings: { fontSize: 110 },
+});
+```
+
+Every setting key can be removed, plus `"profiles"` (the whole quick-profile grid) and `"readMode"`. A profile card is hidden when all of its adjustments are removed.
 
 ### All options
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `position` | `"left" \| "right"` | `"left"` | Screen side |
-| `offset` | `{ x?, y? }` | `{ x: 24, y: 24 }` | Distance from the edges (px) |
+| `offset` | `{ x?, y? }` | `{ x: 24, y: 24 }` | Distance from the edges (px, 0–1000) |
 | `theme` | `AccessibilityTheme` | – | Colors, radius, font |
-| `icon` | `string \| Element` | built-in icon | Launcher logo |
+| `icon` | `string \| Element` | built-in icon | Launcher logo (pass only trusted elements: they are cloned as-is) |
 | `logo` | `string \| Element \| null` | hidden | Logo next to the panel title |
-| `buttonSize` | `number` | `56` | Launcher size (px) |
+| `buttonSize` | `number` | `56` | Launcher size (px, 24–160) |
+| `features` | `Partial<Record<FeatureKey, boolean>>` | all on | Set a control to `false` to remove it |
+| `initialSettings` | `Partial<AccessibilitySettings>` | – | Settings for visitors with nothing saved |
 | `languages` | `AccessibilityLanguage[] \| false` | English + Arabic | Language menu entries |
 | `language` | `string` | saved → `<html lang>` → first | Initial language |
 | `labels` | `Partial<AccessibilityLabels>` | – | Override single strings |
 | `dir` | `"ltr" \| "rtl"` | language's direction | Force widget direction |
 | `shortcut` | `string \| false` | `"Alt+A"` | Toggle shortcut; also restores the widget after "Hide widget" (the button is hidden when `false`) |
 | `statementUrl` | `string` | – | "Accessibility statement" link in the footer (http/https/relative only) |
-| `showSkipLink` | `boolean` | `true` | "Skip to main content" link |
+| `showSkipLink` | `boolean` | `true` | "Skip to main content" link. Left out automatically when the page has no `<main>`/`<h1>` or already starts with its own skip link |
 | `zIndex` | `number` | `2147483000` | Stacking order |
-| `persist` | `boolean` | `true` | Save settings in localStorage |
+| `persist` | `boolean` | `true` | Save settings in localStorage (kept in sync across tabs) |
 | `storageKey` | `string` | `"a11yw-settings"` | localStorage key |
 | `nonce` | `string` | – | CSP nonce for the injected `<style>` |
 | `onChange` | `(settings) => void` | – | Called when the visitor changes something |
@@ -279,9 +299,10 @@ Strings missing from a language fall back to English.
 const widget = init();
 
 widget.open(); widget.close(); widget.toggle();
-widget.getSettings();                        // current settings
+widget.getSettings();                        // current settings (a frozen snapshot)
 widget.setSettings({ fontSize: 120 });       // validated: bad values are ignored
 widget.setSettings((s) => ({ fontSize: s.fontSize + 10 }));
+widget.setSettings({ profiles: ["visionImpaired"] }); // applies the profile's adjustments too
 widget.toggleProfile("visionImpaired");
 widget.reset();
 widget.setOptions({ theme: { primary: "#000" }, language: "ar" }); // change look/language at runtime
@@ -293,10 +314,48 @@ The global build exposes the same exports on `window.A11yWidget`, for example `A
 
 ## How it works
 
-- Every page adjustment is a class on `<html>` plus a CSS variable, from one injected stylesheet. The widget never leaves stray inline styles on your elements, adjustments never compound, and `destroy()` restores the page exactly.
-- Font size measures each text element's original size once and scales it through a variable. Content added later (SPA route changes, lazy lists) is picked up automatically.
-- The widget lives in `.a11yw-ignore` and is excluded from all page adjustments.
+- Every page adjustment is a class on `<html>` plus a CSS variable, from one injected stylesheet, so adjustments never compound and turning one off is a class removal. If your framework re-renders `<html class>` or `<html style>`, the widget puts its flags back.
+- Font size measures each text element's original size once and stores it in a `data-a11yw-fs` attribute; one generated CSS rule per size scales it. No inline styles are written, and content added later (SPA route changes, lazy lists) is picked up automatically.
+- The widget lives in `.a11yw-ignore`, a `display: contents` wrapper, so it never takes part in your layout (grid or flex `<body>` included). Text, spacing, color-mode and highlight adjustments skip it; the saturation / high-contrast filters and the large cursor apply to the whole page, widget included.
+- `destroy()` removes everything it added: classes, variables, attributes, styles and listeners.
 - It works with SSR: nothing touches `window` until `init()` runs.
+- It runs under strict CSPs: pass `nonce` for the injected `<style>` tags; no `eval`, no `innerHTML` (Trusted Types safe).
+
+## Profiles
+
+Profiles are shortcuts that switch on a few adjustments at once. They are not medical tools and don't make a page "safe" for any condition; the visitor can change every adjustment afterwards, and turning a profile off keeps the ones they changed. (Profile ids such as `seizureSafe` are kept for compatibility; the visible names describe what they do.)
+
+| Profile (id) | Turns on | Helps with | Watch out for |
+| --- | --- | --- | --- |
+| Motion sensitivity (`seizureSafe`) | Stop animations, low saturation | Distraction and discomfort from CSS motion and bright colors | GIFs, `<canvas>`, video in iframes and JavaScript-driven animation are **not** stopped |
+| Low vision (`visionImpaired`) | Text 120%, readable font, high contrast | Small or thin text, low-contrast pages | Contrast filter also changes images |
+| Focus mode (`adhdFriendly`) | Focus window, stop animations, low saturation | Keeping your place; fewer moving distractions | The window follows the pointer and keyboard focus |
+| Easy reading (`cognitiveDisability`) | Highlight headings and links, reading line, readable font | Seeing page structure and links at a glance | Outlines add visual noise on busy pages |
+| Keyboard user (`keyboardNav`) | Strong focus outline, highlight links | Finding the focused element | – |
+| Quiet media (`screenReader`) | Mute media, strong focus outline | Audio that starts on its own (e.g. over a screen reader) | Media the visitor starts or unmutes keeps playing with sound |
+| Comfortable reading (`olderAdults`) | Text 120%, line spacing 130%, readable font, large cursor | Longer reading sessions | The large cursor replaces your OS cursor size |
+
+## Limitations
+
+What the widget can't do, so you don't promise it:
+
+- It doesn't fix a page's markup: missing alt text, labels, headings, keyboard support and contrast in your own design still need fixing at the source.
+- Adjustments don't reach inside `<iframe>`s (embedded video, maps, payment forms) or Shadow DOM (web components keep their own styles).
+- Reading line, focus window and magnifier follow the mouse and keyboard focus; on touch screens they move only with focus.
+- "Page zoom" uses CSS `zoom`, which doesn't trigger your media queries. Browser zoom (Ctrl/Cmd +) reflows better; suggest it in your accessibility statement.
+- "Line spacing" sets an absolute line height of 1.5 × the chosen percentage on all text.
+- Letter spacing is not applied to Arabic and other cursive scripts (it would break joined letters); word spacing still is.
+- Color modes override background colors; the widget outlines selected/pressed states so they stay visible, but heavily custom-drawn controls can still look different.
+- Color adjustments apply to the screen only, not to printing.
+
+## Preferences and precedence
+
+From lowest to highest priority:
+
+1. **Your site's styles** — what every visitor gets by default.
+2. **OS / browser settings** (`prefers-reduced-motion`, `forced-colors`, zoom, default font size) — the widget never overrides them on its own and never switches anything on from them. In forced-colors mode its color filters are disabled.
+3. **`initialSettings`** — your defaults for first-time visitors.
+4. **The visitor's saved choices** — always win once made; "Reset all" returns to the page as you authored it.
 
 ## Package contents
 
@@ -304,37 +363,36 @@ The global build exposes the same exports on `window.A11yWidget`, for example `A
 | --- | --- | --- |
 | `open-accessibility-widget` | ESM + CJS + `.d.ts` | Any framework or plain JS with a bundler |
 | `open-accessibility-widget/react` | ESM + CJS + `.d.ts` | React component and hook (`react` ≥ 18 is an optional peer dependency) |
-| `dist/open-accessibility-widget.global.js` | IIFE, about 16 KB gzipped | `<script>` tag; exposes `window.A11yWidget` |
+| `dist/open-accessibility-widget.global.js` | IIFE, about 20 KB gzipped | `<script>` tag; exposes `window.A11yWidget` |
+
+No runtime dependencies.
 
 ## Browser support
 
-Current Chrome, Edge, Firefox and Safari (desktop and mobile). The widget uses modern CSS (`:is()`, `color-mix()`, logical properties), so very old browsers may show it unstyled.
+Chrome / Edge 120+, Firefox 126+, Safari 16.4+ (desktop and mobile) get every feature. Older versions degrade feature by feature: for example "Page zoom" needs CSS `zoom` (Firefox 126), and keeping visitor-started media unmuted needs `navigator.userActivation` (Firefox 120, Safari 16.4).
+
+## Testing
+
+```bash
+npm run check      # typecheck + build + bundle-size budget + all tests
+npm test           # unit tests + end-to-end tests in headless Chrome (set CHROME_PATH if Chrome isn't found)
+```
+
+The end-to-end suite drives a real headless Chrome over the DevTools Protocol (no extra dependencies). It covers keyboard-only use, focus handling, axe-core (no violations allowed), host-page safety (layout, focus indicators, media, CSP, framework re-renders, `<body>` swaps), read mode, reflow at 320px and `destroy()`. CI runs it on every pull request (`.github/workflows/ci.yml`).
+
+Automated tests can't replace a manual check with real screen readers (NVDA, JAWS, VoiceOver, TalkBack) and Windows High Contrast; please do one before major releases.
 
 ## Development
 
 ```bash
 npm install
-npm run typecheck
 npm run build      # dist/: ESM, CJS, .d.ts, and the <script> build
+npm run check
 ```
 
 Open `examples/index.html` in a browser after building to try every feature on a sample page, with a playground for theme, logo, position and language. Every push to `main` rebuilds that page and deploys it as the [live demo](https://alhassan73.github.io/open-accessibility-widget/) (`.github/workflows/pages.yml`).
 
-## Changelog
-
-### 1.0.1
-
-- Docs: link to the [live demo](https://alhassan73.github.io/open-accessibility-widget/) on GitHub Pages. No code changes.
-
-### 1.0.0
-
-First release:
-
-- Framework-agnostic core (`init`) plus a React adapter and a `<script>` build.
-- 7 quick profiles; text, color, reading-aid and motion/navigation adjustments; read mode.
-- Theming (colors, radius, font, logo), English and Arabic with RTL, custom languages.
-- Settings saved per visitor, an `Alt+A` shortcut, a skip link and a "Hide widget" option.
-- An accessible widget UI: dialog, accordion, switches and radio groups, and an animated open/close that respects reduced-motion settings.
+See [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md) and the [changelog](./CHANGELOG.md).
 
 ## License
 

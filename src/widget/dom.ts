@@ -29,7 +29,11 @@ export function h<K extends keyof HTMLElementTagNameMap>(
 let counter = 0;
 export const uid = (prefix = "a11yw") => `${prefix}-${++counter}`;
 
-const FOCUSABLE =
+/** A finite number clamped into [min, max], else the fallback. Guards options from JS callers. */
+export const num = (value: unknown, min: number, max: number, fallback: number): number =>
+  typeof value === "number" && Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : fallback;
+
+export const FOCUSABLE =
   'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 export function focusableIn(root: HTMLElement): HTMLElement[] {

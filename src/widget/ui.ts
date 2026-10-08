@@ -1,13 +1,15 @@
 import type { AccessibilityLabels, AccessibilityLanguage } from "../labels";
-import { DEFAULT_SETTINGS, isDefaultSettings, PROFILE_IDS, RANGES, type RangeKey } from "../settings";
+import { DEFAULT_SETTINGS, isDefaultSettings, PROFILE_IDS, PROFILE_PRESETS, RANGES, type RangeKey } from "../settings";
 import type {
   AccessibilitySettings,
   AccessibilityState,
   AccessibilityWidgetOptions,
+  FeatureKey,
   ProfileId,
+  SettingKey,
   SettingsUpdate,
 } from "../types";
-import { h, logoNode, trapTab, uid } from "./dom";
+import { FOCUSABLE, h, logoNode, num, trapTab, uid } from "./dom";
 import { icon, type IconName } from "./icons";
 
 export interface UiApi {
@@ -29,15 +31,19 @@ export interface UiLocale {
 export interface Ui {
   update(state: AccessibilityState, prev?: AccessibilityState): void;
   focusLanguage(): void;
+  /** Put focus back after a rebuild: the close button when open, else the launcher. */
+  restoreFocus(): void;
+  hasFocus(): boolean;
+  isConnected(): boolean;
   destroy(): void;
 }
 
 type S = AccessibilitySettings;
-type SettingKey = Exclude<keyof S, "profiles">;
 type BooleanKey = { [K in keyof S]: S[K] extends boolean ? K : never }[keyof S];
 type ColorKey = "textColor" | "titleColor" | "backgroundColor";
 
 const IGNORE = ".a11yw-ignore";
+const DEFAULT_Z = 2147483000;
 const PROFILE_ICONS: Record<ProfileId, IconName> = {
   seizureSafe: "zap",
   visionImpaired: "eye",
@@ -51,6 +57,13 @@ const PROFILE_ICONS: Record<ProfileId, IconName> = {
 /** Sections open on first render; remembered while the page stays open. */
 const openSections = new Set<string>(["text"]);
 
+/** "Increase {label}" style templates; plain strings get the name appended. */
+const withLabel = (text: string, label: string) =>
+  text.includes("{label}") ? text.replace("{label}", label) : `${text} ${label}`;
+
+export const widgetZIndex = (opts: AccessibilityWidgetOptions) =>
+  Math.round(num(opts.zIndex, 1, 2147483647, DEFAULT_Z));
+
 export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: UiLocale): Ui {
   const L = locale.labels;
   const syncs: ((s: S) => void)[] = [];
@@ -59,6 +72,8 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   const side = opts.position === "right" ? "right" : "left";
   const theme = opts.theme ?? {};
   const shortcut = opts.shortcut === false ? null : parseShortcut(opts.shortcut ?? "Alt+A");
+  const enabled = (key: FeatureKey) => opts.features?.[key] !== false;
+  const percent = percentFormatter(locale.language);
 
   // ── Controls ───────────────────────────────────────────────────────
 
@@ -76,27 +91,52 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   };
 
   const toggleRow = (key: BooleanKey, label: string, iconName: IconName) =>
-    switchRow(label, iconName, (s) => s[key], () => set((s) => ({ [key]: !s[key] }) as Partial<S>));
+    enabled(key)
+      ? switchRow(label, iconName, (s) => s[key], () => set((s) => ({ [key]: !s[key] }) as Partial<S>))
+      : null;
 
-  /** − value + stepper for percentage settings. */
+  /** − value + stepper for percentage settings. The new value is announced with its name. */
   const stepperRow = (key: RangeKey, label: string, iconName: IconName) => {
+    if (!enabled(key)) return null;
     const { min, max, step } = RANGES[key];
     const labelId = uid();
-    const change = (delta: number) => set((s) => ({ [key]: Math.min(max, Math.max(min, s[key] + delta)) }));
-    const value = h("output", { className: "a11yw-step-value", "aria-live": "polite" });
+    const valueId = uid();
+    const setValue = (next: (v: number) => number) => {
+      const before = api.getState().settings[key];
+      set((s) => ({ [key]: Math.min(max, Math.max(min, next(s[key]))) }));
+      const after = api.getState().settings[key];
+      if (after !== before) announce(`${label} ${percent(after)}`);
+    };
+    const value = h("span", { id: valueId, className: "a11yw-step-value" });
     const stepBtn = (name: "minus" | "plus", text: string, delta: number) =>
-      h("button", { type: "button", className: "a11yw-step-btn", "aria-label": `${text} ${label}`, onClick: () => change(delta) }, icon(name));
+      h(
+        "button",
+        {
+          type: "button",
+          className: "a11yw-step-btn",
+          "aria-label": withLabel(text, label),
+          "aria-describedby": valueId,
+          onClick: () => setValue((v) => v + delta),
+        },
+        icon(name)
+      );
     const dec = stepBtn("minus", L.decrease, -step);
     const inc = stepBtn("plus", L.increase, step);
     const reset = h(
       "button",
-      { type: "button", className: "a11yw-mini-btn", "aria-label": `${L.reset} ${label}`, onClick: () => set({ [key]: 100 }) },
+      {
+        type: "button",
+        className: "a11yw-mini-btn",
+        "aria-label": withLabel(L.reset, label),
+        "aria-describedby": valueId,
+        onClick: () => setValue(() => 100),
+      },
       icon("reset")
     );
     // aria-disabled (not `disabled`) keeps focus on the button when a limit is reached.
     sync((s) => {
       const v = s[key];
-      value.textContent = `${v}%`;
+      value.textContent = percent(v);
       dec.setAttribute("aria-disabled", String(v <= min));
       inc.setAttribute("aria-disabled", String(v >= max));
       reset.setAttribute("aria-disabled", String(v === 100));
@@ -117,6 +157,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     iconName: IconName,
     choices: [S[K], string][]
   ) => {
+    if (!enabled(key)) return null;
     const labelId = uid();
     const radios = choices.map(([value, text]) => {
       const radio = h("button", { type: "button", role: "radio", onClick: () => set({ [key]: value } as Partial<S>) }, text);
@@ -152,11 +193,12 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   };
 
   const colorRow = (key: ColorKey, label: string, fallback: string) => {
+    if (!enabled(key)) return null;
     const id = uid();
     const input = h("input", { id, type: "color", onInput: () => set({ [key]: input.value }) });
     const reset = h(
       "button",
-      { type: "button", className: "a11yw-mini-btn", "aria-label": `${L.reset} ${label}`, onClick: () => set({ [key]: null }) },
+      { type: "button", className: "a11yw-mini-btn", "aria-label": withLabel(L.reset, label), onClick: () => set({ [key]: null }) },
       icon("reset")
     );
     sync((s) => {
@@ -173,8 +215,10 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     );
   };
 
-  /** Collapsible section (WAI-ARIA accordion) with a count of active adjustments. */
-  const section = (id: string, title: string, iconName: IconName, keys: SettingKey[], ...children: Node[]) => {
+  /** Collapsible section (WAI-ARIA accordion) with a count of active adjustments. Empty sections are left out. */
+  const section = (id: string, title: string, iconName: IconName, keys: SettingKey[], ...rows: (Node | null)[]) => {
+    const children = rows.filter((row): row is Node => row !== null);
+    if (!children.length) return null;
     const buttonId = uid();
     const regionId = uid();
     const count = h("span", { className: "a11yw-count" });
@@ -207,6 +251,8 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   };
 
   const profileCard = (id: ProfileId) => {
+    // A profile is offered only while at least one of its adjustments is available.
+    if (!Object.keys(PROFILE_PRESETS[id]).some((key) => enabled(key as SettingKey))) return null;
     const labelId = uid();
     const descId = uid();
     const btn = h(
@@ -233,15 +279,18 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
 
   // ── Panel body ─────────────────────────────────────────────────────
   const profilesTitleId = uid();
+  const profileCards = enabled("profiles") ? PROFILE_IDS.map(profileCard).filter((c): c is HTMLButtonElement => c !== null) : [];
   const body = h(
     "div",
     { className: "a11yw-body" },
-    h(
-      "div",
-      { role: "group", "aria-labelledby": profilesTitleId },
-      h("h3", { id: profilesTitleId, className: "a11yw-block-title" }, L.profilesTitle),
-      h("div", { className: "a11yw-profiles" }, ...PROFILE_IDS.map(profileCard))
-    ),
+    profileCards.length > 0 &&
+      h(
+        "div",
+        { role: "group", "aria-labelledby": profilesTitleId },
+        // aria-label keeps the name in normal case (CSS uppercases it visually).
+        h("h3", { id: profilesTitleId, className: "a11yw-block-title", "aria-label": L.profilesTitle }, L.profilesTitle),
+        h("div", { className: "a11yw-profiles" }, ...profileCards)
+      ),
     section(
       "text",
       L.textSection,
@@ -251,12 +300,12 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       stepperRow("contentScale", L.contentScale, "scale"),
       stepperRow("lineHeight", L.lineHeight, "lineHeight"),
       stepperRow("letterSpacing", L.letterSpacing, "letterSpacing"),
+      // No "justify": uneven word gaps make text harder to read (WCAG 1.4.8 guidance).
       choiceField("textAlign", L.textAlign, "align", [
         ["default", L.alignDefault],
         ["left", L.alignLeft],
         ["center", L.alignCenter],
         ["right", L.alignRight],
-        ["justify", L.alignJustify],
       ]),
       toggleRow("readableFont", L.readableFont, "font")
     ),
@@ -291,13 +340,15 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       toggleRow("textMagnifier", L.textMagnifier, "magnifier"),
       toggleRow("readingGuide", L.readingGuide, "guide"),
       toggleRow("readingMask", L.readingMask, "mask"),
-      h(
-        "button",
-        { type: "button", className: "a11yw-row", "aria-haspopup": "dialog", onClick: () => openReader() },
-        icon("book"),
-        h("span", { className: "a11yw-row-label" }, L.readMode),
-        icon("arrow", "a11yw-flip")
-      )
+      enabled("readMode")
+        ? h(
+            "button",
+            { type: "button", className: "a11yw-row", "aria-haspopup": "dialog", onClick: () => openReader() },
+            icon("book"),
+            h("span", { className: "a11yw-row-label" }, L.readMode),
+            icon("arrow", "a11yw-flip")
+          )
+        : null
     ),
     section(
       "motion",
@@ -318,7 +369,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   );
 
   // ── Header & footer ────────────────────────────────────────────────
-  const live = h("div", { className: "a11yw-sr-only", role: "status", "aria-live": "polite" });
+  const live = h("div", { className: "a11yw-sr-only", role: "status" });
   const announce = (message: string) => {
     live.textContent = "";
     requestAnimationFrame(() => (live.textContent = message));
@@ -353,6 +404,8 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   const statementUrl = safeUrl(opts.statementUrl);
   const panelId = uid();
   const titleId = uid();
+  // Hiding is offered only when the visitor can bring the widget back: a shortcut and a keyboard.
+  const canHide = !!shortcut && typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
 
   const panel = h(
     "div",
@@ -392,10 +445,13 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       ),
       h("span", { className: "a11yw-spacer" }),
       statementUrl && h("a", { className: "a11yw-link", href: statementUrl }, L.statement),
-      // Only offer hiding when there is a shortcut to bring the widget back.
-      shortcut && h("button", { type: "button", className: "a11yw-link", onClick: hideWidget }, L.hideWidget)
+      canHide && h("button", { type: "button", className: "a11yw-link", onClick: hideWidget }, L.hideWidget)
     )
   );
+
+  // "Adjustments are on" for screen readers, matching the dot on the launcher.
+  const activeNoteId = uid();
+  const activeNote = h("span", { id: activeNoteId, className: "a11yw-sr-only" });
 
   const launcher = h(
     "button",
@@ -404,6 +460,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       className: "a11yw-launcher",
       "data-side": side,
       "aria-label": L.launcher,
+      "aria-describedby": activeNoteId,
       "aria-haspopup": "dialog",
       "aria-expanded": "false",
       "aria-controls": panelId,
@@ -415,6 +472,8 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
 
   const skipLink =
     opts.showSkipLink !== false &&
+    findMainContent() !== null &&
+    !pageHasSkipLink() &&
     h(
       "a",
       {
@@ -428,6 +487,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       L.skipToContent
     );
 
+  const offset = opts.offset ?? {};
   const widget = h(
     "div",
     {
@@ -435,10 +495,10 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       dir: locale.dir,
       lang: locale.language,
       style: {
-        "--a11yw-x": `${opts.offset?.x ?? 24}px`,
-        "--a11yw-y": `${opts.offset?.y ?? 24}px`,
-        "--a11yw-size": `${opts.buttonSize ?? 56}px`,
-        "--a11yw-z": opts.zIndex ?? 2147483000,
+        "--a11yw-x": `${num(offset.x, 0, 1000, 24)}px`,
+        "--a11yw-y": `${num(offset.y, 0, 1000, 24)}px`,
+        "--a11yw-size": `${num(opts.buttonSize, 24, 160, 56)}px`,
+        "--a11yw-z": widgetZIndex(opts),
         "--a11yw-primary": theme.primary,
         "--a11yw-on-primary": theme.onPrimary,
         "--a11yw-bg": theme.background,
@@ -452,11 +512,13 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     },
     skipLink,
     launcher,
+    activeNote,
     panel,
     live
   );
 
   // Placed first in <body> so the skip link and launcher come early in the tab order.
+  // The root is `display: contents`, so it never takes part in the page's own layout.
   const root = h("div", { className: "a11yw-ignore a11yw-root" }, widget);
   document.body.prepend(root);
 
@@ -475,7 +537,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   const openReader = () => {
     api.setOpen(false);
     const readerTitleId = uid();
-    const blocks = extractReadableContent();
+    const blocks = extractReadableContent(L.image);
     const readerClose = h(
       "button",
       { type: "button", className: "a11yw-icon-btn", "aria-label": L.closeReadMode, onClick: closeReader },
@@ -490,10 +552,22 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
         h(
           "div",
           { className: "a11yw-reader-bar" },
-          h("h2", { id: readerTitleId, className: "a11yw-title" }, L.readMode),
+          h("h2", { id: readerTitleId, className: "a11yw-title" }, L.readModeTitle),
           readerClose
         ),
-        h("div", { className: "a11yw-reader-body", tabindex: "0" }, ...(blocks.length ? blocks : [h("p", {}, L.noReadableContent)]))
+        // The page's own language and direction, so it is read with the right voice (WCAG 3.1.2).
+        h(
+          "div",
+          {
+            className: "a11yw-reader-body",
+            tabindex: "0",
+            role: "document",
+            "aria-labelledby": readerTitleId,
+            lang: document.documentElement.lang,
+            dir: getComputedStyle(document.body).direction,
+          },
+          ...(blocks.length ? blocks : [h("p", { lang: locale.language }, L.noReadableContent)])
+        )
       )
     );
     backdrop.addEventListener("click", (e) => e.target === backdrop && closeReader());
@@ -532,11 +606,11 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
 
   // Open/close with a CSS transition; `hidden` is applied only after it finishes.
   let hideTimer = 0;
-  const showPanel = () => {
+  const showPanel = (animate: boolean) => {
     window.clearTimeout(hideTimer);
     panel.hidden = false;
     panel.inert = false;
-    void panel.offsetWidth; // commit the start state so the transition runs
+    if (animate) void panel.offsetWidth; // commit the start state so the transition runs
     panel.setAttribute("data-open", "");
   };
   const hidePanel = () => {
@@ -549,20 +623,26 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
 
   return {
     update(state, prev) {
-      syncs.forEach((fn) => fn(state.settings));
-      // Small dot on the launcher whenever any adjustment is active.
-      launcher.toggleAttribute("data-active", !isDefaultSettings(state.settings));
+      const s = state.settings;
+      syncs.forEach((fn) => fn(s));
+      // Small dot on the launcher (and a description for screen readers) whenever any adjustment is on.
+      const active = !isDefaultSettings(s);
+      launcher.toggleAttribute("data-active", active);
+      activeNote.textContent = active ? L.activeAdjustments : "";
+      // The panel's own text grows with the page text size (up to 150%).
+      widget.style.setProperty("--a11yw-ui-scale", String(Math.min(1.5, Math.max(1, s.fontSize / 100))));
       if (prev && state.isOpen === prev.isOpen) return;
 
       launcher.setAttribute("aria-expanded", String(state.isOpen));
       if (state.isOpen) {
-        showPanel();
+        // A rebuild (no `prev`) shows the panel in place: no animation, no focus move.
+        showPanel(!!prev);
         launcher.hidden = false; // re-shown when reopened after "Hide widget"
-        closeBtn.focus();
-      } else {
+        if (prev) closeBtn.focus();
+      } else if (prev) {
         // Return focus to the launcher unless the user already moved it elsewhere.
         const active = document.activeElement;
-        const returnFocus = prev && !launcher.hidden && (!active || active === document.body || panel.contains(active));
+        const returnFocus = !launcher.hidden && (!active || active === document.body || panel.contains(active));
         hidePanel();
         if (returnFocus) launcher.focus();
       }
@@ -570,6 +650,11 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     focusLanguage() {
       langSelect?.focus();
     },
+    restoreFocus() {
+      (api.getState().isOpen ? closeBtn : launcher).focus();
+    },
+    hasFocus: () => root.contains(document.activeElement),
+    isConnected: () => root.isConnected,
     destroy() {
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("pointerdown", onPointerDown);
@@ -582,6 +667,16 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
+/** "120%" formatted for the widget's language. */
+function percentFormatter(language: string | undefined): (value: number) => string {
+  try {
+    const format = new Intl.NumberFormat(language, { style: "percent", maximumFractionDigits: 0 });
+    return (value) => format.format(value / 100);
+  } catch {
+    return (value) => `${value}%`; // unknown language code
+  }
+}
+
 /** Longest transition on an element, in ms (0 when motion is reduced or disabled). */
 function transitionMs(el: HTMLElement): number {
   const style = getComputedStyle(el);
@@ -591,25 +686,53 @@ function transitionMs(el: HTMLElement): number {
   return Math.max(0, ...durations.map((d, i) => d + (delays[i] ?? 0)));
 }
 
+/** Focus any element; a tabindex added for this is removed again when focus leaves. */
 function focusElement(el: HTMLElement) {
-  if (el.tabIndex < 0 && !el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+  if (el.tabIndex < 0 && !el.hasAttribute("tabindex")) {
+    el.setAttribute("tabindex", "-1");
+    el.addEventListener("blur", () => el.removeAttribute("tabindex"), { once: true });
+  }
   el.focus({ preventScroll: true });
   el.scrollIntoView?.({ block: "start" });
 }
 
+const firstOutside = <T extends Element>(selector: string) =>
+  Array.from(document.querySelectorAll<T>(selector)).find((el) => !el.closest(IGNORE)) ?? null;
+
+/** The page's main region, else its first <h1>. */
+function findMainContent(): HTMLElement | null {
+  return firstOutside<HTMLElement>('main, [role="main"]') ?? firstOutside<HTMLElement>("h1");
+}
+
 function focusMainContent() {
-  const main = Array.from(document.querySelectorAll<HTMLElement>('main, [role="main"], h1')).find(
-    (el) => !el.closest(IGNORE)
-  );
+  const main = findMainContent();
   if (main) focusElement(main);
 }
 
-/** Only http(s) and relative URLs — never `javascript:` and friends. */
-function safeUrl(url: string | undefined): string | null {
+/** True when the page's first focusable element is its own skip link (an in-page link to the main content). */
+function pageHasSkipLink(): boolean {
+  for (const el of document.body.querySelectorAll<HTMLElement>(FOCUSABLE)) {
+    if (el.closest(IGNORE) || el.tabIndex < 0) continue;
+    const href = el instanceof HTMLAnchorElement ? el.getAttribute("href") ?? "" : "";
+    if (!/^#./.test(href)) return false;
+    let target: HTMLElement | null = null;
+    try {
+      target = document.getElementById(decodeURIComponent(href.slice(1)));
+    } catch {
+      return false; // malformed escape in the href
+    }
+    const main = findMainContent();
+    return !!target && !!main && (target === main || target.contains(main) || main.contains(target));
+  }
+  return false;
+}
+
+/** Only http(s), relative and same-scheme URLs — never `javascript:` and friends. */
+function safeUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   try {
-    const parsed = new URL(url, window.location.href);
-    return parsed.protocol === "http:" || parsed.protocol === "https:" ? url : null;
+    const { protocol } = new URL(url, window.location.href);
+    return protocol === "http:" || protocol === "https:" || protocol === window.location.protocol ? url : null;
   } catch {
     return null;
   }
@@ -621,55 +744,103 @@ interface Shortcut {
   ctrl: boolean;
   shift: boolean;
   meta: boolean;
+  /** Normalized for `aria-keyshortcuts`, e.g. "Control+Shift+K". */
   aria: string;
 }
+
+const MODIFIERS: Record<string, "Alt" | "Control" | "Shift" | "Meta"> = {
+  alt: "Alt",
+  option: "Alt",
+  ctrl: "Control",
+  control: "Control",
+  shift: "Shift",
+  meta: "Meta",
+  cmd: "Meta",
+};
 
 function parseShortcut(value: string): Shortcut | null {
   const parts = value.split("+").map((p) => p.trim().toLowerCase()).filter(Boolean);
   const key = parts.pop();
   if (!key) return null;
+  const mods = [...new Set(parts.map((p) => MODIFIERS[p]).filter(Boolean))];
   return {
     key,
-    alt: parts.includes("alt") || parts.includes("option"),
-    ctrl: parts.includes("ctrl") || parts.includes("control"),
-    shift: parts.includes("shift"),
-    meta: parts.includes("meta") || parts.includes("cmd"),
-    aria: value,
+    alt: mods.includes("Alt"),
+    ctrl: mods.includes("Control"),
+    shift: mods.includes("Shift"),
+    meta: mods.includes("Meta"),
+    aria: [...mods, key.length === 1 ? key.toUpperCase() : key[0].toUpperCase() + key.slice(1)].join("+"),
   };
 }
+
+const isEditable = (t: EventTarget | null | undefined) =>
+  t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
 
 function matchesShortcut(e: KeyboardEvent, s: Shortcut): boolean {
   if (e.repeat || e.altKey !== s.alt || e.ctrlKey !== s.ctrl || e.shiftKey !== s.shift || e.metaKey !== s.meta) {
     return false;
   }
-  // `code` keeps working when a modifier changes the produced character (e.g. Option+A on macOS).
-  const code = e.code.toLowerCase();
-  return e.key.toLowerCase() === s.key || code === `key${s.key}` || code === `digit${s.key}`;
+  const key = (e.key ?? "").toLowerCase();
+  // The modifier produced a different character (macOS Option+A → "å", Polish "ą"): the visitor is typing.
+  if (key.length === 1 && key !== s.key && isEditable(e.composedPath?.()[0] ?? e.target)) return false;
+  // `code` keeps working when a modifier changes the produced character outside text fields.
+  const code = (e.code ?? "").toLowerCase();
+  return key === s.key || code === `key${s.key}` || code === `digit${s.key}`;
 }
 
-const BLOCKS = "h1,h2,h3,h4,h5,h6,p,li,blockquote,pre,figcaption,dt,dd";
+const BLOCKS = "h1,h2,h3,h4,h5,h6,p,li,blockquote,pre,figcaption,dt,dd,caption,th,td";
+const HIDDEN = `${IGNORE}, nav, script, style, noscript, template, [aria-hidden="true"], [hidden]`;
+
+const isInline = (el: Element) => getComputedStyle(el).display.startsWith("inline");
+
+/** Text and links of a block, with images replaced by their alt text. */
+function inlineContent(el: Element): (Node | string)[] {
+  const out: (Node | string)[] = [];
+  el.childNodes.forEach((n) => {
+    if (n.nodeType === Node.TEXT_NODE) out.push(n.nodeValue ?? "");
+    else if (!(n instanceof HTMLElement) || n.matches(HIDDEN)) return;
+    else if (n instanceof HTMLImageElement) out.push(n.alt ? ` ${n.alt} ` : "");
+    else if (n instanceof HTMLAnchorElement && safeUrl(n.getAttribute("href"))) out.push(h("a", { href: n.href }, ...inlineContent(n)));
+    else if (n.tagName === "BR") out.push(" ");
+    else out.push(...inlineContent(n));
+  });
+  return out;
+}
 
 /** Pull the main text of the page into clean, linear blocks for read mode. */
-function extractReadableContent(): HTMLElement[] {
+function extractReadableContent(imageLabel: string): HTMLElement[] {
   const root =
     document.querySelector<HTMLElement>('main, [role="main"]') ??
     document.querySelector<HTMLElement>("article") ??
     document.body;
-  const skip = `${IGNORE}, nav, [aria-hidden="true"], [hidden]${root === document.body ? ", header, footer, aside" : ""}`;
+  const skip = `${HIDDEN}${root === document.body ? ", header, footer, aside" : ""}`;
   const blocks: HTMLElement[] = [];
+  const taken = new Set<Element>();
+  const inTaken = (el: Element) => {
+    for (let p = el.parentElement; p && p !== root; p = p.parentElement) if (taken.has(p)) return true;
+    return false;
+  };
 
-  root.querySelectorAll<HTMLElement>(BLOCKS).forEach((el) => {
-    if (el.closest(skip) || !el.getClientRects().length) return;
-    const parentBlock = el.parentElement?.closest(BLOCKS);
-    if (parentBlock && root.contains(parentBlock)) return; // already included via its parent
-
-    const text = (el.textContent ?? "").replace(/\s+/g, " ").trim();
-    if (!text) return;
+  root.querySelectorAll<HTMLElement>("*").forEach((el) => {
+    if (inTaken(el) || el.closest(skip) || !el.getClientRects().length) return;
     const tag = el.tagName.toLowerCase();
-    if (/^h[1-6]$/.test(tag)) blocks.push(h(tag as "h1", {}, text));
+
+    if (el instanceof HTMLImageElement) {
+      if (el.alt.trim()) blocks.push(h("p", {}, `${imageLabel}: ${el.alt.trim()}`));
+      return;
+    }
+    // Text in a <div>/<section> leaf counts too, not only in <p>, headings and table cells.
+    const isBlock = el.matches(BLOCKS);
+    const isTextLeaf =
+      !isBlock && !isInline(el) && !el.querySelector(BLOCKS) && Array.from(el.children).every(isInline);
+    if (!isBlock && !isTextLeaf) return;
+    if (!(el.textContent ?? "").trim()) return;
+
+    taken.add(el);
+    if (/^h[1-6]$/.test(tag)) blocks.push(h(tag as "h1", {}, ...inlineContent(el)));
     else if (tag === "pre") blocks.push(h("pre", {}, el.textContent ?? ""));
-    else if (tag === "blockquote") blocks.push(h("blockquote", {}, text));
-    else blocks.push(h("p", { className: tag === "li" ? "a11yw-reader-li" : null }, text));
+    else if (tag === "blockquote") blocks.push(h("blockquote", {}, ...inlineContent(el)));
+    else blocks.push(h("p", { className: tag === "li" ? "a11yw-reader-li" : null }, ...inlineContent(el)));
   });
   return blocks;
 }

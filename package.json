@@ -1,6 +1,6 @@
 {
   "name": "open-accessibility-widget",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Framework-agnostic accessibility preferences widget for any website: plain JS, React, Next.js, Vue, Angular, Svelte. Profiles, text/color/navigation adjustments, themable, RTL-ready, TypeScript types included.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -33,7 +33,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "sideEffects": false,
   "publishConfig": {
@@ -42,7 +43,10 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run typecheck && npm run build"
+    "test": "node --test \"test/*.test.mjs\"",
+    "size": "node scripts/check-size.mjs",
+    "check": "npm run typecheck && npm run build && npm run size && npm test",
+    "prepublishOnly": "npm run check"
   },
   "keywords": [
     "accessibility",
@@ -54,8 +58,8 @@
     "angular",
     "svelte",
     "vanilla-js",
-    "screen-reader",
-    "dyslexia",
+    "user-preferences",
+    "text-size",
     "contrast",
     "rtl"
   ],
@@ -76,6 +80,9 @@
     "react": {
       "optional": true
     }
+  },
+  "overrides": {
+    "esbuild": "^0.28.2"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",

@@ -31,6 +31,7 @@ export function AccessibilityWidget(props: AccessibilityWidgetProps): null {
   const instance = useRef<AccessibilityWidgetInstance | null>(null);
   const key = optionsKey(props);
   const appliedKey = useRef(key);
+  const appliedProps = useRef<AccessibilityWidgetOptions>(props);
 
   useEffect(() => {
     latest.current = props;
@@ -44,6 +45,7 @@ export function AccessibilityWidget(props: AccessibilityWidgetProps): null {
   useEffect(() => {
     const widget = createAccessibilityWidget(resolved());
     instance.current = widget;
+    appliedProps.current = latest.current;
     return () => {
       widget.destroy();
       instance.current = null;
@@ -54,7 +56,10 @@ export function AccessibilityWidget(props: AccessibilityWidgetProps): null {
   useEffect(() => {
     if (!instance.current || appliedKey.current === key) return;
     appliedKey.current = key;
-    instance.current.setOptions(resolved());
+    // setOptions() merges, so a prop removed since the last render is passed as `undefined`.
+    const removed = Object.fromEntries(Object.keys(appliedProps.current).map((k) => [k, undefined]));
+    appliedProps.current = latest.current;
+    instance.current.setOptions({ ...removed, ...resolved() });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
@@ -93,6 +98,7 @@ export function useAccessibility(): UseAccessibilityResult {
   return {
     settings: state?.settings ?? DEFAULT_SETTINGS,
     isOpen: state?.isOpen ?? false,
-    widget: getAccessibilityWidget(),
+    // Tied to the snapshot, so server render and hydration agree (both `null`).
+    widget: state ? getAccessibilityWidget() : null,
   };
 }

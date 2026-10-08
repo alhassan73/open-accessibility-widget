@@ -1,0 +1,29 @@
+# Typecheck, build, size budget, unit + headless-Chrome accessibility tests, and dependency audit.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run size
+      # Uses the Chrome preinstalled on GitHub's Ubuntu runners; axe-core is loaded from cdnjs.
+      - run: npm test
+      - run: npm audit --audit-level=moderate
+      - name: Package contents
+        run: npm pack --dry-run
