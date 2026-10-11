@@ -12,7 +12,7 @@ Run in this order (the order of `npm run check`). All must pass before "done" (E
 | 2 | Typecheck | `npm run typecheck` | Types/contracts consistent | — |
 | 3 | Lint | none configured | — | Review covers it ([R]); logged in `STATE.md` |
 | 4 | Build | `npm run build` | ESM/CJS/IIFE + `.d.ts` build | — |
-| 5 | Size | `npm run size` | IIFE ≤ 22 KB gzip (needs the build) | — |
+| 5 | Size | `npm run size` | IIFE ≤ 24 KB gzip (needs the build) | — |
 | 6 | Tests | `npm test` | Unit + e2e behaviour (needs the build) | — |
 | 7 | Brain check | `bash .claude/hooks/brain-check.sh` | Brain budgets, placeholders, staleness | — |
 

@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The project follows [Se
 
 ## Unreleased
 
+### Changed — design revamp
+
+- **New look.** The header is filled with the brand color and has a subtitle; profiles are larger icon tiles; each settings section is its own card on a soft background; steppers are pill groups; "Reset all" is a pill button; the launcher glows in the brand color.
+- **Custom language menu.** The native `<select>` is replaced by a WAI-ARIA select-only combobox with a styled list: arrow keys, Home/End and type-ahead move through languages, and Enter, Space or a click picks one. Arrowing never switches the language (it used to rebuild the panel on every arrow press in Windows browsers), and Escape closes only the list.
+- Label `subtitle` (English and Arabic).
+- The bundle-size budget is 24 KB gzipped (was 22 KB).
+
 ### Changed — design
 
 - **Refined panel design.** Brand-tinted header, layered shadow, profile icons on tinted tiles that fill with the brand color when the profile is on, a soft shadow on the selected option, and hover tints on steppers.

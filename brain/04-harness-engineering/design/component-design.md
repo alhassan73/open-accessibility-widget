@@ -13,7 +13,7 @@
 | Icon | Inline SVG via `createElementNS` | `src/widget/icons.ts` |
 | Control row | Switch (`role="switch"`), stepper (name + value announced), segmented radio group (arrow keys), profile card (`aria-pressed`) | `src/widget/ui.ts` |
 | Section | Accordion (`aria-expanded`) with an active-count badge | `src/widget/ui.ts` |
-| Shell | Launcher, dialog panel with focus trap, header (logo, title, language menu, close), footer | `src/widget/ui.ts` |
+| Shell | Launcher, dialog panel with focus trap, header (logo, title, subtitle, custom language combobox, close), footer | `src/widget/ui.ts` |
 | Read mode | Text-only page view built from page content via `h()` | `src/widget/ui.ts` |
 
 ## 2. Rules

@@ -26,7 +26,6 @@ Not set — owner to choose the next milestone (see Open questions).
    - P0-1 ACR / VPAT 2.5 (WCAG 2.2 AA + EN 301 549) — after an AT round in `docs/at-test-matrix.md`; owner/evaluator only.
    - P0-2 AT round: NVDA+Firefox/Chrome, JAWS+Chrome, VoiceOver macOS/iOS, TalkBack, speech input, Windows contrast, 200/400 % zoom.
    - P0-5 ⚖️ default `persist` + profile ids in `localStorage` — docs only until legal advice; options: save adjustments without profile ids (STORAGE_VERSION 2), or a consent API.
-   - P1-2 (Low) language `<select>` rebuilds the panel on each arrow-key `change` in Windows browsers.
    - P2-2 live region recreated on rebuild (announcement can be lost) · P2-5 control borders ≈1.2:1 (passes; icons carry meaning) · P2-6 optional visible label for the language select.
 
 ## Open questions
@@ -50,7 +49,8 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
-- 2026-10-11 — Design refresh, CSS-only motion (branch `design/widget-refresh`, not merged): tinted header, icon tiles, layered shadow, staggered entrance, spring switches and badges, read-mode rise; reduced-motion off; 21.71/22 KB gzip (≈0.3 KB headroom left).
+- 2026-10-11 — Design revamp (branch `design/widget-revamp`): brand hero header + subtitle, card sections, tile profiles, pill steppers, custom ARIA language combobox (closes P1-2). Approved: direction, custom listbox, size budget 22 → 24 KB (now 22.68 KB).
+- 2026-10-11 — Design refresh, CSS-only motion (merged to `main` 2aeca9d): tinted header, icon tiles, layered shadow, staggered entrance, spring switches and badges, read-mode rise; reduced-motion off; 21.71/22 KB gzip (≈0.3 KB headroom left).
 - 2026-10-11 — Release 1.2.0 published to npm via tag `v1.2.0` (Trusted Publishing, provenance); CI + demo deploy green.
 - 2026-10-11 — Version branch `1.2.0` from `main`: merged `chore/agent-brain` (1532f0b) and `review/compliance` (373686b), version 1.2.0, merged into `main`.
 - 2026-10-11 — Compliance fixes (373686b): inert behind dialogs, profile-card names (2.5.3), color-mode background images, contrast warning, stepper limits, axe devDep (no skip), strict-CSP test, SHA-pinned actions + Dependabot, privacy/CSP/SRI docs, `ACCESSIBILITY.md`, AT matrix template. Approved gates: axe-core devDep, labels `maximum`/`minimum`/`lowContrast`, workflow edits, privacy docs only.

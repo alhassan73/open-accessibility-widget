@@ -122,9 +122,50 @@ test("axe-core: no violations in the panel or read mode", async () => {
     page.eval(`axe.run({ include: [['.a11yw-root']] }).then((r) => r.violations.map((v) => v.id + ': ' + v.nodes.map((n) => n.target).join(' | ')))`);
   assert.deepEqual(await run(), []);
   assert.deepEqual(await page.ax(".a11yw-profile"), { role: "button", name: "Motion sensitivity Stops animations and softens colors" });
+  await page.click(".a11yw-lang"); // the custom language list, open
+  await sleep(300);
+  assert.deepEqual(await run(), []);
+  await page.press(KEYS.Escape);
   await page.eval(`document.querySelector('.a11yw-row[aria-haspopup]').click(); 1`);
   await sleep(100);
   assert.deepEqual(await run(), []);
+});
+
+test("language menu: custom listbox with keyboard, Escape and pointer", async () => {
+  const ArrowDown = ["ArrowDown", "ArrowDown", 40];
+  await page.goto(HOST_URL);
+  await init();
+  await page.eval(`__w().open(); document.querySelector('.a11yw-lang').focus(); 1`);
+  const state = () => page.eval(`(() => { const b = document.querySelector('.a11yw-lang'), a = b.getAttribute('aria-activedescendant');
+    return { expanded: b.getAttribute('aria-expanded'), list: !document.getElementById(b.getAttribute('aria-controls')).hidden,
+      active: a && document.getElementById(a).textContent, lang: document.querySelector('.a11yw-widget').lang }; })()`);
+  assert.deepEqual(await page.ax(".a11yw-lang"), { role: "combobox", name: "Language" });
+  await page.press(ArrowDown);
+  assert.deepEqual(await state(), { expanded: "true", list: true, active: "English", lang: "en" }, "opens on the current language");
+  await page.press(ArrowDown);
+  assert.deepEqual(await state(), { expanded: "true", list: true, active: "العربية", lang: "en" }, "arrowing never switches the language");
+  await page.press(KEYS.Escape);
+  assert.deepEqual(await state(), { expanded: "false", list: false, active: null, lang: "en" });
+  assert.equal(await page.eval(`__w().getState().isOpen`), true, "Escape closes only the list");
+  await page.press(ArrowDown);
+  await page.press(ArrowDown);
+  await page.press(KEYS.Enter);
+  await sleep(50);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-widget').lang`), "ar");
+  assert.equal(await page.eval(`document.activeElement.classList.contains('a11yw-lang')`), true, "focus stays on the menu");
+  await page.click(".a11yw-lang");
+  await sleep(50);
+  await page.click(".a11yw-lang-list [lang=en]");
+  await sleep(50);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-widget').lang`), "en", "a click picks a language");
+
+  await page.eval(`document.querySelector('.a11yw-lang').focus(); 1`);
+  await page.press(["ا", "KeyH", 72, "ا"]); // type-ahead opens the list on the matching language
+  assert.deepEqual(await state(), { expanded: "true", list: true, active: "العربية", lang: "en" });
+  await page.press(KEYS.Tab);
+  assert.deepEqual(await state(), { expanded: "false", list: false, active: null, lang: "en" }, "Tab closes without choosing");
+  // The pill sits on the plain brand color, so its text has the theme's on-primary contrast.
+  assert.equal(await page.eval(`getComputedStyle(document.querySelector('.a11yw-lang')).backgroundColor`), "rgba(0, 0, 0, 0)");
 });
 
 test("does not change the page layout (grid body)", async () => {

@@ -25,7 +25,8 @@ A user-preference accessibility menu that works on **any website**: plain HTML/J
 
 The panel is a compact card that opens above the launcher with a fade-and-rise animation; its cards and sections slide in one after another, and switches, checks, counters and buttons respond with small CSS-only animations (all turned off by `prefers-reduced-motion`). It has:
 
-- A plain header with logo, title, language menu and close button.
+- A header in your brand color with logo, title, subtitle, a custom language menu (a WAI-ARIA listbox: arrow keys, Home/End, type-ahead, Enter, Escape) and close button.
+- Profile tiles and settings grouped in cards on a soft background.
 - A grid of profile cards.
 - Four collapsible sections with settings rows: switches, steppers and segmented choices. Each section shows how many of its adjustments are on.
 
@@ -399,7 +400,7 @@ From lowest to highest priority:
 | --- | --- | --- |
 | `open-accessibility-widget` | ESM + CJS + `.d.ts` | Any framework or plain JS with a bundler |
 | `open-accessibility-widget/react` | ESM + CJS + `.d.ts` | React component and hook (`react` ≥ 18 is an optional peer dependency) |
-| `dist/open-accessibility-widget.global.js` | IIFE, about 21 KB gzipped | `<script>` tag; exposes `window.A11yWidget` |
+| `dist/open-accessibility-widget.global.js` | IIFE, about 23 KB gzipped | `<script>` tag; exposes `window.A11yWidget` |
 
 No runtime dependencies.
 

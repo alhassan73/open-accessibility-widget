@@ -407,17 +407,111 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     icon("close")
   );
 
-  let langSelect: HTMLSelectElement | null = null;
+  // Language menu: a WAI-ARIA select-only combobox. Arrow keys move through the list; the language
+  // changes only on Enter, Space or a click (never while arrowing), and Escape closes the list only.
+  let langButton: HTMLButtonElement | null = null;
+  let langMenu: HTMLElement | null = null;
+  let closeLangList = () => {};
   if (locale.languages.length > 1) {
-    const select = h(
-      "select",
-      { className: "a11yw-lang", "aria-label": L.language },
-      ...locale.languages.map((lang) =>
-        h("option", { value: lang.code, lang: lang.code, selected: lang.code === locale.language }, lang.name)
+    const langs = locale.languages;
+    const current = Math.max(0, langs.findIndex((l) => l.code === locale.language));
+    let active = current;
+    let typed = "";
+    let typedAt = 0;
+    const choose = (i: number) => {
+      closeLangList();
+      if (i !== current) api.setLanguage(langs[i].code);
+    };
+    const options = langs.map((lang, i) =>
+      h(
+        "li",
+        { id: uid(), role: "option", lang: lang.code, "aria-selected": String(i === current), onClick: () => choose(i) },
+        icon("check"),
+        lang.name
       )
     );
-    select.addEventListener("change", () => api.setLanguage(select.value));
-    langSelect = select;
+    const listId = uid();
+    // mousedown keeps focus on the button, so the list stays a popup of it.
+    const list = h(
+      "ul",
+      { id: listId, role: "listbox", className: "a11yw-lang-list", "aria-label": L.language, hidden: true, onMousedown: (e: Event) => e.preventDefault() },
+      ...options
+    );
+    const button = h(
+      "button",
+      {
+        type: "button",
+        role: "combobox",
+        className: "a11yw-lang",
+        "aria-label": L.language,
+        "aria-haspopup": "listbox",
+        "aria-expanded": "false",
+        "aria-controls": listId,
+      },
+      icon("globe"),
+      h("span", { className: "a11yw-lang-value", lang: langs[current].code }, langs[current].name),
+      icon("chevron", "a11yw-chev")
+    );
+    const setActive = (i: number) => {
+      active = Math.min(langs.length - 1, Math.max(0, i));
+      options.forEach((o, j) => o.classList.toggle("a11yw-active", j === active));
+      button.setAttribute("aria-activedescendant", options[active].id);
+      // Scroll the list only (scrollIntoView would also scroll the panel and hide its header).
+      const { offsetTop: top, offsetHeight: height } = options[active];
+      if (top < list.scrollTop) list.scrollTop = top;
+      else if (top + height > list.scrollTop + list.clientHeight) list.scrollTop = top + height - list.clientHeight;
+    };
+    const openList = (i = current) => {
+      list.hidden = false;
+      button.setAttribute("aria-expanded", "true");
+      setActive(i);
+    };
+    closeLangList = () => {
+      list.hidden = true;
+      button.setAttribute("aria-expanded", "false");
+      button.removeAttribute("aria-activedescendant");
+    };
+    button.addEventListener("click", () => (list.hidden ? openList() : closeLangList()));
+    button.addEventListener("blur", () => closeLangList());
+    // Space is handled on keydown; some browsers would also "click" the button on keyup.
+    button.addEventListener("keyup", (e) => e.key === " " && e.preventDefault());
+    button.addEventListener("keydown", (e) => {
+      const open = !list.hidden;
+      const key = e.key;
+      // Space continues a type-ahead in progress ("Português (Brasil)").
+      const typing =
+        key.length === 1 && !e.altKey && !e.ctrlKey && !e.metaKey && (key !== " " || (!!typed && e.timeStamp - typedAt < 600));
+      if (key === "Tab") return open && closeLangList(); // closes without choosing
+      if (typing) {
+        // Type-ahead: jump to the first language whose name starts with the typed letters.
+        typed = (e.timeStamp - typedAt > 600 ? "" : typed) + key.toLowerCase();
+        typedAt = e.timeStamp;
+        const match = langs.findIndex((l) => l.name.toLowerCase().startsWith(typed));
+        if (!open) openList();
+        if (match >= 0) setActive(match);
+      } else if (key === "Escape") {
+        if (!open) return; // let Escape close the panel
+        closeLangList();
+      } else if (key === "Enter" || key === " ") {
+        if (open) choose(active);
+        else openList();
+      } else if (key === "ArrowDown") {
+        if (open && !e.altKey) setActive(active + 1);
+        else openList();
+      } else if (key === "ArrowUp") {
+        if (!open) openList();
+        else if (e.altKey) choose(active);
+        else setActive(active - 1);
+      } else if (key === "Home" || key === "End") {
+        const i = key === "Home" ? 0 : langs.length - 1;
+        if (open) setActive(i);
+        else openList(i);
+      } else return;
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    langButton = button;
+    langMenu = h("div", { className: "a11yw-lang-wrap" }, button, list);
   }
 
   const hideWidget = () => {
@@ -448,8 +542,13 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       "div",
       { className: "a11yw-header" },
       h("span", { className: "a11yw-badge", "aria-hidden": "true" }, opts.logo ? logoNode(opts.logo) : icon("accessibility")),
-      h("h2", { id: titleId, className: "a11yw-title" }, L.title),
-      langSelect && h("span", { className: "a11yw-lang-wrap" }, icon("globe"), langSelect),
+      h(
+        "div",
+        { className: "a11yw-heading" },
+        h("h2", { id: titleId, className: "a11yw-title" }, L.title),
+        h("p", { className: "a11yw-subtitle" }, L.subtitle)
+      ),
+      langMenu,
       closeBtn
     ),
     body,
@@ -658,6 +757,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
 
   const onPointerDown = (e: PointerEvent) => {
     const t = e.target as Node;
+    if (!langMenu?.contains(t)) closeLangList();
     if (api.getState().isOpen && !panel.contains(t) && !launcher.contains(t)) api.setOpen(false);
   };
 
@@ -678,6 +778,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     panel.removeAttribute("data-open");
     panel.inert = true; // not focusable or clickable while fading out
     setPageInert(false);
+    closeLangList();
     const ms = transitionMs(panel);
     if (ms === 0) panel.hidden = true;
     else hideTimer = window.setTimeout(() => (panel.hidden = true), ms);
@@ -708,7 +809,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       }
     },
     focusLanguage() {
-      langSelect?.focus();
+      langButton?.focus();
     },
     restoreFocus() {
       (api.getState().isOpen ? closeBtn : launcher).focus();

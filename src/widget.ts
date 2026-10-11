@@ -286,6 +286,7 @@ function warnOnLowContrast(theme: AccessibilityTheme | undefined) {
     [primary, theme.surface ?? "#f4f6f8", "footer links", 4.5],
     [theme.text ?? "#0f172a", background, "panel text", 4.5],
     [theme.mutedText ?? "#475569", background, "descriptions and section titles", 4.5],
+    [theme.mutedText ?? "#475569", theme.surface ?? "#f4f6f8", "profile and section titles on the panel background", 4.5],
   ];
   for (const [color, against, use, need] of checks) {
     const ratio = contrast(color, against);
