@@ -29,7 +29,18 @@
         "default": "./dist/react.cjs"
       }
     },
+    "./languages": {
+      "import": {
+        "types": "./dist/languages.d.ts",
+        "default": "./dist/languages.js"
+      },
+      "require": {
+        "types": "./dist/languages.d.cts",
+        "default": "./dist/languages.cjs"
+      }
+    },
     "./global": "./dist/open-accessibility-widget.global.js",
+    "./global/languages": "./dist/open-accessibility-widget.languages.global.js",
     "./package.json": "./package.json"
   },
   "files": [

@@ -21,6 +21,9 @@ What is checked today:
 - Manual checks with screen readers and other assistive technology are recorded in
   [`docs/at-test-matrix.md`](./docs/at-test-matrix.md). Until a round is recorded there, treat screen-reader
   support as untested.
+- A **draft** Accessibility Conformance Report (VPAT 2.5 INT: WCAG 2.2, EN 301 549, Section 508) is in
+  [`docs/ACR.md`](./docs/ACR.md). Results that depend on the manual round are marked *Pending*; it becomes
+  final, and only then a conformance statement for the widget's own interface, once that round is recorded.
 
 ## Known limitations
 

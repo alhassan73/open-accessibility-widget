@@ -19,6 +19,8 @@
 | F-012 | React adapter (`AccessibilityWidget`, `useAccessibility`) | existing — undocumented | — | `src/react.ts` | 2026-10-11 |
 | F-013 | `<script>` build (`window.A11yWidget`) | existing — undocumented | — | `tsup.config.ts` | 2026-10-12 |
 | F-014 | Docs site + live playground (en/ar, Vercel) and README banner | done | — | `examples/`, `scripts/render-banner.mjs`, `.github/assets/` | 2026-10-12 |
+| F-016 | `colorScheme` (panel follows the site's dark mode), icon-only language button, widget scrollbar isolation | done | — | `src/widget/scheme.ts`, `src/widget.ts`, `src/engine/css.ts` | 2026-10-12 |
+| F-017 | Optional language pack (14 extra languages, separate entry + IIFE) | done | — | `src/languages.ts`, `tsup.config.ts`, `package.json` exports | 2026-10-12 |
 | F-015 | Page reach: open Shadow DOM, same-origin iframes, touch reading aids, script/SVG animation pause, launcher steps aside (2.4.11) | done | `features/page-reach/` | `src/engine/`, `src/widget/ui.ts` | 2026-10-12 |
 
 **Status values:** `planned` → `in-progress` → `done` · `existing — undocumented` (found by

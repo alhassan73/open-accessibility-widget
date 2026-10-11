@@ -31,6 +31,8 @@ export interface UiLocale {
 export interface Ui {
   update(state: AccessibilityState, prev?: AccessibilityState): void;
   focusLanguage(): void;
+  /** Dark or light panel (`colorScheme`). */
+  setDark(dark: boolean): void;
   /** Put focus back after a rebuild: the close button when open, else the launcher. */
   restoreFocus(): void;
   hasFocus(): boolean;
@@ -447,10 +449,11 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
         "aria-haspopup": "listbox",
         "aria-expanded": "false",
         "aria-controls": listId,
+        title: langs[current].name,
       },
+      // Icon only; the current language stays the combobox's value for screen readers.
       icon("globe"),
-      h("span", { className: "a11yw-lang-value", lang: langs[current].code }, langs[current].name),
-      icon("chevron", "a11yw-chev")
+      h("span", { className: "a11yw-lang-value a11yw-sr-only", lang: langs[current].code }, langs[current].name)
     );
     const setActive = (i: number) => {
       active = Math.min(langs.length - 1, Math.max(0, i));
@@ -834,6 +837,10 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     },
     focusLanguage() {
       langButton?.focus();
+    },
+    setDark(dark) {
+      if (dark) widget.setAttribute("data-scheme", "dark");
+      else widget.removeAttribute("data-scheme");
     },
     restoreFocus() {
       (api.getState().isOpen ? closeBtn : launcher).focus();

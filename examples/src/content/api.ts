@@ -7,6 +7,7 @@ export const OPTIONS: ApiRow[] = [
   { id: "position", name: "position", type: '"left" | "right"', def: '"left"' },
   { id: "offset", name: "offset", type: "{ x?: number; y?: number }", def: "{ x: 24, y: 24 }" },
   { id: "theme", name: "theme", type: "AccessibilityTheme" },
+  { id: "colorScheme", name: "colorScheme", type: '"auto" | "light" | "dark"', def: '"auto"' },
   { id: "icon", name: "icon", type: "string | Element", def: "built-in icon" },
   { id: "logo", name: "logo", type: "string | Element | null", def: "hidden" },
   { id: "buttonSize", name: "buttonSize", type: "number", def: "56" },

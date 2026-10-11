@@ -24,7 +24,7 @@ A user-preference accessibility menu that works on **any website**: plain HTML/J
 | **Color** | Contrast (dark / light / high) · Saturation (gray / low / high) · Custom text, heading and background colors (with a low-contrast warning) |
 | **Reading aids** | Highlight headings · Highlight links · Text magnifier · Reading line · Focus window · Read mode |
 | **Motion & navigation** | Stop animations · Mute media · Hide images · Highlight focus · Highlight on hover · Large cursor (dark / light) |
-| **Built in** | Reset all · Accessibility statement link · Hide widget · Language menu (English / العربية, add your own) · "Skip to main content" link · `Alt+A` shortcut · Settings saved across visits |
+| **Built in** | Reset all · Accessibility statement link · Hide widget · Language menu (English / العربية built in, 14 more in the optional language pack, or your own) · "Skip to main content" link · `Alt+A` shortcut · Settings saved across visits |
 
 The panel is a compact card that opens above the launcher with a fade-and-rise animation; its cards and sections slide in one after another, and switches, checks, counters and buttons respond with small CSS-only animations (all turned off by `prefers-reduced-motion`). It has:
 
@@ -267,6 +267,25 @@ init({
 init({ labels: { title: "Accessibility tools" } });
 ```
 
+**More languages.** An optional language pack, kept out of the main bundle, adds Español, Français, Deutsch, Italiano, Português, Nederlands, Polski, Türkçe, Русский, 中文, 日本語, 한국어, हिन्दी and עברית (right-to-left). Import only what you offer:
+
+```js
+import { allLanguages, french, spanish } from "open-accessibility-widget/languages";
+import { builtInLanguages, init } from "open-accessibility-widget";
+
+init({ languages: allLanguages });                              // all 16
+init({ languages: [...builtInLanguages, french, spanish] });    // or pick some
+```
+
+```html
+<!-- Script tag: load the pack after the widget -->
+<script src="https://cdn.jsdelivr.net/npm/open-accessibility-widget@1/dist/open-accessibility-widget.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/open-accessibility-widget@1/dist/open-accessibility-widget.languages.global.js"></script>
+<script>A11yWidget.init({ languages: A11yWidgetLanguages.allLanguages });</script>
+```
+
+Each language adds about 1 KB gzipped. The translations were written by the maintainers; corrections from native speakers are welcome.
+
 Strings missing from a language fall back to English. A custom language without `dir` is shown right-to-left when its code is an RTL language (`ar`, `he`, `fa`, `ur`…). `increase`, `decrease` and `reset` can place the setting name with `{label}` (e.g. `"{label} vergrößern"`); without it the name is appended. Percentages are formatted for the active language with `Intl.NumberFormat`.
 
 ### Removing controls and setting defaults
@@ -289,6 +308,7 @@ Every setting key can be removed, plus `"profiles"` (the whole quick-profile gri
 | `position` | `"left" \| "right"` | `"left"` | Screen side |
 | `offset` | `{ x?, y? }` | `{ x: 24, y: 24 }` | Distance from the edges (px, 0–1000) |
 | `theme` | `AccessibilityTheme` | – | Colors, radius, font |
+| `colorScheme` | `"auto" \| "light" \| "dark"` | `"auto"` | Light or dark panel. `"auto"` follows the page: dark while the site's own background is dark, however the site switches themes. Your `theme` panel colors (`background`, `surface`, `text`, `mutedText`, `border`) turn `"auto"` off. |
 | `icon` | `string \| Element` | built-in icon | Launcher logo (pass only trusted elements: they are cloned as-is) |
 | `logo` | `string \| Element \| null` | hidden | Logo next to the panel title |
 | `buttonSize` | `number` | `56` | Launcher size (px, 24–160) |
@@ -403,7 +423,9 @@ From lowest to highest priority:
 | --- | --- | --- |
 | `open-accessibility-widget` | ESM + CJS + `.d.ts` | Any framework or plain JS with a bundler |
 | `open-accessibility-widget/react` | ESM + CJS + `.d.ts` | React component and hook (`react` ≥ 18 is an optional peer dependency) |
-| `dist/open-accessibility-widget.global.js` | IIFE, about 23 KB gzipped | `<script>` tag; exposes `window.A11yWidget` |
+| `open-accessibility-widget/languages` | ESM + CJS + `.d.ts` | Optional extra UI languages (tree-shakable, about 1 KB gzipped each) |
+| `dist/open-accessibility-widget.global.js` | IIFE, about 25 KB gzipped | `<script>` tag; exposes `window.A11yWidget` |
+| `dist/open-accessibility-widget.languages.global.js` | IIFE, about 16 KB gzipped | `<script>` tag; exposes `window.A11yWidgetLanguages` (all extra languages) |
 
 No runtime dependencies.
 
@@ -420,7 +442,7 @@ npm test           # unit tests + end-to-end tests in headless Chrome (set CHROM
 
 The end-to-end suite drives a real headless Chrome over the DevTools Protocol (no extra dependencies). It covers keyboard-only use, focus handling, axe-core (no violations allowed), host-page safety (layout, focus indicators, media, CSP, framework re-renders, `<body>` swaps), read mode, reflow at 320px and `destroy()`. CI runs it on every pull request (`.github/workflows/ci.yml`).
 
-Automated tests can't replace a manual check with real screen readers (NVDA, JAWS, VoiceOver, TalkBack) and Windows High Contrast; please do one before major releases and record it in [`docs/at-test-matrix.md`](./docs/at-test-matrix.md).
+Automated tests can't replace a manual check with real screen readers (NVDA, JAWS, VoiceOver, TalkBack) and Windows High Contrast; please do one before major releases and record it in [`docs/at-test-matrix.md`](./docs/at-test-matrix.md). The widget's own Accessibility Conformance Report (VPAT 2.5 INT, **draft** until that round is recorded) is in [`docs/ACR.md`](./docs/ACR.md).
 
 ## Development
 

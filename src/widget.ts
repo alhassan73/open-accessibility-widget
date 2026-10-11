@@ -11,6 +11,7 @@ import type {
   SettingKey,
   SettingsUpdate,
 } from "./types";
+import { watchPageScheme } from "./widget/scheme";
 import { createUI, widgetZIndex, type UiApi, type UiLocale } from "./widget/ui";
 
 // Page adjustments are global, so only one widget may exist at a time. The registry
@@ -150,15 +151,37 @@ export function createAccessibilityWidget(
     },
   };
 
+  // Light or dark panel. "auto" follows the page, unless the theme sets the panel's own colors.
+  let pageDark = false;
+  let stopScheme: (() => void) | null = null;
+  const syncScheme = () => {
+    const t = opts.theme ?? {};
+    const auto = opts.colorScheme !== "light" && opts.colorScheme !== "dark" &&
+      !(t.background || t.surface || t.text || t.mutedText || t.border);
+    if (auto && !stopScheme) {
+      stopScheme = watchPageScheme((dark) => {
+        pageDark = dark;
+        ui.setDark(dark);
+      });
+    } else if (!auto && stopScheme) {
+      stopScheme();
+      stopScheme = null;
+      pageDark = false;
+    }
+    ui.setDark(opts.colorScheme === "dark" || (auto && pageDark));
+  };
+
   let ui = createUI(opts, api, locale());
   const rebuildUI = () => {
     const hadFocus = ui.hasFocus();
     ui.destroy();
     ui = createUI(opts, api, locale());
+    syncScheme();
     ui.update(state);
     if (hadFocus) ui.restoreFocus();
   };
   engine.apply(state.settings);
+  syncScheme();
   ui.update(state);
 
   // Keep working when the page swaps <body> or its content (Turbo, htmx boost, Astro view transitions).
@@ -170,6 +193,9 @@ export function createAccessibilityWidget(
       domObserver.observe(body, { childList: true });
     } else if (ui.isConnected()) return;
     engine.refresh();
+    stopScheme?.(); // it watched the old <body>; rebuildUI starts it again
+    stopScheme = null;
+    pageDark = false;
     rebuildUI();
   };
   const domObserver = new MutationObserver(onPageSwap);
@@ -209,6 +235,7 @@ export function createAccessibilityWidget(
       if (destroyed) return;
       destroyed = true;
       domObserver.disconnect();
+      stopScheme?.();
       window.removeEventListener("storage", onStorage);
       ui.destroy();
       engine.destroy();

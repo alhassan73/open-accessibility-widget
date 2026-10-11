@@ -1,17 +1,17 @@
 {
   "Docs": {
-    "sidebar": "التوثيق",
+    "sidebar": "الـ docs",
     "menu": "القائمة",
-    "menuDescription": "كل صفحات التوثيق",
-    "close": "إغلاق",
-    "toc": "في هذه الصفحة",
-    "pager": "الصفحة السابقة والتالية",
-    "edit": "عدّل هذه الصفحة على GitHub",
-    "overview": "نظرة عامة",
+    "menuDescription": "كل صفحات الـ docs",
+    "close": "اقفل",
+    "toc": "في الصفحة دي",
+    "pager": "الصفحة اللي قبل واللي بعد",
+    "edit": "عدّل الصفحة دي على GitHub",
+    "overview": "نظرة سريعة",
     "groups": {
-      "start": "ابدأ",
-      "frameworks": "أطر العمل",
-      "guides": "الأدلة",
+      "start": "ابدأ من هنا",
+      "frameworks": "الـ frameworks",
+      "guides": "الشروحات",
       "reference": "المرجع"
     }
   },
@@ -19,539 +19,540 @@
     "nav": "التنقل الرئيسي",
     "home": "Open Accessibility Widget – الصفحة الرئيسية",
     "menu": "القائمة",
-    "openMenu": "فتح القائمة",
-    "close": "إغلاق",
-    "menuDescription": "صفحات الموقع وروابط المشروع",
-    "github": "مستودع GitHub",
-    "npm": "حزمة npm"
+    "openMenu": "افتح القائمة",
+    "close": "اقفل",
+    "menuDescription": "صفحات الموقع ولينكات المشروع",
+    "github": "الـ repository على GitHub",
+    "npm": "الـ package على npm"
   },
   "Shell": {
-    "skip": "تخطَّ إلى المحتوى"
+    "skip": "روح للمحتوى على طول"
   },
   "Search": {
-    "trigger": "ابحث في التوثيق…",
-    "open": "البحث في التوثيق",
-    "title": "البحث في التوثيق",
-    "description": "اكتب للبحث في الصفحات والأدلة والواجهة البرمجية. استخدم الأسهم لاختيار نتيجة وزر Enter لفتحها.",
-    "label": "البحث في التوثيق",
-    "placeholder": "ابحث في التوثيق…",
-    "results": "نتائج البحث",
-    "count": "{count, plural, =0 {لا توجد نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
-    "empty": "لا توجد نتائج عن «{query}»",
-    "emptyHint": "تحقق من الإملاء أو جرّب كلمة أقصر.",
-    "close": "إغلاق البحث",
+    "trigger": "دوّر في الـ docs…",
+    "open": "دوّر في الـ docs",
+    "title": "دوّر في الـ docs",
+    "description": "اكتب عشان تدوّر في الصفحات والشروحات والـ API. استخدم الأسهم عشان تختار نتيجة، و Enter عشان تفتحها.",
+    "label": "دوّر في الـ docs",
+    "placeholder": "دوّر في الـ docs…",
+    "results": "نتايج البحث",
+    "count": "{count, plural, =0 {مفيش نتايج} one {نتيجة واحدة} two {نتيجتين} few {# نتايج} many {# نتيجة} other {# نتيجة}}",
+    "empty": "مفيش نتايج لـ «{query}»",
+    "emptyHint": "اتأكد من الإملا أو جرّب كلمة أقصر.",
+    "close": "اقفل البحث",
     "groups": {
-      "start": "البدء",
-      "frameworks": "أطر العمل",
-      "guides": "الأدلة",
+      "start": "إزاي تبدأ",
+      "frameworks": "الـ frameworks",
+      "guides": "الشروحات",
       "reference": "المرجع",
       "changelog": "سجل التغييرات"
     },
     "hints": {
-      "navigate": "للتنقل",
-      "open": "للفتح",
-      "close": "للإغلاق"
+      "navigate": "عشان تتنقل",
+      "open": "عشان تفتح",
+      "close": "عشان تقفل"
     }
   },
   "ThemeToggle": {
-    "toggle": "تبديل مظهر الموقع",
-    "toLight": "التبديل إلى المظهر الفاتح",
-    "toDark": "التبديل إلى المظهر الداكن"
+    "toggle": "غيّر الـ theme بتاع الموقع",
+    "toLight": "حوّل للـ theme الفاتح",
+    "toDark": "حوّل للـ theme الغامق"
   },
   "CodeBlock": {
-    "copy": "نسخ الشيفرة",
-    "copied": "تم النسخ"
+    "copy": "انسخ الكود",
+    "copied": "اتنسخ"
   },
   "Cta": {
-    "title": "أضِفها إلى موقعك في خمس دقائق",
-    "text": "حزمة واحدة واستدعاء واحد. مجانية ومفتوحة المصدر برخصة MIT: بلا مفتاح ترخيص ولا تتبّع ولا خدمة سحابية.",
-    "start": "ابدأ الآن",
-    "github": "ادعمنا على GitHub",
-    "npm": "اعرضها على npm",
-    "newTab": "(يُفتح في علامة تبويب جديدة)"
+    "title": "ضيفه لموقعك في خمس دقايق",
+    "text": "package واحدة واستدعاء واحد. مجاني و open source تحت رخصة MIT: من غير license key، ومن غير tracking، ومن غير أي خدمة cloud.",
+    "start": "ابدأ دلوقتي",
+    "github": "ادّينا نجمة على GitHub",
+    "npm": "شوفه على npm",
+    "newTab": "(بيفتح في tab جديدة)"
   },
   "TrustStrip": {
-    "label": "لمحة سريعة",
+    "label": "بنظرة سريعة",
     "stats": [
       {
-        "value": "0 اعتماديات",
-        "label": "لا شيء آخر لتثبيته، مع أنواع TypeScript"
+        "value": "0 dependencies",
+        "label": "مش محتاج تسطّب أي حاجة تانية، والـ types بتاعة TypeScript موجودة"
       },
       {
         "value": "~23 KB",
-        "label": "الأداة كاملة، مضغوطة، في ملف واحد"
+        "label": "الـ widget كله، gzipped، في script واحد"
       },
       {
         "value": "axe-core",
-        "label": "كل إصدار مُختبَر بـ axe-core وبسيناريوهات لوحة المفاتيح فقط"
+        "label": "كل إصدار بيتختبر بـ axe-core وبـ scripts بالكيبورد بس"
       },
       {
         "value": "EN · AR",
-        "label": "الإنجليزية والعربية مدمجتان، مع دعم الكتابة من اليمين إلى اليسار"
+        "label": "الإنجليزي والعربي موجودين جوّاه، وجاهز للـ RTL"
       }
     ]
   },
   "Features": {
-    "eyebrow": "المزايا",
-    "title": "كل ما يتوقعه الزوار من قائمة إمكانية الوصول",
-    "description": "وما تحتاجه أنت لإطلاقها: علامتك التجارية، ولغاتك، وسياسة CSP صارمة، ودون أي تتبّع.",
+    "eyebrow": "المميزات",
+    "title": "كل اللي الزوار مستنيينه من قائمة accessibility",
+    "description": "وكل اللي إنت محتاجه عشان تنزّله على موقعك: البراند بتاعك، ولغاتك، و CSP صارمة، ومن غير أي tracking.",
     "items": [
       {
-        "title": "سهلة الوصول هي نفسها",
-        "text": "اللوحة نافذة حوار وفق WAI-ARIA مع حصر للتركيز، والصفحة خلفها معطّلة أثناء فتحها. المفاتيح ومجموعات الاختيار والأقسام تعمل بلوحة المفاتيح وقارئات الشاشة، وفي وضع التباين العالي في Windows ومع تقليل الحركة."
+        "title": "هو نفسه accessible",
+        "text": "اللوحة dialog ماشية على WAI-ARIA وفيها focus trap، والصفحة اللي وراها بتبقى inert. الـ switches والـ radio groups والأقسام بتشتغل بالكيبورد ومع الـ screen readers، وفي Windows High Contrast ومع الـ reduced motion."
       },
       {
-        "title": "علامتك التجارية وشعارك",
-        "text": "حدّد <code>theme.primary</code> فيتبعه زر الفتح والترويسة والحالات النشطة. غيّر الألوان والزوايا والخط وشعار زر الفتح، من JavaScript أو بمتغيرات CSS."
+        "title": "البراند بتاعك واللوجو بتاعك",
+        "text": "حدّد <code>theme.primary</code> وزرار الفتح والـ header والـ active states هيمشوا وراه. غيّر الألوان والـ radius والخط ولوجو زرار الفتح، من JavaScript أو بـ CSS variables."
       },
       {
-        "title": "23 تعديلًا و7 ملفات سريعة",
-        "text": "حجم النص، والتباعد، والتباين، والتشبع، وخط القراءة، ونافذة التركيز، ووضع القراءة، وإيقاف الحركة وغيرها، مع ملفات سريعة تفعّل عدة تعديلات دفعة واحدة."
+        "title": "23 تعديل و7 profiles",
+        "text": "حجم النص، والمسافات، والتباين، والتشبع، وخط القراءة، ونافذة التركيز، ووضع القراءة، وإيقاف الحركة وحاجات تانية، وكمان profiles سريعة بتشغّل كذا تعديل مرة واحدة."
       },
       {
-        "title": "العربية والكتابة من اليمين",
-        "text": "الإنجليزية والعربية مدمجتان، ويمكنك إضافة لغاتك. تنعكس اللوحة من اليمين إلى اليسار وتبدأ بلغة الصفحة."
+        "title": "العربي والـ RTL",
+        "text": "الإنجليزي والعربي موجودين جوّاه، وتقدر تضيف لغاتك. اللوحة بتتقلب من اليمين للشمال وبتبدأ بلغة الصفحة."
       },
       {
         "title": "أي موقع",
-        "text": "HTML عادي وWordPress وReact وNext.js وVue وAngular وSvelte وAstro. آمنة مع العرض من جهة الخادم، وتعيد ربط نفسها عندما تستبدل الصفحة عنصر <code>body</code>."
+        "text": "HTML عادي، و WordPress، و React، و Next.js، و Vue، و Angular، و Svelte، و Astro. آمن مع الـ server rendering، وبيرجع يركّب نفسه لما الصفحة تبدّل الـ <code>body</code> بتاعها."
       },
       {
-        "title": "صغيرة وبلا اعتماديات",
-        "text": "نحو 23 KB مضغوطة. التعديلات أصناف ومتغيرات CSS على <code>html</code>، و<code>destroy()</code> يزيلها كلها."
+        "title": "صغير ومن غير dependencies",
+        "text": "حوالي 23 KB gzipped. التعديلات عبارة عن classes و CSS variables على <code>html</code>، و<code>destroy()</code> بيشيلها كلها."
       },
       {
-        "title": "CSP صارمة وTrusted Types",
-        "text": "لا <code>eval</code> ولا <code>innerHTML</code> ولا سكربتات مضمّنة. مرّر <code>nonce</code> لوسوم التنسيق الخاصة بها فتعمل تحت سياسة أمان محتوى صارمة."
+        "title": "CSP صارمة و Trusted Types",
+        "text": "مفيش <code>eval</code>، ولا <code>innerHTML</code>، ولا inline scripts. مرّر <code>nonce</code> للـ style tags بتاعته، وهيشتغل تحت Content Security Policy صارمة."
       },
       {
-        "title": "خصوصية افتراضيًا",
-        "text": "لا طلبات شبكة، ولا ملفات تعريف ارتباط، ولا تحليلات. تبقى التفضيلات في متصفح الزائر، و<code>persist: false</code> لا يحفظ شيئًا على الإطلاق."
+        "title": "الخصوصية من الأساس",
+        "text": "مفيش network requests، ولا cookies، ولا analytics. التفضيلات بتفضل في متصفح الزائر، و<code>persist: false</code> مش بيحفظ أي حاجة خالص."
       }
     ]
   },
   "Honest": {
-    "eyebrow": "صريحة في تصميمها",
-    "title": "قائمة تفضيلات، لا أداة امتثال",
-    "description": "كثيرًا ما تُباع أدوات الوصول المضافة فوق الصفحات على أنها حلّ للدعاوى القضائية. هذه الأداة ليست كذلك، ولا تدّعي ذلك.",
-    "isTitle": "ما هي",
+    "eyebrow": "صريح من الأساس",
+    "title": "قائمة تفضيلات، مش أداة compliance",
+    "description": "الـ accessibility overlays كتير بتتباع على إنها حل للقضايا. الـ widget ده مش كده، ومش بيدّعي إنه كده.",
+    "isTitle": "هو إيه",
     "is": [
-      "قائمة تتيح لكل زائر تغيير حجم النص والتباعد والألوان والحركة وأدوات القراءة في صفحاتك.",
-      "سكربت صغير مفتوح المصدر يعمل في المتصفح فقط ويحفظ التفضيلات فيه فقط.",
-      "سهلة الوصول هي نفسها: مُختبَرة بـ axe-core وبسيناريوهات لوحة المفاتيح في كل إصدار.",
-      "ميزة إضافية تقدّمها فوق موقع سهل الوصول أصلًا."
+      "قائمة بتخلّي كل زائر يغيّر حجم النص والمسافات والألوان والحركة وأدوات القراءة في صفحاتك.",
+      "script صغير و open source، بيشتغل في المتصفح بس وبيحفظ التفضيلات هناك بس.",
+      "هو نفسه accessible: بيتختبر بـ axe-core وبـ scripts بالكيبورد بس في كل إصدار.",
+      "ميزة إضافية تقدّمها فوق موقع هو أصلًا accessible."
     ],
-    "isNotTitle": "ما ليست هي",
+    "isNotTitle": "هو مش إيه",
     "isNot": [
-      "لا تجعل الموقع متوافقًا مع ADA أو EAA أو EN 301 549 أو WCAG.",
-      "لا تفحص ترميز صفحاتك ولا تصلحه ولا تعيد كتابته: النص البديل والتسميات والتباين الناقصة ما زالت تحتاج إلى إصلاح من المصدر.",
-      "ليست دفاعًا قانونيًا، ولا يصح الإعلان عنها على أنها كذلك.",
-      "لا تُغني عن الاختبار مع مستخدمين حقيقيين وتقنيات مساعدة."
+      "مش بيخلّي الموقع متوافق مع ADA أو EAA أو EN 301 549 أو WCAG.",
+      "مش بيعمل scan للـ markup بتاعك، ولا بيصلّحه، ولا بيعيد كتابته: الـ alt text والـ labels والتباين اللي ناقصين لسه لازم يتصلّحوا من المصدر.",
+      "مش دفاع قانوني، وماينفعش يتعمله إعلان على إنه كده.",
+      "مش بيغني عن الاختبار مع مستخدمين حقيقيين و assistive technology."
     ],
-    "more": "اقرأ حدود الأداة"
+    "more": "اقرا حدود الـ widget"
   },
   "Nav": {
     "home": "الرئيسية",
-    "gettingStarted": "البدء السريع",
-    "frameworks": "أطر العمل",
-    "api": "الواجهة البرمجية",
-    "guides": "الأدلة",
+    "gettingStarted": "إزاي تبدأ",
+    "frameworks": "الـ frameworks",
+    "api": "الـ API",
+    "guides": "الشروحات",
     "changelog": "سجل التغييرات"
   },
   "Footer": {
     "home": "Open Accessibility Widget – الصفحة الرئيسية",
-    "about": "قائمة تفضيلات إمكانية الوصول مجانية ومفتوحة المصدر لأي موقع. برخصة MIT، بلا اعتماديات ولا تتبّع.",
-    "sections": "التوثيق",
+    "about": "قائمة تفضيلات accessibility مجانية و open source لأي موقع. برخصة MIT، ومن غير dependencies ولا tracking.",
+    "sections": "الـ docs",
     "project": "المشروع",
-    "ship": "قبل النشر",
-    "statement": "بيان إمكانية الوصول للأداة",
+    "ship": "قبل ما تنشر",
+    "statement": "الـ accessibility statement بتاع الـ widget",
     "license": "رخصة MIT",
     "security": "سياسة الأمان",
-    "issues": "الإبلاغ عن مشكلة",
+    "issues": "بلّغ عن مشكلة",
     "authorName": "الحسن أحمد",
-    "legal": "© {year} {author} والمساهمون. منشور برخصة <license>MIT</license>.",
-    "credit": "صمّمه وطوّره <profile>{author}</profile>",
-    "notCompliance": "ليست أداة امتثال."
+    "legal": "© {year} {author} والمساهمين. منشور تحت <license>رخصة MIT</license>.",
+    "credit": "تصميم وتطوير <profile>{author}</profile>",
+    "notCompliance": "مش أداة compliance."
   },
   "Hero": {
-    "title": "دع كل زائر <em>يضبط موقعك</em> حسب احتياجاته",
-    "sub": "قائمة مجانية لتفضيلات إمكانية الوصول لأي موقع: حجم النص والتباين والتباعد وأدوات القراءة والحركة، بالعربية والإنجليزية. بلا اعتماديات ولا تتبّع، ونحو 24 KB فقط.",
-    "start": "ابدأ الآن",
-    "try": "جرّب الأداة",
+    "title": "خلّي كل زائر <em>يظبط موقعك</em> على حسب احتياجاته",
+    "sub": "قائمة تفضيلات accessibility مجانية لأي موقع: حجم النص، والتباين، والمسافات، وأدوات القراءة، والحركة، بالعربي والإنجليزي. من غير dependencies ولا tracking، وحجمها حوالي 24 KB بس.",
+    "start": "ابدأ دلوقتي",
+    "try": "جرّب الـ widget",
     "github": "GitHub",
-    "newTab": "(يُفتح في علامة تبويب جديدة)",
-    "shortcut": "أو اضغط Alt + A في أي صفحة من هذا الموقع.",
-    "worksWith": "تعمل مع",
-    "marquee": "أطر العمل المدعومة"
+    "newTab": "(بيفتح في tab جديدة)",
+    "shortcut": "أو دوس Alt + A في أي صفحة في الموقع ده.",
+    "worksWith": "بيشتغل مع",
+    "marquee": "الـ frameworks المدعومة"
   },
   "Install": {
-    "title": "البدء السريع",
-    "description": "ثبّت الحزمة، وأضف الأداة إلى صفحاتك، وأعطها لون علامتك التجارية. الأمر يستغرق دقائق.",
+    "title": "إزاي تبدأ",
+    "description": "سطّب الـ package، وضيف الـ widget لصفحاتك، وادّيله لون البراند بتاعك. الموضوع بياخد دقايق.",
     "sections": {
       "install": {
-        "title": "التثبيت",
-        "text": "استخدم مدير الحزم، أو حمّل سكربتًا واحدًا من CDN دون أي خطوة بناء. وسم CDN يثبّت إصدارًا محددًا مع بصمة سلامته."
+        "title": "التسطيب",
+        "text": "استخدم الـ package manager بتاعك، أو حمّل script واحد من CDN من غير أي build step. الـ CDN tag بيثبّت version محددة مع الـ integrity hash بتاعها."
       },
       "add": {
-        "title": "أضفها إلى صفحاتك",
-        "text": "استدعِ <code>init()</code> مرة واحدة، في المتصفح، بعد تحميل الصفحة. يضيف زر الفتح إلى <code>body</code> ويعيد الأداة. في React وNext.js اعرض المكوّن في التخطيط الجذري بدلًا من ذلك."
+        "title": "ضيفه لصفحاتك",
+        "text": "نادي <code>init()</code> مرة واحدة، في المتصفح، بعد ما الصفحة تحمّل. هيركّب زرار الفتح على <code>body</code> ويرجّعلك الـ widget. في React و Next.js، اعرض الـ component في الـ root layout بدل كده."
       },
       "customize": {
-        "title": "اجعلها لك",
-        "text": "كل الخيارات اختيارية. مرّر لون علامتك التجارية، وجهة الشاشة، وشعارك، ولغة البدء، وأزل عناصر التحكم التي لا تريد تقديمها."
+        "title": "خلّيه بتاعك",
+        "text": "كل الـ options اختيارية. مرّر لون البراند بتاعك، وناحية الشاشة، واللوجو بتاعك، ولغة البداية، وشيل الـ controls اللي مش عايز تقدّمها."
       },
       "statement": {
-        "title": "اربط بيان إمكانية الوصول",
-        "text": "إن كان لموقعك بيان لإمكانية الوصول، فاربطه من تذييل اللوحة. تُقبل روابط http وhttps والروابط النسبية فقط."
+        "title": "اربط الـ accessibility statement بتاعك",
+        "text": "لو موقعك عنده accessibility statement، حط لينك ليه في الـ footer بتاع اللوحة. بيقبل لينكات http و https واللينكات الـ relative بس."
       }
     },
     "tabs": {
-      "bundler": "أداة التجميع",
+      "bundler": "Bundler",
       "cdn": "CDN"
     },
-    "frameworkText": "تستخدم Vue أو Angular أو Svelte أو Astro أو نظام إدارة محتوى؟ <link>اطّلع على الإعداد لإطار عملك</link>",
-    "customizeMore": "كل الخيارات مذكورة في <link>مرجع الواجهة البرمجية</link>",
-    "complianceTitle": "ليست أداة امتثال",
-    "compliance": "تتيح الأداة للزوار ضبط صفحاتك. لكنها لا تجعل الموقع متوافقًا مع ADA أو EAA أو EN 301 549 أو WCAG: فذلك يعتمد على ترميز موقعك نفسه. <link>اقرأ حدود الأداة</link>",
+    "frameworkText": "بتستخدم Vue أو Angular أو Svelte أو Astro أو CMS؟ <link>شوف الـ setup بتاع الـ framework بتاعك</link>",
+    "customizeMore": "كل الـ options موجودة في <link>مرجع الـ API</link>",
+    "complianceTitle": "مش أداة compliance",
+    "compliance": "الـ widget بيخلّي الزوار يظبطوا صفحاتك. لكنه مش بيخلّي الموقع متوافق مع ADA أو EAA أو EN 301 549 أو WCAG: ده بيعتمد على الـ markup بتاع موقعك نفسه. <link>اقرا حدود الـ widget</link>",
     "privacyTitle": "الخصوصية",
-    "privacy": "لا طلبات شبكة ولا ملفات تعريف ارتباط. تُحفظ التفضيلات في localStorage لدى الزائر ما لم تمرّر <code>persist: false</code>. <link>الخصوصية والتخزين</link>"
+    "privacy": "مفيش network requests ولا cookies. التفضيلات بتتحفظ في الـ localStorage عند الزائر، إلا لو مرّرت <code>persist: false</code>. <link>الخصوصية والتخزين</link>"
   },
   "Api": {
-    "title": "مرجع الواجهة البرمجية",
-    "description": "كل خيار ومفتاح مظهر ودالة وتصدير في الحزمة، مع نوعه وقيمته الافتراضية.",
-    "scroll": "جدول قابل للتمرير:",
+    "title": "مرجع الـ API",
+    "description": "كل option و theme key و method و export في الـ package، مع الـ type والقيمة الـ default بتاعة كل واحد.",
+    "scroll": "جدول بيعمل scroll:",
     "cols": {
       "name": "الاسم",
-      "type": "النوع",
-      "def": "الافتراضي",
+      "type": "الـ type",
+      "def": "الـ default",
       "desc": "الوصف"
     },
     "cards": {
       "options": {
-        "title": "الخيارات",
-        "description": "تُمرَّر إلى <code>init(options)</code>، أو كخصائص للمكوّن <code>AccessibilityWidget</code>، أو لاحقًا إلى <code>widget.setOptions(options)</code>."
+        "title": "الـ Options",
+        "description": "بتتمرّر لـ <code>init(options)</code>، أو كـ props لـ <code>AccessibilityWidget</code>، أو بعدين لـ <code>widget.setOptions(options)</code>."
       },
       "theme": {
-        "title": "المظهر",
-        "description": "مفاتيح الخيار <code>theme</code>. تقبل الألوان أي لون CSS، لكن فحص التباين يشمل الألوان السداسية فقط."
+        "title": "الـ Theme",
+        "description": "الـ keys بتاعة الـ option <code>theme</code>. الألوان بتقبل أي لون CSS، بس فحص التباين بيشمل الألوان الـ hex بس."
       },
       "methods": {
-        "title": "دوال الأداة",
-        "description": "تُعيد <code>init()</code> الأداة. ونسخة وسم السكربت تكشف التصديرات نفسها على <code>window.A11yWidget</code>."
+        "title": "الـ instance methods",
+        "description": "<code>init()</code> بترجّع الـ widget. ونسخة الـ script tag بتعرض نفس الـ exports على <code>window.A11yWidget</code>."
       },
       "react": {
         "title": "React",
-        "description": "من <code>open-accessibility-widget/react</code>، الذي يعيد تصدير كل ما عداه أيضًا. نقطة الدخول هذه مُعلَّمة بـ <code>\"use client\"</code>."
+        "description": "من <code>open-accessibility-widget/react</code>، اللي بيعمل re-export لكل الباقي كمان. الـ entry دي متعلّم عليها <code>\"use client\"</code>."
       },
       "exports": {
-        "title": "التصديرات",
-        "description": "التصديرات المسمّاة للحزمة."
+        "title": "الـ Exports",
+        "description": "الـ named exports بتاعة الـ package."
       },
       "settings": {
         "title": "الإعدادات",
-        "description": "ما تعيده <code>getSettings()</code>، وما تقبله <code>setSettings()</code> و<code>initialSettings</code>. النِّسب المئوية تعني 100 فيها «دون تغيير»؛ وتُقصّ القيم الخارجة عن النطاق وتُحذف القيم غير المعروفة."
+        "description": "اللي <code>getSettings()</code> بترجّعه، واللي <code>setSettings()</code> و<code>initialSettings</code> بيقبلوه. في النسب المئوية، 100 معناها «من غير تغيير»؛ والقيم اللي برّه الـ range بتتقصّ عند الحد، والقيم المش معروفة بتتشال."
       },
       "entries": {
-        "title": "محتوى الحزمة",
-        "description": "كل نقطة دخول تأتي بصيغ ESM وCommonJS مع تعريفات الأنواع. بلا اعتماديات وقت التشغيل."
+        "title": "محتوى الـ package",
+        "description": "كل entry جاية بـ ESM و CommonJS ومعاها الـ type declarations. من غير runtime dependencies."
       }
     },
     "rows": {
       "options": {
-        "position": "جهة الشاشة لزر الفتح واللوحة.",
-        "offset": "المسافة عن حواف الشاشة بالبكسل (0–1000).",
-        "theme": "الألوان والزوايا والخط: انظر «المظهر» أدناه.",
-        "icon": "شعار زر الفتح: رابط صورة أو عنصر DOM. لا تمرّر إلا عناصر موثوقة: فهي تُنسخ كما هي.",
-        "logo": "شعار بجانب عنوان اللوحة.",
-        "buttonSize": "قطر زر الفتح بالبكسل (24–160).",
-        "features": "اجعل عنصر تحكم <code>false</code> لإزالته. الإعداد المُزال يبقى متوقفًا.",
-        "initialSettings": "إعدادات للزوار الذين لم يحفظوا شيئًا.",
-        "languages": "عناصر قائمة اللغات، أو <code>false</code> لإخفاء القائمة.",
-        "language": "رمز لغة البدء.",
-        "labels": "استبدال نصوص مفردة فوق اللغة النشطة.",
-        "dir": "فرض اتجاه نص الأداة.",
-        "shortcut": "اختصار يفتح اللوحة ويغلقها، ويعيد الأداة بعد «إخفاء الأداة». مع <code>false</code> يُزال زر الإخفاء.",
-        "statementUrl": "رابط بيان إمكانية الوصول في تذييل اللوحة (http أو https أو نسبي).",
-        "showSkipLink": "رابط «تخطَّ إلى المحتوى الرئيسي». يُترك إن لم يكن في الصفحة <code>main</code> أو <code>h1</code>، أو إن كانت تبدأ برابط تخطٍّ خاص بها.",
-        "zIndex": "ترتيب طبقة الأداة.",
-        "persist": "حفظ الإعدادات في localStorage، مع مزامنتها بين علامات التبويب.",
-        "storageKey": "مفتاح localStorage.",
-        "nonce": "قيمة nonce لسياسة CSP لوسوم <code>style</code> المضافة.",
-        "onChange": "يُستدعى حين يغيّر الزائر شيئًا."
+        "position": "ناحية الشاشة اللي فيها زرار الفتح واللوحة.",
+        "offset": "المسافة من أطراف الشاشة، بالـ px (0–1000).",
+        "theme": "الألوان والـ radius والخط: شوف «الـ Theme» تحت.",
+        "colorScheme": "لوحة فاتحة أو غامقة. ‎\"auto\"‎ بتمشي ورا الصفحة: بتبقى غامقة طول ما خلفية الموقع نفسه غامقة، مهما كانت طريقة الموقع في تبديل الـ theme. ألوان اللوحة اللي بتحددها في theme بتقفل ‎\"auto\"‎.",
+        "icon": "لوجو زرار الفتح: URL لصورة أو DOM element. ماتمرّرش غير elements موثوقة: لأنها بتتنسخ زي ما هي.",
+        "logo": "لوجو جنب عنوان اللوحة.",
+        "buttonSize": "قطر زرار الفتح، بالـ px (24–160).",
+        "features": "خلّي أي control بـ <code>false</code> عشان تشيله. الإعداد اللي اتشال بيفضل مقفول.",
+        "initialSettings": "إعدادات للزوار اللي مش حافظين أي حاجة.",
+        "languages": "عناصر قائمة اللغات، أو <code>false</code> عشان تخفي القائمة.",
+        "language": "كود لغة البداية.",
+        "labels": "غيّر نصوص معينة فوق اللغة الشغالة.",
+        "dir": "اجبر اتجاه النص بتاع الـ widget.",
+        "shortcut": "shortcut بيفتح اللوحة ويقفلها، وبيرجّع الـ widget بعد «إخفاء الأداة». مع <code>false</code>، زرار الإخفاء بيتشال.",
+        "statementUrl": "لينك الـ accessibility statement بتاعك في الـ footer بتاع اللوحة (http أو https أو relative).",
+        "showSkipLink": "لينك «تخطَّ إلى المحتوى الرئيسي». مش بيتضاف لو الصفحة مفيهاش <code>main</code> أو <code>h1</code>، أو لو بتبدأ أصلًا بـ skip link خاص بيها.",
+        "zIndex": "ترتيب طبقة الـ widget (stacking order).",
+        "persist": "احفظ الإعدادات في الـ localStorage، وخلّيها متزامنة بين الـ tabs.",
+        "storageKey": "الـ key بتاع الـ localStorage.",
+        "nonce": "الـ CSP nonce للـ <code>style</code> tags اللي بتتضاف.",
+        "onChange": "بيتنادى لما الزائر يغيّر أي حاجة."
       },
       "theme": {
-        "primary": "لون العلامة التجارية: زر الفتح والترويسة والحالات النشطة.",
-        "onPrimary": "لون النص والأيقونات فوق اللون الأساسي.",
+        "primary": "لون البراند: زرار الفتح والـ header والـ active states.",
+        "onPrimary": "لون النص والأيقونات فوق الـ primary.",
         "background": "خلفية اللوحة.",
-        "surface": "التذييل وعناصر الاختيار المجزّأة وحالات التمرير.",
+        "surface": "الـ footer والـ segmented controls والـ hover states.",
         "text": "النص والنص الثانوي.",
-        "border": "الحدود.",
-        "radius": "انحناء الزوايا: رقم بالبكسل أو أي طول CSS.",
-        "fontFamily": "خطوط اللوحة."
+        "border": "الـ borders.",
+        "radius": "انحناء الزوايا: رقم بالـ px أو أي CSS length.",
+        "fontFamily": "الـ font stack بتاع اللوحة."
       },
       "methods": {
-        "open": "فتح اللوحة أو إغلاقها أو تبديلها.",
-        "getSettings": "الإعدادات الحالية، كلقطة مجمّدة.",
-        "getState": "الإعدادات، وهل اللوحة مفتوحة.",
-        "setSettings": "دمج التغييرات: كائن، أو دالة تأخذ الإعدادات السابقة. يُتحقق من المدخلات وتُحذف القيم غير الصالحة. تعيين <code>profiles</code> يطبّق تعديلاتها أيضًا.",
-        "toggleProfile": "تفعيل ملف سريع أو إيقافه.",
-        "reset": "إعادة كل تعديل إلى الصفحة كما صمّمتها.",
-        "setOptions": "تغيير خيارات المظهر والسلوك أثناء التشغيل.",
-        "subscribe": "الاستماع لتغيّر الإعدادات وحالة الفتح. يعيد دالة توقف الاستماع.",
-        "destroy": "إزالة الأداة والتراجع عن كل تغيير أجرته على الصفحة."
+        "open": "افتح اللوحة أو اقفلها أو اعملها toggle.",
+        "getSettings": "الإعدادات الحالية، كـ snapshot متجمّدة (frozen).",
+        "getState": "الإعدادات، واللوحة مفتوحة ولا لأ.",
+        "setSettings": "دمج التغييرات: object، أو function بتاخد الإعدادات اللي قبلها. المدخلات بتتعملها validation والقيم الغلط بتتشال. لو حطيت <code>profiles</code> هتتطبق التعديلات بتاعتها كمان.",
+        "toggleProfile": "شغّل profile أو اقفله.",
+        "reset": "رجّع كل تعديل والصفحة ترجع زي ما إنت عاملها.",
+        "setOptions": "غيّر الـ options بتاعة الشكل والسلوك وهو شغال (at runtime).",
+        "subscribe": "اسمع لتغييرات الإعدادات وحالة الفتح. بترجّع function بتوقف الاستماع.",
+        "destroy": "شيل الـ widget وارجع في كل تغيير عمله في الصفحة."
       },
       "react": {
-        "component": "يضيف الأداة بهذه الخيارات. تغيير الخصائص يستدعي <code>setOptions()</code>، وإزالة المكوّن تزيل الأداة. لا يعرض شيئًا بنفسه.",
-        "hook": "اقرأ الأداة وتحكّم بها من أي مكوّن. تكون <code>widget</code> مساوية لـ <code>null</code> إلى أن تُضاف الأداة."
+        "component": "بيركّب الـ widget بالـ options دي. تغيير الـ props بينادي <code>setOptions()</code>، والـ unmount بيشيل الـ widget. هو نفسه مش بيعمل render لأي حاجة.",
+        "hook": "اقرا الـ widget واتحكم فيه من أي component. <code>widget</code> بتبقى <code>null</code> لحد ما يتركّب."
       },
       "exports": {
-        "init": "يضيف الأداة إلى <code>body</code> ويعيدها. استدعاؤه مرة أخرى يستبدل الأداة الموجودة.",
-        "getAccessibilityWidget": "الأداة العاملة حاليًا، إن وُجدت.",
-        "onActiveWidgetChange": "الاستماع لإنشاء أداة أو إزالتها. يعيد دالة توقف الاستماع.",
-        "defaults": "كل الإعدادات بقيمها الافتراضية.",
-        "ranges": "الحد الأدنى والأقصى والخطوة لكل إعداد بالنسبة المئوية.",
-        "profiles": "معرّفات الملفات السريعة، والتعديلات التي يفعّلها كل منها.",
-        "sanitize": "التحقق من مدخلات غير موثوقة وتحويلها إلى إعدادات كاملة.",
-        "languages": "الإنجليزية والعربية، لتوسيعها بلغاتك.",
-        "labels": "النصوص الإنجليزية والعربية."
+        "init": "بيركّب الـ widget على <code>body</code> ويرجّعه. لو ناديته تاني بيبدّل الـ widget الموجود.",
+        "getAccessibilityWidget": "الـ widget اللي شغال دلوقتي، لو فيه.",
+        "onActiveWidgetChange": "اسمع لما widget يتعمل أو يتشال. بترجّع function بتوقف الاستماع.",
+        "defaults": "كل الإعدادات بالقيم الـ default بتاعتها.",
+        "ranges": "الـ minimum والـ maximum والـ step لكل إعداد بالنسبة المئوية.",
+        "profiles": "الـ ids بتاعة الـ profiles، والتعديلات اللي كل profile بيشغّلها.",
+        "sanitize": "اعمل validation لمدخلات مش موثوقة وحوّلها لإعدادات كاملة.",
+        "languages": "الإنجليزي والعربي، عشان تزوّد عليهم لغاتك.",
+        "labels": "النصوص الإنجليزي والعربي."
       },
       "settings": {
-        "profiles": "الملفات السريعة النشطة، بترتيب تفعيلها.",
-        "contentScale": "تكبير الصفحة، بالنسبة المئوية.",
+        "profiles": "الـ profiles الشغالة، بالترتيب اللي اتشغلت بيه.",
+        "contentScale": "تكبير الصفحة (zoom)، بالنسبة المئوية.",
         "fontSize": "حجم النص، بالنسبة المئوية.",
-        "lineHeight": "تباعد الأسطر، بالنسبة المئوية.",
-        "letterSpacing": "تباعد الأحرف، بالنسبة المئوية (لا يُطبَّق على العربية).",
+        "lineHeight": "المسافة بين السطور، بالنسبة المئوية.",
+        "letterSpacing": "المسافة بين الحروف، بالنسبة المئوية (مش بتتطبق على العربي).",
         "textAlign": "محاذاة النص.",
-        "readableFont": "خط بسيط سهل القراءة.",
-        "highlight": "إبراز العناوين / الروابط بإطار.",
-        "textMagnifier": "يعرض النص تحت المؤشر مكبّرًا.",
+        "readableFont": "خط بسيط وسهل في القراية.",
+        "highlight": "إطار حوالين العناوين / اللينكات.",
+        "textMagnifier": "بيعرض النص اللي تحت المؤشر مكبّر.",
         "colorMode": "وضع التباين.",
-        "saturationMode": "مرشّح التشبع.",
+        "saturationMode": "فلتر التشبع.",
         "colors": "ألوان مخصصة للنص والعناوين والخلفية.",
-        "media": "كتم الوسائط، وإخفاء الصور، وإيقاف حركة CSS.",
+        "media": "كتم الميديا، وإخفاء الصور، وإيقاف الـ CSS animations.",
         "guides": "خط القراءة ونافذة التركيز.",
-        "focus": "إطار واضح عند التركيز بلوحة المفاتيح / عند التمرير.",
+        "focus": "إطار واضح عند الـ focus بالكيبورد / عند الـ hover.",
         "cursor": "مؤشر كبير."
       },
       "entries": {
-        "core": "أي إطار عمل، أو JavaScript عادي مع أداة تجميع.",
-        "react": "مكوّن React وخطّاف؛ <code>react</code> بإصدار 18 أو أحدث اعتمادية نظيرة اختيارية.",
-        "global": "نسخة وسم السكربت، نحو 23 KB مضغوطة؛ تكشف <code>window.A11yWidget</code>."
+        "core": "أي framework، أو JavaScript عادي مع bundler.",
+        "react": "React component و hook؛ و<code>react</code> 18 أو أحدث peer dependency اختيارية.",
+        "global": "نسخة الـ script tag، حوالي 23 KB gzipped؛ بتعرض <code>window.A11yWidget</code>."
       }
     }
   },
   "Frameworks": {
-    "eyebrow": "أطر العمل",
-    "title": "تعمل مع أدواتك",
-    "description": "حزمة صغيرة واحدة لكل إطار عمل ونظام إدارة محتوى وصفحة HTML عادية. اختر إطار عملك لترى شيفرة الإعداد.",
-    "package": "الحزمة",
-    "newTab": "(يُفتح في علامة تبويب جديدة)",
-    "requires": "يتطلب <ltr>{version}</ltr>",
-    "installTitle": "التثبيت",
+    "eyebrow": "الـ frameworks",
+    "title": "بيشتغل مع الـ stack بتاعك",
+    "description": "package صغيرة واحدة لكل framework و CMS وصفحة HTML عادية. اختار بتاعك عشان تشوف كود الـ setup.",
+    "package": "الـ package",
+    "newTab": "(بيفتح في tab جديدة)",
+    "requires": "محتاج <ltr>{version}</ltr>",
+    "installTitle": "التسطيب",
     "usageTitle": "الاستخدام",
     "notes": "ملاحظات",
-    "open": "اطّلع على الإعداد",
-    "statementTitle": "بيان إمكانية الوصول",
-    "statement": "مرّر <code>statementUrl</code> لربط بيان إمكانية الوصول الخاص بك من تذييل اللوحة.",
+    "open": "شوف الـ setup",
+    "statementTitle": "الـ accessibility statement",
+    "statement": "مرّر <code>statementUrl</code> عشان تحط لينك للـ accessibility statement بتاعك في الـ footer بتاع اللوحة.",
     "items": {
       "vanilla": {
-        "name": "HTML و JavaScript",
-        "blurb": "وسم سكربت واحد واستدعاء واحد، دون أي خطوة بناء. أو استوردها من npm في أي أداة تجميع.",
+        "name": "HTML / JavaScript عادي",
+        "blurb": "script tag واحد واستدعاء واحد، من غير أي build step. أو اعمله import من npm في أي bundler.",
         "snippets": {
-          "script": "وسم السكربت",
-          "bundler": "أداة التجميع"
+          "script": "Script tag",
+          "bundler": "Bundler"
         },
         "notes": [
-          "نسخة وسم السكربت تكشف كل التصديرات على <code>window.A11yWidget</code>، مثل <code>A11yWidget.getAccessibilityWidget()?.open()</code>.",
-          "استدعاء <code>init()</code> مرة أخرى يستبدل الأداة الموجودة.",
-          "الصفحات التي تستبدل <code>body</code> (مثل Hotwire Turbo و<code>hx-boost</code> في htmx) مدعومة: تعيد الأداة ربط نفسها وتطبيق إعدادات الزائر."
+          "نسخة الـ script tag بتعرض كل الـ exports على <code>window.A11yWidget</code>، زي مثلًا <code>A11yWidget.getAccessibilityWidget()?.open()</code>.",
+          "لو ناديت <code>init()</code> تاني، هيبدّل الـ widget الموجود.",
+          "الصفحات اللي بتبدّل الـ <code>body</code> (زي Hotwire Turbo و <code>hx-boost</code> في htmx) مدعومة: الـ widget بيرجع يركّب نفسه ويطبّق إعدادات الزائر تاني."
         ]
       },
       "react": {
         "name": "React",
-        "blurb": "مكوّن وخطّاف، لتطبيقات Vite وRemix وGatsby وأي تطبيق React 18 أو 19.",
+        "blurb": "component و hook، لـ Vite و Remix و Gatsby وأي app بـ React 18 أو 19.",
         "notes": [
-          "لا يعرض المكوّن شيئًا بنفسه: تُضاف الأداة إلى <code>body</code>.",
-          "تغيير خاصية يحدّث الأداة العاملة عبر <code>setOptions()</code>، وإزالة المكوّن تزيلها.",
-          "تعيد <code>useAccessibility()</code> الإعدادات الحالية، وهل اللوحة مفتوحة، والأداة نفسها (<code>null</code> إلى أن تُضاف)."
+          "الـ component نفسه مش بيعمل render لأي حاجة: الـ widget بيتركّب على <code>body</code>.",
+          "تغيير أي prop بيحدّث الـ widget الشغال عن طريق <code>setOptions()</code>، والـ unmount بتاع الـ component بيشيله.",
+          "<code>useAccessibility()</code> بترجّع الإعدادات الحالية، واللوحة مفتوحة ولا لأ، والـ widget نفسه (<code>null</code> لحد ما يتركّب)."
         ]
       },
       "next": {
         "name": "Next.js",
-        "blurb": "ضع المكوّن في التخطيط الجذري. نقطة دخول React مُعلَّمة مسبقًا بـ «use client».",
+        "blurb": "حط الـ component في الـ root layout بتاعك. الـ React entry متعلّم عليها «use client» من الأول.",
         "notes": [
-          "يعمل داخل تخطيط من مكوّنات الخادم، دون أي غلاف من عندك.",
-          "لا يعمل شيء على الخادم: تبدأ الأداة في المتصفح بعد الترطيب (hydration).",
-          "مع سياسة CSP تعتمد على nonce، مرّر قيمة الطلب في <code>nonce</code>.",
-          "هذا الموقع مبني بـ Next.js ويستخدم المكوّن في تخطيطه الجذري."
+          "بيشتغل جوه layout معمول كـ Server Component، من غير أي wrapper من عندك.",
+          "مفيش حاجة بتشتغل على السيرفر: الـ widget بيبدأ في المتصفح بعد الـ hydration.",
+          "مع CSP معتمدة على nonce، مرّر الـ nonce بتاع الـ request في <code>nonce</code>.",
+          "الموقع ده معمول بـ Next.js وبيستخدم الـ component في الـ root layout بتاعه."
         ]
       },
       "vue": {
         "name": "Vue",
-        "blurb": "شغّلها في onMounted وأزلها في onBeforeUnmount.",
+        "blurb": "شغّله في onMounted وشيله في onBeforeUnmount.",
         "notes": [
-          "استدعِ <code>init()</code> في المكوّن الجذري لتعمل مرة واحدة للتطبيق كله.",
-          "مع Nuxt استخدم إضافة تعمل في المتصفح فقط بدلًا من ذلك (انظر Nuxt)."
+          "نادي <code>init()</code> في الـ root component، عشان يشتغل مرة واحدة للـ app كله.",
+          "مع Nuxt، استخدم plugin بيشتغل على الـ client بس بدل كده (شوف Nuxt)."
         ]
       },
       "nuxt": {
         "name": "Nuxt",
-        "blurb": "إضافة تعمل في المتصفح فقط تشغّل الأداة مرة واحدة للتطبيق كله.",
+        "blurb": "plugin بيشتغل على الـ client بس، وبيشغّل الـ widget مرة واحدة للـ app كله.",
         "notes": [
-          "اللاحقة <code>.client</code> تُبقي الإضافة خارج العرض من جهة الخادم.",
-          "تحتفظ الأداة بحالتها عند التنقل بين المسارات."
+          "الـ suffix <code>.client</code> بيخلّي الـ plugin برّه الـ server rendering.",
+          "الـ widget بيحتفظ بالـ state بتاعته لما تتنقل بين الـ routes."
         ]
       },
       "angular": {
         "name": "Angular",
-        "blurb": "شغّلها بعد أول عرض، خارج الـ zone.",
+        "blurb": "شغّله بعد أول render، برّه الـ zone.",
         "notes": [
-          "تمنع <code>runOutsideAngular</code> مستمعي الأداة من تشغيل اكتشاف التغييرات. التطبيقات التي تعمل دون zone لا تحتاجها.",
-          "مع Angular SSR استخدم <code>afterNextRender</code> أو تحقق بـ <code>isPlatformBrowser</code>."
+          "<code>runOutsideAngular</code> بتمنع الـ listeners بتوع الـ widget إنهم يشغّلوا change detection. الـ apps اللي zoneless مش محتاجاها.",
+          "مع Angular SSR، استخدم <code>afterNextRender</code> أو اتأكد بـ <code>isPlatformBrowser</code>."
         ]
       },
       "svelte": {
         "name": "Svelte",
-        "blurb": "شغّلها في onMount داخل التخطيط الجذري؛ والدالة التي تعيدها تزيل الأداة.",
+        "blurb": "شغّله في onMount جوه الـ root layout؛ والـ function اللي بترجّعها بتشيل الـ widget.",
         "notes": [
-          "في SvelteKit تعمل <code>onMount</code> في المتصفح فقط.",
-          "ضعها في <code>+layout.svelte</code> الجذري لتبقى عبر الصفحات."
+          "في SvelteKit، <code>onMount</code> بتشتغل في المتصفح بس.",
+          "حطه في الـ <code>+layout.svelte</code> الرئيسي عشان يفضل موجود في كل الصفحات."
         ]
       },
       "astro": {
         "name": "Astro",
-        "blurb": "سكربت في التخطيط: يجمّعه Astro ويشغّله في المتصفح.",
+        "blurb": "script في الـ layout بتاعك: Astro بيعمله bundle ويشغّله في المتصفح.",
         "notes": [
-          "مع انتقالات العرض (view transitions) تعيد الأداة ربط نفسها وتطبيق إعدادات الزائر بعد كل تنقل.",
-          "يجمّع Astro وسوم <code>script</code>، فيعمل الاستيراد دون أي توجيه client."
+          "مع الـ view transitions، الـ widget بيرجع يركّب نفسه ويطبّق إعدادات الزائر تاني بعد كل تنقّل.",
+          "Astro بيعمل bundle للـ <code>script</code> tags، فالـ import بيشتغل من غير أي client directive."
         ]
       },
       "cms": {
-        "name": "WordPress وأنظمة إدارة المحتوى",
-        "blurb": "الصق سكربتًا واحدًا قبل وسم إغلاق body: في WordPress أو Shopify أو Webflow أو Wix أو قوالب PHP وDjango.",
+        "name": "WordPress وأنظمة الـ CMS",
+        "blurb": "الصق script واحد قبل الـ closing tag بتاع body: في WordPress أو Shopify أو Webflow أو Wix أو templates بـ PHP أو Django.",
         "snippets": {
-          "footer": "التذييل"
+          "footer": "الـ Footer"
         },
         "notes": [
-          "استخدم تذييل القالب، أو إضافة للترويسة والتذييل، أو إعداد «الشيفرة المخصصة» في نظامك.",
-          "أبقِ على السمة <code>integrity</code>: يرفض المتصفح الملف إن قدّمت CDN أي شيء آخر.",
-          "لتنسيقها دون JavaScript، عيّن متغيرات CSS الخاصة بها (انظر دليل الألوان)."
+          "استخدم الـ footer بتاع الـ theme، أو plugin للـ header والـ footer، أو إعداد «custom code» في الـ CMS بتاعك.",
+          "سيب الـ attribute <code>integrity</code> زي ما هو: المتصفح هيرفض الملف لو الـ CDN قدّم أي حاجة تانية في يوم من الأيام.",
+          "عشان تعمله theme من غير JavaScript، حدّد الـ CSS variables بتاعته (شوف شرح الألوان)."
         ]
       }
     }
   },
   "Guides": {
-    "title": "الأدلة",
-    "description": "المظهر، واللغات، وعناصر التحكم، والخصوصية، والأمان، وما لا تستطيع الأداة فعله.",
-    "read": "اقرأ الدليل",
-    "scroll": "جدول قابل للتمرير:",
+    "title": "الشروحات",
+    "description": "الـ theming، واللغات، والـ controls، والخصوصية، والأمان، واللي الـ widget مايقدرش يعمله.",
+    "read": "اقرا الشرح",
+    "scroll": "جدول بيعمل scroll:",
     "theming": {
-      "title": "الألوان والشعار والموضع",
-      "summary": "طابِق الأداة مع علامتك التجارية: الألوان والزوايا والخط والشعار وجهة الشاشة والحجم.",
-      "intro": "تأتي الأداة بتنسيقاتها الخاصة ولا ترث CSS موقعك أبدًا، فتبدو متطابقة في كل صفحة. نسّقها بالخيارات أو بمتغيرات CSS.",
+      "title": "الألوان واللوجو والمكان",
+      "summary": "خلّي الـ widget شبه البراند بتاعك: الألوان، والـ radius، والخط، واللوجو، وناحية الشاشة، والحجم.",
+      "intro": "الـ widget جايب الـ styles بتاعته معاه وعمره ما بياخد الـ CSS بتاع موقعك، فبيبان بنفس الشكل في كل صفحة. اعمله theme بالـ options أو بالـ CSS variables.",
       "sections": {
         "colors": {
-          "title": "ألوان المظهر",
-          "text": "مرّر كائن <code>theme</code>. يلوّن <code>primary</code> زر الفتح والترويسة والحالات النشطة، و<code>onPrimary</code> هو لون النص والأيقونات فوقه. كل المفاتيح اختيارية."
+          "title": "ألوان الـ theme",
+          "text": "مرّر object اسمه <code>theme</code>. <code>primary</code> بيلوّن زرار الفتح والـ header والـ active states، و<code>onPrimary</code> هو لون النص والأيقونات فوقه. كل الـ keys اختيارية."
         },
         "css": {
-          "title": "متغيرات CSS",
-          "text": "حين يضيف نظام إدارة محتوى أو مدير وسوم الأداة، نسّقها من CSS. توضع المتغيرات على <code>.a11yw-widget</code>، ويحدّد <code>--a11yw-hl</code> على <code>:root</code> لون إطار تعديلات الإبراز."
+          "title": "الـ CSS variables",
+          "text": "لما CMS أو tag manager هو اللي بيضيف الـ widget، اعمله theme من الـ CSS. الـ variables بتتحط على <code>.a11yw-widget</code>، و<code>--a11yw-hl</code> على <code>:root</code> بيحدد لون الإطار بتاع تعديلات الإبراز (highlight)."
         },
         "contrast": {
           "title": "فحص التباين",
-          "text": "يظهر تحذير في وحدة التحكم حين يجعل مظهرك جزءًا من الأداة يفشل في تباين WCAG. يشمل الفحص الألوان السداسية فقط.",
+          "text": "هيظهرلك warning في الـ console لو الـ theme بتاعك خلّى جزء من الـ widget يفشل في تباين WCAG. الفحص بيشمل الألوان الـ hex بس.",
           "items": [
             "<code>onPrimary</code> فوق <code>primary</code>: ‎4.5:1.",
-            "<code>primary</code> كإطار للتركيز فوق <code>background</code>: ‎3:1.",
-            "<code>text</code> و<code>mutedText</code> فوق <code>background</code>، وروابط التذييل فوق <code>surface</code>: ‎4.5:1."
+            "<code>primary</code> كإطار للـ focus فوق <code>background</code>: ‎3:1.",
+            "<code>text</code> و<code>mutedText</code> فوق <code>background</code>، ولينكات الـ footer فوق <code>surface</code>: ‎4.5:1."
           ]
         },
         "logo": {
-          "title": "الشعار",
-          "text": "يستبدل <code>icon</code> أيقونة زر الفتح، ويضيف <code>logo</code> شعارًا بجانب عنوان اللوحة. كلاهما يقبل رابط صورة أو عنصر DOM. لا تمرّر إلا عناصر تثق بها: فهي تُنسخ كما هي."
+          "title": "اللوجو",
+          "text": "<code>icon</code> بيبدّل أيقونة زرار الفتح، و<code>logo</code> بيضيف لوجو جنب عنوان اللوحة. الاتنين بيقبلوا URL لصورة أو DOM element. ماتمرّرش غير elements إنت واثق فيها: لأنها بتتنسخ زي ما هي."
         },
         "placement": {
-          "title": "الموضع والحجم",
-          "text": "يقع زر الفتح في إحدى الزاويتين السفليتين. حين يصل التركيز بلوحة المفاتيح إلى عنصر في الصفحة تحته، يتنحّى حتى ينتقل التركيز (WCAG 2.4.11)، لكنه يبقى فوق تلك الزاوية لمستخدمي الفأرة واللمس: أبقِها خالية، أو أضف هامشًا سفليًا لصفحتك، أو حرّك الزر بـ <code>offset</code>."
+          "title": "المكان والحجم",
+          "text": "زرار الفتح بيقعد في ركن من الركنين اللي تحت. لما الـ focus بالكيبورد يوصل لعنصر في الصفحة تحته، بيتنحّى على جنب لحد ما الـ focus يتحرك (WCAG 2.4.11)، بس بيفضل مغطّي الركن ده لمستخدمي الماوس واللمس: سيبه فاضي، أو زوّد padding تحت في صفحتك، أو حرّك الزرار بـ <code>offset</code>."
         }
       }
     },
     "languages": {
-      "title": "اللغات والكتابة من اليمين",
-      "summary": "الإنجليزية والعربية مدمجتان. أضف لغاتك، أو غيّر نصوصًا مفردة، أو افرض اتجاهًا.",
-      "intro": "يبدّل الزوار اللغة من القائمة في ترويسة اللوحة، ويتبع اتجاه اللوحة اللغة المختارة.",
+      "title": "اللغات والـ RTL",
+      "summary": "الإنجليزي والعربي موجودين جوّاه. ضيف لغاتك، أو غيّر نصوص معينة، أو اجبر اتجاه معين.",
+      "intro": "الزوار بيغيّروا اللغة من القائمة اللي في الـ header بتاع اللوحة، واتجاه اللوحة بيمشي ورا اللغة.",
       "sections": {
         "choose": {
-          "title": "لغة البدء",
-          "text": "تبدأ الأداة بآخر اختيار للزائر، وإلا فبلغة الصفحة في <code>html lang</code> (فالقيمة <code>ar-EG</code> تعطي العربية من اليمين إلى اليسار)، وإلا فبأول لغة في القائمة. مرّر <code>language</code> لتختارها بنفسك، أو <code>languages: false</code> لإخفاء القائمة."
+          "title": "لغة البداية",
+          "text": "الـ widget بيبدأ بآخر اختيار للزائر، ولو مفيش فبلغة الصفحة في <code>html lang</code> (يعني <code>ar-EG</code> بتدّي عربي من اليمين للشمال)، ولو مفيش فبأول لغة في الليستة. مرّر <code>language</code> عشان تختارها بنفسك، أو <code>languages: false</code> عشان تخفي القائمة."
         },
         "custom": {
-          "title": "إضافة لغة",
-          "text": "أضف عناصرك بجانب <code>builtInLanguages</code>. النصوص الناقصة في أي لغة تعود إلى الإنجليزية."
+          "title": "ضيف لغة",
+          "text": "ضيف الـ entries بتاعتك جنب <code>builtInLanguages</code>. أي نصوص ناقصة في لغة بترجع للإنجليزي."
         },
         "strings": {
-          "title": "تغيير نصوص مفردة",
-          "text": "يستبدل <code>labels</code> نصوصًا فوق اللغة النشطة أيًّا كانت. يمكن لـ <code>increase</code> و<code>decrease</code> و<code>reset</code> وضع اسم الإعداد بـ <code>'{'label'}'</code>؛ ودونه يُضاف الاسم في النهاية. تُنسَّق النسب المئوية بحسب اللغة النشطة."
+          "title": "غيّر نصوص معينة",
+          "text": "<code>labels</code> بيغيّر النصوص فوق أي لغة شغالة. <code>increase</code> و<code>decrease</code> و<code>reset</code> ممكن يحطوا اسم الإعداد بـ <code>'{'label'}'</code>؛ ومن غيره، الاسم بيتضاف في الآخر. النسب المئوية بتتكتب بتنسيق اللغة الشغالة."
         },
         "rtl": {
           "title": "الاتجاه",
-          "text": "اللغة المخصصة دون <code>dir</code> تُعرض من اليمين إلى اليسار إن كان رمزها للغة تُكتب من اليمين (<code>ar</code> و<code>he</code> و<code>fa</code> و<code>ur</code>…). ويفرض <code>dir</code> اتجاهًا واحدًا لكل اللغات."
+          "text": "اللغة المخصصة اللي مفيهاش <code>dir</code> بتتعرض من اليمين للشمال لو الكود بتاعها للغة بتتكتب من اليمين (<code>ar</code> و<code>he</code> و<code>fa</code> و<code>ur</code>…). و<code>dir</code> بيجبر اتجاه واحد لكل اللغات."
         }
       }
     },
     "controls": {
-      "title": "عناصر التحكم والقيم الافتراضية والملفات السريعة",
-      "summary": "أزل عناصر التحكم التي لا تقدّمها، وحدّد قيم الزيارة الأولى، واعرف ما يفعّله كل ملف سريع.",
-      "intro": "يرى كل زائر اللوحة كاملة ما لم تُزل أجزاء منها، واختياراته الخاصة تتقدّم دائمًا على قيمك الافتراضية.",
+      "title": "الـ controls والـ defaults والـ profiles",
+      "summary": "شيل الـ controls اللي مش بتقدّمها، وحدّد القيم الـ default لأول زيارة، واعرف كل profile سريع بيشغّل إيه.",
+      "intro": "كل زائر بيشوف اللوحة كاملة إلا لو شلت أجزاء منها، واختياراته هو دايمًا بتكسب على الـ defaults بتاعتك.",
       "sections": {
         "remove": {
-          "title": "إزالة عناصر التحكم",
-          "text": "اجعل عنصر تحكم <code>false</code> في <code>features</code> لإزالته؛ والإعداد المُزال يبقى متوقفًا. يمكن إزالة أي إعداد، إضافة إلى <code>profiles</code> (شبكة الملفات السريعة كلها) و<code>readMode</code>. وتُخفى بطاقة الملف السريع إن أُزيلت كل تعديلاتها."
+          "title": "شيل controls",
+          "text": "خلّي أي control بـ <code>false</code> في <code>features</code> عشان تشيله؛ والإعداد اللي اتشال بيفضل مقفول. أي إعداد ممكن يتشال، وكمان <code>profiles</code> (الـ grid بتاعة الـ profiles كلها) و<code>readMode</code>. كارت الـ profile بيستخبى لو كل تعديلاته اتشالت."
         },
         "defaults": {
-          "title": "قيم الزيارة الأولى",
-          "text": "تُطبَّق <code>initialSettings</code> على الزوار الذين لم يحفظوا شيئًا. وحين يغيّرون شيئًا، يُحفظ اختيارهم ويتقدّم. أما «إعادة ضبط الكل» فتعيد الصفحة كما صمّمتها، لا إلى هذه القيم."
+          "title": "قيم أول زيارة",
+          "text": "<code>initialSettings</code> بتتطبق على الزوار اللي مش حافظين أي حاجة. أول ما يغيّروا حاجة، اختيارهم بيتحفظ وبيكسب. أما «إعادة ضبط الكل» فبترجّع الصفحة زي ما إنت عاملها، مش للقيم دي."
         },
         "profiles": {
-          "title": "الملفات السريعة",
-          "text": "تفعّل الملفات السريعة عدة تعديلات دفعة واحدة. ليست أدوات طبية ولا تجعل الصفحة آمنة لأي حالة. يستطيع الزوار تغيير أي تعديل بعدها، وإيقاف الملف يُبقي التعديلات التي غيّروها. المعرّفات باقية للتوافق، والأسماء تصف ما تفعله الملفات."
+          "title": "الـ profiles السريعة",
+          "text": "الـ profiles بتشغّل كذا تعديل مرة واحدة. هي مش أدوات طبية، ومش بتخلّي الصفحة آمنة لأي حالة. الزوار يقدروا يغيّروا أي تعديل بعدها، ولو قفلوا الـ profile التعديلات اللي غيّروها بتفضل زي ما هي. الـ ids فاضلة زي ما هي عشان الـ compatibility، والأسامي بتوصف الـ profiles بتعمل إيه."
         },
         "precedence": {
-          "title": "ما الذي يتقدّم",
-          "text": "من الأدنى أولوية إلى الأعلى:",
+          "title": "مين بيكسب",
+          "text": "من الأقل أولوية للأعلى:",
           "items": [
-            "<strong>تنسيقات موقعك</strong>: ما يراه كل زائر افتراضيًا.",
-            "<strong>إعدادات نظام التشغيل والمتصفح</strong> (<code>prefers-reduced-motion</code> و<code>forced-colors</code> والتكبير وحجم الخط الافتراضي): لا تتجاوزها الأداة أبدًا ولا تفعّل شيئًا بسببها. وفي وضع forced-colors تتوقف مرشّحات الألوان فيها.",
-            "<strong>initialSettings</strong>: قيمك الافتراضية للزوار الجدد.",
-            "<strong>اختيارات الزائر المحفوظة</strong>: تتقدّم دائمًا بعد أن يحدّدها."
+            "<strong>الـ styles بتاعة موقعك</strong>: اللي كل زائر بيشوفه من الأول.",
+            "<strong>إعدادات نظام التشغيل والمتصفح</strong> (<code>prefers-reduced-motion</code> و<code>forced-colors</code> والـ zoom وحجم الخط الـ default): الـ widget عمره ما بيلغيها ولا بيشغّل أي حاجة بسببها. وفي وضع forced-colors الـ color filters بتاعته بتبقى مقفولة.",
+            "<strong>initialSettings</strong>: الـ defaults بتاعتك للزوار الجداد.",
+            "<strong>اختيارات الزائر المحفوظة</strong>: دايمًا بتكسب أول ما يحددها."
           ]
         }
       },
-      "profilesCaption": "الملفات السريعة",
-      "colProfile": "الملف",
-      "colOn": "ما يفعّله",
-      "colWatch": "انتبه إلى",
+      "profilesCaption": "الـ profiles السريعة",
+      "colProfile": "الـ profile",
+      "colOn": "بيشغّل إيه",
+      "colWatch": "خلّي بالك من",
       "profiles": [
         {
           "name": "الحساسية للحركة",
           "on": "إيقاف الحركة، تشبّع منخفض",
-          "watch": "صور GIF وعنصر canvas والفيديو داخل iframe من نطاق آخر والحركة التي ترسمها السكربتات إطارًا بإطار لا تتوقف"
+          "watch": "صور الـ GIF والـ canvas والفيديو اللي جوه iframe من origin تاني والأنيميشن اللي الـ scripts بترسمها frame بـ frame مش بتقف"
         },
         {
           "name": "ضعف البصر",
           "on": "نص 120%، خط سهل القراءة، تباين عالٍ",
-          "watch": "مرشّح التباين يغيّر الصور أيضًا"
+          "watch": "فلتر التباين بيغيّر الصور كمان"
         },
         {
           "name": "وضع التركيز",
           "on": "نافذة التركيز، إيقاف الحركة، تشبّع منخفض",
-          "watch": "النافذة تتبع المؤشر واللمس والتركيز بلوحة المفاتيح"
+          "watch": "النافذة بتمشي ورا المؤشر واللمس والـ focus بالكيبورد"
         },
         {
           "name": "قراءة أسهل",
           "on": "تمييز العناوين والروابط، خط القراءة، خط سهل القراءة",
-          "watch": "الإطارات تضيف ازدحامًا بصريًا في الصفحات المزدحمة"
+          "watch": "الإطارات بتزوّد الزحمة في الصفحات المليانة"
         },
         {
           "name": "مستخدم لوحة المفاتيح",
@@ -561,149 +562,149 @@
         {
           "name": "وسائط هادئة",
           "on": "كتم الوسائط، تمييز التركيز",
-          "watch": "الوسائط التي يشغّلها الزائر أو يلغي كتمها تبقى بصوتها"
+          "watch": "الميديا اللي الزائر يشغّلها أو يفك كتمها بتفضل بصوتها"
         },
         {
           "name": "قراءة مريحة",
           "on": "نص 120%، تباعد أسطر 130%، خط سهل القراءة، مؤشر كبير",
-          "watch": "المؤشر الكبير يحل محل حجم مؤشر النظام"
+          "watch": "المؤشر الكبير بياخد مكان حجم مؤشر السيستم"
         }
       ]
     },
     "accessibility": {
-      "title": "إمكانية الوصول في الأداة نفسها",
-      "summary": "كيف تعمل اللوحة مع لوحة المفاتيح وقارئات الشاشة والتباين العالي وتقليل الحركة، وكيف تُختبر.",
-      "intro": "الأداة التي تقدّم إعدادات إمكانية الوصول يجب أن تكون سهلة الوصول هي نفسها. تتبع اللوحة أنماط WAI-ARIA وتُختبر في كل إصدار.",
+      "title": "الـ accessibility بتاعة الـ widget نفسه",
+      "summary": "اللوحة بتشتغل إزاي مع الكيبورد والـ screen readers والتباين العالي والـ reduced motion، وبتتختبر إزاي.",
+      "intro": "الـ widget اللي بيقدّم إعدادات accessibility لازم يكون هو نفسه accessible. اللوحة ماشية على patterns الـ WAI-ARIA وبتتختبر في كل إصدار.",
       "sections": {
         "keyboard": {
-          "title": "لوحة المفاتيح",
-          "text": "كل شيء يعمل دون فأرة."
+          "title": "الكيبورد",
+          "text": "كل حاجة بتشتغل من غير ماوس."
         },
         "patterns": {
-          "title": "ما تجده التقنيات المساعدة",
-          "text": "تستخدم اللوحة أدوارًا وحالات قياسية، فتعلن عنها قارئات الشاشة كأي عنصر تحكم آخر.",
+          "title": "الـ assistive technology بتلاقي إيه",
+          "text": "اللوحة بتستخدم roles و states قياسية، فالـ screen readers بتقراها زي أي control تاني.",
           "items": [
-            "اللوحة نافذة حوار مشروطة مع حصر للتركيز. وأثناء فتحها تكون بقية الصفحة <code>inert</code>، فيبقى المؤشر الافتراضي لقارئ الشاشة داخلها. يغلقها زر Escape أو زر الإغلاق أو النقر خارجها، ويعود التركيز إلى زر الفتح.",
-            "الأقسام أكورديون (<code>aria-expanded</code>)، والمفاتيح من نوع switch (<code>role=\"switch\"</code>)، وبطاقات الملفات أزرار تبديل (<code>aria-pressed</code>)، والاختيارات المجزّأة مجموعات اختيار.",
-            "تعلن أزرار الزيادة والنقصان القيمة الجديدة مع اسمها («حجم النص 120%») وتخبر عند بلوغ الحد. وتُعلن إعادة الضبط أيضًا.",
-            "قائمة اللغات مربع تحرير وسرد للاختيار فقط مع قائمة خيارات: الأسهم وHome وEnd والكتابة للقفز.",
-            "مساحات اللمس 30×30 بكسل على الأقل، وتتبع اللوحة حجم الخط الافتراضي في المتصفح.",
-            "حين يصل التركيز بلوحة المفاتيح إلى عنصر في الصفحة تحت زر الفتح، يتنحّى الزر حتى ينتقل التركيز (WCAG 2.4.11). ويبقى فوق زاويته لمستخدمي الفأرة واللمس.",
-            "لا تعدّل الأداة نفسها أبدًا: حجم النص والتباعد والألوان والمرشّحات تُطبّق على الصفحة فقط، فتبقى اللوحة بالشكل والسلوك نفسيهما دائمًا.",
-            "تحترم <code>prefers-reduced-motion</code> ووضع التباين العالي في Windows (<code>forced-colors</code>)، حيث تتوقف مرشّحات الألوان فيها لتتقدّم ألوان النظام."
+            "اللوحة modal dialog فيها focus trap. وهي مفتوحة، باقي الصفحة بيبقى <code>inert</code>، فالـ virtual cursor بتاع الـ screen reader بيفضل جوّاها. Escape أو زرار الإغلاق أو كليك برّاها بيقفلها، والـ focus بيرجع لزرار الفتح.",
+            "الأقسام accordion (<code>aria-expanded</code>)، والـ toggles عبارة عن switches (<code>role=\"switch\"</code>)، وكروت الـ profiles عبارة عن toggle buttons (<code>aria-pressed</code>)، والاختيارات الـ segmented عبارة عن radio groups.",
+            "أزرار الزيادة والنقصان (steppers) بتعلن القيمة الجديدة مع اسمها («حجم النص 120%») وبتقول لما توصل للحد. وإعادة الضبط كمان بتتعلن.",
+            "قائمة اللغات combobox للاختيار بس (select-only) ومعاها listbox: الأسهم، و Home و End، والكتابة عشان تنط على طول (type-ahead).",
+            "الـ touch targets على الأقل 30 في 30 pixel، واللوحة بتمشي ورا حجم الخط الـ default في المتصفح.",
+            "لما الـ focus بالكيبورد يوصل لعنصر في الصفحة تحت زرار الفتح، الزرار بيتنحّى على جنب لحد ما الـ focus يتحرك (WCAG 2.4.11). وبيفضل مغطّي الركن بتاعه لمستخدمي الماوس واللمس.",
+            "الـ widget عمره ما بيعدّل نفسه: حجم النص والمسافات والألوان والفلاتر بتتطبق على الصفحة بس، فاللوحة دايمًا شكلها وطريقة شغلها واحدة.",
+            "بيحترم <code>prefers-reduced-motion</code> و Windows High Contrast (<code>forced-colors</code>)، وفي الوضع ده الـ color filters بتاعته بتتقفل عشان ألوان السيستم هي اللي تكسب."
           ]
         },
         "testing": {
           "title": "الاختبار",
-          "text": "يعمل كل إصدار في Chrome دون واجهة مع axe-core (دون السماح بأي مخالفة) وسيناريوهات لوحة المفاتيح فقط، وتشمل إدارة التركيز وإعادة التدفق عند عرض 320 بكسل و<code>destroy()</code>. لا تُغني الاختبارات الآلية عن قارئات الشاشة الحقيقية، لذا تُطلب جولة يدوية مع NVDA وJAWS وVoiceOver وTalkBack ووضع التباين العالي في Windows قبل الإصدارات الكبيرة، وتُسجَّل في <code>docs/at-test-matrix.md</code>."
+          "text": "كل إصدار بيتشغّل في headless Chrome مع axe-core (من غير ما نسمح بأي violation) و scripts بالكيبورد بس، وبتغطي التعامل مع الـ focus، والـ reflow على عرض 320 pixel، و<code>destroy()</code>. الاختبارات الأوتوماتيك مش بتغني عن screen readers حقيقية، فقبل الإصدارات الكبيرة بنطلب جولة يدوي مع NVDA و JAWS و VoiceOver و TalkBack و Windows High Contrast، وبتتسجّل في <code>docs/at-test-matrix.md</code>. تقرير المطابقة بتاع الـ widget (Accessibility Conformance Report، بصيغة VPAT 2.5 INT: WCAG 2.2 و EN 301 549 و Section 508) موجود في <code>docs/ACR.md</code>، وهيفضل draft، والنتايج اللي محتاجة اختبار بشري مكتوب قدامها Pending، لحد ما الجولة دي تتسجّل."
         }
       },
-      "keysCaption": "اختصارات لوحة المفاتيح",
-      "colKeys": "المفاتيح",
-      "colAction": "ما تفعله",
+      "keysCaption": "اختصارات الكيبورد",
+      "colKeys": "الزراير",
+      "colAction": "بتعمل إيه",
       "keys": [
-        "فتح اللوحة أو إغلاقها. ويعيد الأداة أيضًا بعد «إخفاء الأداة».",
-        "إغلاق اللوحة (أو قائمة اللغات، أو وضع القراءة)؛ ويعود التركيز إلى مكانه.",
-        "التنقل بين عناصر التحكم. يبقى التركيز داخل اللوحة أثناء فتحها.",
-        "ضغط الأزرار والمفاتيح وبطاقات الملفات، وفتح الأقسام وإغلاقها.",
-        "التنقل بين خيارات الاختيار المجزّأ.",
-        "التنقل في قائمة اللغات؛ اكتب حرفًا للقفز إلى لغة."
+        "تفتح اللوحة أو تقفلها. وكمان بترجّع الـ widget بعد «إخفاء الأداة».",
+        "تقفل اللوحة (أو قائمة اللغات، أو وضع القراءة)؛ والـ focus بيرجع مكانه.",
+        "تتنقل بين الـ controls. الـ focus بيفضل جوه اللوحة وهي مفتوحة.",
+        "تدوس على الأزرار والـ switches وكروت الـ profiles؛ وتفتح الأقسام وتقفلها.",
+        "تتنقل بين اختيارات الـ segmented choice.",
+        "تتنقل في قائمة اللغات؛ اكتب حرف عشان تنط على لغة."
       ],
-      "noteTitle": "بيان إمكانية الوصول",
-      "note": "بيان إمكانية الوصول للأداة نفسها، مع مشكلاتها المعروفة، هو الملف <code>ACCESSIBILITY.md</code> في المستودع."
+      "noteTitle": "الـ accessibility statement",
+      "note": "الـ accessibility statement بتاع الـ widget نفسه، ومعاه المشاكل المعروفة، هو الملف <code>ACCESSIBILITY.md</code> في الـ repository."
     },
     "privacy": {
       "title": "الخصوصية والتخزين",
-      "summary": "ما الذي تحفظه الأداة، ومن يستطيع قراءته، وكيف تنتظر موافقة الزائر.",
-      "intro": "تعمل الأداة بالكامل في متصفح الزائر.",
+      "summary": "الـ widget بيحفظ إيه، ومين يقدر يقراه، وإزاي تستنى موافقة الزائر.",
+      "intro": "الـ widget بيشتغل بالكامل في متصفح الزائر.",
       "sections": {
         "network": {
-          "title": "لا شبكة ولا ملفات تعريف ارتباط",
-          "text": "لا ترسل أي طلبات شبكة، ولا تضع ملفات تعريف ارتباط، ولا تحليلات فيها. الطلب الوحيد هو السكربت نفسه، من خادمك أو من CDN."
+          "title": "لا network ولا cookies",
+          "text": "مش بيبعت أي network requests، ولا بيحط cookies، ومفيهوش analytics. الـ request الوحيد هو الـ script نفسه، من السيرفر بتاعك أو من الـ CDN."
         },
         "stored": {
-          "title": "ما الذي يُحفظ",
-          "text": "مع <code>persist: true</code> (الافتراضي) تستخدم مفتاحين في localStorage على نطاقك: <code>a11yw-settings</code> يحفظ تعديلات الزائر والملفات النشطة، ويُحذف حين يعود كل شيء إلى الافتراضي؛ و<code>a11yw-settings:lang</code> يحفظ اللغة المختارة. ويغيّر <code>storageKey</code> الاسم."
+          "title": "إيه اللي بيتحفظ",
+          "text": "مع <code>persist: true</code> (الـ default) بيستخدم اتنين keys في الـ localStorage على الـ origin بتاعك: <code>a11yw-settings</code> فيه تعديلات الزائر والـ profiles الشغالة، وبيتمسح لما كل حاجة ترجع للـ default؛ و<code>a11yw-settings:lang</code> فيه اللغة المختارة. و<code>storageKey</code> بيغيّر الاسم."
         },
         "readers": {
-          "title": "من يستطيع قراءته",
-          "text": "أي سكربت على النطاق نفسه (التحليلات، ومديرو الوسوم، وإعادة تشغيل الجلسات) يستطيع قراءة هذين المفتاحين، والأصناف <code>a11yw-*</code> على <code>html</code>، والسمات <code>data-a11yw-fs</code>. معرّفات الملفات مثل <code>visionImpaired</code> تصف التعديلات، لكنها قد تُقرأ كإشارة إلى احتياجات الزائر. إن كنت تستخدم إعادة تشغيل الجلسات، فاحجب الأداة (<code>.a11yw-root</code>) ولا تسجّل أسماء أصناف <code>html</code>."
+          "title": "مين يقدر يقراه",
+          "text": "أي script على نفس الـ origin (الـ analytics، والـ tag managers، والـ session replay) يقدر يقرا الـ keys دي، والـ classes <code>a11yw-*</code> على <code>html</code>، والـ attributes <code>data-a11yw-fs</code>. الـ ids بتاعة الـ profiles زي <code>visionImpaired</code> بتوصف تعديلات، بس ممكن تتفهم على إنها إشارة لاحتياجات الزائر. لو بتستخدم session replay، اعمل mask للـ widget (<code>.a11yw-root</code>) وماتسجّلش أسامي الـ classes بتاعة <code>html</code>."
         },
         "consent": {
-          "title": "الموافقة",
-          "text": "هل حفظ التفضيلات «ضروري تمامًا» (المادة 5(3) من توجيه ePrivacy)، وكيف تنطبق اللائحة العامة لحماية البيانات GDPR؟ هذا قرار فريق الخصوصية لديك. لعدم حفظ أي شيء، مرّر <code>persist: false</code>. وللحفظ بعد الموافقة فقط، ابدأ بـ <code>persist: false</code> وفعّله حين يوافق الزائر."
+          "title": "الموافقة (consent)",
+          "text": "هل حفظ التفضيلات «ضروري تمامًا» (strictly necessary، المادة 5(3) من توجيه ePrivacy)، وإزاي الـ GDPR بيتطبق؟ ده قرار فريق الخصوصية عندك. عشان ماتحفظش أي حاجة، مرّر <code>persist: false</code>. وعشان تحفظ بعد الموافقة بس، ابدأ بـ <code>persist: false</code> وشغّله لما الزائر يوافق."
         }
       }
     },
     "security": {
-      "title": "سياسة أمان المحتوى وSRI",
-      "summary": "شغّل الأداة تحت سياسة CSP صارمة، وثبّت ملف CDN بسلامة الموارد الفرعية (SRI).",
-      "intro": "لا تحتاج الأداة إلى <code>unsafe-inline</code> ولا إلى <code>unsafe-eval</code>.",
+      "title": "الـ Content Security Policy و SRI",
+      "summary": "شغّل الـ widget تحت CSP صارمة، وثبّت ملف الـ CDN بـ Subresource Integrity (SRI).",
+      "intro": "الـ widget مش محتاج <code>unsafe-inline</code> ولا <code>unsafe-eval</code>.",
       "sections": {
         "csp": {
-          "title": "سياسة أمان المحتوى",
-          "text": "تضيف وسمين من نوع <code>style</code>، فمرّر قيمة <code>nonce</code> لهما، والمؤشر الكبير صورة SVG بصيغة <code>data:</code>. احذف نطاق CDN حين تجمّع الحزمة بنفسك. يشغّل التكامل المستمر الأداة تحت <code>default-src ''none''</code> مع Trusted Types ويفشل عند أي مخالفة."
+          "title": "Content Security Policy",
+          "text": "بيضيف اتنين <code>style</code> tags، فمرّر الـ <code>nonce</code> بتاعهم، والمؤشر الكبير صورة SVG بصيغة <code>data:</code>. شيل الـ CDN host لو إنت بتعمل bundle للـ package بنفسك. الـ CI بيشغّل الـ widget تحت <code>default-src ''none''</code> مع Trusted Types وبيفشل عند أي violation."
         },
         "sri": {
-          "title": "سلامة الموارد الفرعية",
-          "text": "الإصدار <code>@1</code> على CDN يتبع كل إصدارات 1.x، فلا يمكن أن يحمل بصمة سلامة. للإنتاج، ثبّت إصدارًا محددًا مع بصمته: يرفض المتصفح الملف إن قدّمت CDN أي شيء آخر يومًا. احسب البصمة بنفسك أو انسخها من صفحة الملف على jsdelivr.com، وحدّث الاثنين عند الترقية."
+          "title": "Subresource Integrity",
+          "text": "الـ <code>@1</code> على الـ CDN بيمشي ورا كل إصدارات 1.x، فمينفعش يكون ليه integrity hash. في الـ production، ثبّت version محددة مع الـ hash بتاعها: المتصفح هيرفض الملف لو الـ CDN قدّم حاجة تانية في يوم من الأيام. احسب الـ hash بنفسك أو انسخه من صفحة الملف على jsdelivr.com، وحدّث الاتنين لما تعمل upgrade."
         },
         "trusted-types": {
           "title": "Trusted Types",
-          "text": "تبني الأداة واجهتها بـ <code>createElement</code> ولا تُسند نصوص HTML أبدًا، لذا تعمل تحت <code>require-trusted-types-for ''script''</code> دون أي سياسة خاصة بها."
+          "text": "الـ widget بيبني الـ interface بتاعه بـ <code>createElement</code> وعمره ما بيحط HTML strings، فبيشتغل تحت <code>require-trusted-types-for ''script''</code> من غير أي policy خاصة بيه."
         }
       }
     },
     "limitations": {
-      "title": "حدود الأداة",
-      "summary": "ما لا تستطيع الأداة فعله، حتى لا تَعِد به.",
-      "intro": "اقرأ هذا قبل أن تصف الأداة في موقعك أو في بيان إمكانية الوصول.",
+      "title": "حدود الـ widget",
+      "summary": "اللي الـ widget مايقدرش يعمله، عشان ماتوعدش بيه.",
+      "intro": "اقرا ده قبل ما توصف الـ widget في موقعك أو في الـ accessibility statement بتاعك.",
       "sections": {
         "markup": {
-          "title": "لا تُصلح موقعك",
-          "text": "تغيّر الأداة طريقة عرض الصفحة لزائر واحد. لا تجعل الموقع متوافقًا مع ADA أو EAA أو EN 301 549 أو WCAG، وتثبيتها ليس دفاعًا قانونيًا. والجهات الرقابية تتخذ إجراءات ضد المنتجات التي تدّعي غير ذلك، مثل قرار لجنة التجارة الفيدرالية الأمريكية (FTC) عام 2025 ضد accessiBe.",
+          "title": "مش بيصلّح موقعك",
+          "text": "الـ widget بيغيّر طريقة عرض الصفحة لزائر واحد. مش بيخلّي الموقع متوافق مع ADA أو EAA أو EN 301 549 أو WCAG، وتسطيبه مش دفاع قانوني. والجهات الرقابية بتاخد إجراءات ضد المنتجات اللي بتدّعي غير كده، زي قرار لجنة التجارة الفيدرالية الأمريكية (FTC) سنة 2025 ضد accessiBe.",
           "items": [
-            "النص البديل الناقص وتسميات النماذج والعناوين ودعم لوحة المفاتيح والتباين في تصميمك ما زالت تحتاج إلى إصلاح من المصدر.",
-            "لا تُعلن عن الأداة على أنها حلّ للامتثال، ولا تقدّمها كذلك في بيان إمكانية الوصول."
+            "الـ alt text الناقص، والـ labels بتاعة الفورمز، والعناوين، ودعم الكيبورد، والتباين في التصميم بتاعك، كل ده لسه محتاج يتصلّح من المصدر.",
+            "ماتعملش إعلان للـ widget على إنه حل للـ compliance، وماتقدّمهوش كده في الـ accessibility statement بتاعك."
           ]
         },
         "reach": {
-          "title": "ما لا تصل إليه",
-          "text": "بعض أجزاء الصفحة خارج نطاق الأداة.",
+          "title": "الحاجات اللي مايوصلهاش",
+          "text": "فيه أجزاء من الصفحة برّه نطاق الـ widget.",
           "items": [
-            "عناصر <code>iframe</code> القادمة من نطاق آخر (الفيديو المضمّن والخرائط ونماذج الدفع) وجذور Shadow DOM المغلقة: المتصفحات تمنع أي سكربت من دخولها. أما الإطارات من النطاق نفسه وShadow DOM المفتوح فتصلها التعديلات.",
-            "«إيقاف الحركة» يوقف حركات CSS والحركات المبنية بالسكربت وحركات SVG؛ أما صور GIF و<code>canvas</code> والحركة التي ترسمها السكربتات إطارًا بإطار فتستمر.",
-            "يتنحّى زر الفتح حين يصل التركيز بلوحة المفاتيح إلى عنصر تحته (WCAG 2.4.11)، لكنه يبقى فوق زاويته لمستخدمي الفأرة واللمس: أبقِ تلك الزاوية خالية، أو حرّكه بـ <code>offset</code>."
+            "عناصر <code>iframe</code> اللي من origin تاني (الفيديو الـ embedded، والخرايط، وفورمز الدفع) والـ closed shadow roots: المتصفحات بتمنع أي script إنه يدخلها. أما الـ iframes اللي من نفس الـ origin والـ Shadow DOM المفتوح فالتعديلات بتوصلهم.",
+            "«إيقاف الحركة» بيوقف الـ CSS animations والأنيميشن المعمول بالـ scripts وأنيميشن الـ SVG؛ أما صور الـ GIF والـ <code>canvas</code> والأنيميشن اللي الـ scripts بترسمها frame بـ frame فبتفضل شغالة.",
+            "زرار الفتح بيتنحّى على جنب لما الـ focus بالكيبورد يوصل لعنصر تحته (WCAG 2.4.11)، بس بيفضل مغطّي الركن بتاعه لمستخدمي الماوس واللمس: سيب الركن ده فاضي، أو حرّكه بـ <code>offset</code>."
           ]
         },
         "display": {
-          "title": "كيف تظهر التعديلات",
-          "text": "بعض التعديلات تُفضّل الأمان على الدقة.",
+          "title": "التعديلات بتظهر إزاي",
+          "text": "بعض التعديلات بتختار الأمان على حساب الدقة.",
           "items": [
-            "«تكبير الصفحة» يستخدم الخاصية <code>zoom</code> في CSS، وهي لا تفعّل استعلامات الوسائط في موقعك. تكبير المتصفح يعيد ترتيب الصفحة أفضل: اقترحه في بيان إمكانية الوصول.",
-            "«تباعد الأسطر» يضبط ارتفاع السطر على 1.5 ضعف النسبة المختارة لكل النصوص.",
-            "لا يُطبّق تباعد الأحرف على العربية وغيرها من الكتابات المتصلة (فهو يفصل الحروف)؛ لكن تباعد الكلمات يُطبّق.",
-            "أوضاع الألوان تتجاوز الخلفيات وتزيل صور الخلفية، إلا في عناصر النماذج والروابط والأزرار. والأيقونات الزخرفية المرسومة كصور خلفية في غيرها تختفي.",
-            "يقيس حجم النص حجم كل عنصر مرة واحدة. إن غيّر تطبيقك حجم خط عنصر لاحقًا بتغيير صنفه، يبقى على حجمه السابق حتى إعادة تحميل الصفحة.",
-            "تعديلات الألوان تُطبّق على الشاشة فقط، لا على الطباعة."
+            "«تكبير الصفحة» بيستخدم الـ <code>zoom</code> بتاع CSS، ودي مش بتشغّل الـ media queries بتاعة موقعك. الـ zoom بتاع المتصفح بيعيد ترتيب الصفحة (reflow) أحسن: اقترحه في الـ accessibility statement بتاعك.",
+            "«تباعد الأسطر» بيظبط ارتفاع السطر على 1.5 ضعف النسبة اللي اخترتها لكل النصوص.",
+            "المسافة بين الحروف مش بتتطبق على العربي وغيره من الكتابات المتصلة (لأنها هتفصل الحروف عن بعض)؛ لكن المسافة بين الكلمات بتتطبق عادي.",
+            "أوضاع الألوان بتغطي على الخلفيات وبتشيل صور الخلفية، إلا في عناصر الفورمز واللينكات والأزرار. والأيقونات الديكور المرسومة كـ background images في أي مكان تاني بتختفي.",
+            "حجم النص بيقيس حجم كل عنصر مرة واحدة. لو الـ app بتاعك غيّر حجم خط عنصر بعد كده عن طريق تغيير الـ class، هيفضل على حجمه القديم لحد ما الصفحة تعمل reload.",
+            "تعديلات الألوان بتتطبق على الشاشة بس، مش على الطباعة."
           ]
         },
         "browsers": {
           "title": "دعم المتصفحات",
-          "text": "يحصل Chrome وEdge 120+ وFirefox 126+ وSafari 16.4+ (على الحاسوب والجوال) على كل المزايا؛ وتفقد الإصدارات الأقدم مزايا مفردة، مثل تكبير الصفحة. يشغّل التكامل المستمر اختبارات الطرف إلى الطرف في Chrome فقط؛ ويعتمد دعم Firefox وSafari على دعم المزايا والاختبار اليدوي."
+          "text": "Chrome و Edge 120+، و Firefox 126+، و Safari 16.4+ (على الديسكتوب والموبايل) بياخدوا كل المميزات؛ والإصدارات الأقدم بتخسر مميزات معينة، زي تكبير الصفحة. الـ CI بيشغّل الـ end-to-end tests على Chrome بس؛ ودعم Firefox و Safari معتمد على دعم المميزات (feature support) والاختبار اليدوي."
         }
       }
     }
   },
   "Playground": {
-    "eyebrow": "ساحة التجربة",
-    "title": "غيّر الأداة في هذه الصفحة",
-    "description": "كل عنصر تحكم أدناه يغيّر الأداة الحقيقية في زاوية هذه الصفحة. افتحها لترى النتيجة، وانسخ الشيفرة المطابقة.",
-    "position": "الموضع",
-    "left": "يسار",
+    "eyebrow": "الـ Playground",
+    "title": "غيّر الـ widget في الصفحة دي",
+    "description": "كل control تحت بيغيّر الـ widget الحقيقي اللي في ركن الصفحة دي. افتحه عشان تشوف النتيجة، وانسخ الكود اللي يطابقها.",
+    "position": "المكان",
+    "left": "شمال",
     "right": "يمين",
-    "brand": "لون العلامة التجارية",
-    "brandHint": "تصبح أيقونة زر الفتح سوداء أو بيضاء، بحسب الأعلى تباينًا.",
+    "brand": "لون البراند",
+    "brandHint": "أيقونة زرار الفتح بتبقى سودا أو بيضا، على حسب أنهي واحد تباينه أعلى.",
     "custom": "لون مخصص",
     "colors": {
       "teal": "أخضر مزرق",
@@ -713,33 +714,33 @@
       "rose": "وردي",
       "slate": "رمادي أردوازي"
     },
-    "size": "حجم زر الفتح",
-    "language": "لغة الأداة",
+    "size": "حجم زرار الفتح",
+    "language": "لغة الـ widget",
     "pageLanguage": "لغة الصفحة",
-    "open": "افتح الأداة",
-    "reset": "إعادة ضبط",
-    "hint": "تبقى هذه التغييرات حتى تغادر الصفحة. أما تعديلاتك داخل الأداة، مثل حجم النص أو التباين، فمنفصلة: تحفظها الأداة في هذا المتصفح.",
-    "codeLabel": "الشيفرة"
+    "open": "افتح الـ widget",
+    "reset": "رجّع الافتراضي",
+    "hint": "التغييرات دي بتفضل لحد ما تسيب الصفحة. أما تعديلاتك إنت جوه الـ widget، زي حجم النص أو التباين، فدي حاجة منفصلة: الـ widget بيحفظها في المتصفح ده.",
+    "codeLabel": "الكود"
   },
   "NotFound": {
-    "title": "الصفحة غير موجودة",
-    "body": "هذه الصفحة غير موجودة أو تم نقلها.",
-    "home": "العودة إلى الصفحة الرئيسية"
+    "title": "الصفحة مش موجودة",
+    "body": "الصفحة دي مش موجودة أو اتنقلت.",
+    "home": "ارجع للصفحة الرئيسية"
   },
   "Metadata": {
-    "title": "Open Accessibility Widget – قائمة تفضيلات إمكانية الوصول لأي موقع",
-    "description": "أداة مجانية ومفتوحة المصدر لتفضيلات إمكانية الوصول: حجم النص والتباين والتباعد وأدوات القراءة والتحكم بالحركة، بالعربية والإنجليزية، دون أي اعتماديات. تعمل مع JavaScript وReact وNext.js وVue وAngular وSvelte وغيرها.",
+    "title": "Open Accessibility Widget – قائمة تفضيلات إمكانية الوصول (accessibility) لأي موقع",
+    "description": "accessibility widget مجاني و open source لتفضيلات إمكانية الوصول: حجم النص، والتباين، والمسافات، وأدوات القراءة، والتحكم في الحركة، بالعربي والإنجليزي، ومن غير أي dependencies. بيشتغل مع JavaScript و React و Next.js و Vue و Angular و Svelte وغيرهم.",
     "keywords": [
+      "accessibility widget",
       "أداة إمكانية الوصول",
       "قائمة إمكانية الوصول",
-      "إمكانية الوصول",
       "تفضيلات المستخدم",
       "حجم النص",
       "التباين",
-      "دعم العربية",
-      "من اليمين إلى اليسار",
+      "دعم العربي",
+      "من اليمين للشمال",
       "RTL",
-      "مفتوح المصدر",
+      "open source",
       "React",
       "Next.js",
       "Vue",
@@ -751,7 +752,7 @@
       "TypeScript",
       "npm"
     ],
-    "ogAlt": "Open Accessibility Widget: قائمة تفضيلات إمكانية الوصول لأي موقع"
+    "ogAlt": "Open Accessibility Widget: قائمة تفضيلات إمكانية الوصول (accessibility) لأي موقع"
   },
   "LanguageSwitch": {
     "names": {
@@ -762,44 +763,44 @@
   "Pages": {
     "breadcrumb": "مسار التنقل",
     "home": "الرئيسية",
-    "prev": "السابق",
-    "next": "التالي",
-    "allFrameworks": "كل أطر العمل",
+    "prev": "اللي قبل",
+    "next": "اللي بعد",
+    "allFrameworks": "كل الـ frameworks",
     "gettingStarted": {
-      "title": "البدء السريع"
+      "title": "إزاي تبدأ"
     },
     "frameworks": {
-      "title": "أطر العمل"
+      "title": "الـ frameworks"
     },
     "api": {
-      "title": "مرجع الواجهة البرمجية"
+      "title": "مرجع الـ API"
     },
     "guides": {
-      "title": "الأدلة"
+      "title": "الشروحات"
     },
     "framework": {
-      "title": "أداة إمكانية الوصول لـ {name}",
-      "description": "أضف Open Accessibility Widget إلى {name}: ثبّتها، وانسخ شيفرة الإعداد، واقرأ الملاحظات."
+      "title": "accessibility widget لـ {name}",
+      "description": "ضيف Open Accessibility Widget لـ {name}: سطّبه، وانسخ كود الـ setup، واقرا الملاحظات."
     },
     "guide": {
-      "description": "{summary} دليل لاستخدام Open Accessibility Widget."
+      "description": "{summary} شرح لاستخدام Open Accessibility Widget."
     }
   },
   "Changelog": {
     "title": "سجل التغييرات",
-    "description": "كل إصدار من الأداة: ما الذي أُضيف، وما الذي تغيّر، وما الذي أُصلح.",
+    "description": "كل إصدار من الـ widget: إيه اللي اتضاف، وإيه اللي اتغيّر، وإيه اللي اتصلّح.",
     "latest": "الأحدث",
-    "unreleased": "غير منشور بعد",
-    "upcoming": "الإصدار القادم",
-    "englishNote": "تُكتب ملاحظات الإصدارات باللغة الإنجليزية، كما في ملف CHANGELOG.md في المستودع.",
+    "unreleased": "لسه ما نزلش",
+    "upcoming": "الإصدار الجاي",
+    "englishNote": "ملاحظات الإصدارات مكتوبة بالإنجليزي، زي ما هي في ملف CHANGELOG.md في الـ repository.",
     "source": "ملف CHANGELOG.md على GitHub",
     "npmVersions": "كل الإصدارات على npm",
     "kinds": {
-      "added": "إضافات",
-      "changed": "تغييرات",
-      "fixed": "إصلاحات",
-      "removed": "ما أُزيل",
-      "deprecated": "ما سيُزال",
+      "added": "اتضاف",
+      "changed": "اتغيّر",
+      "fixed": "اتصلّح",
+      "removed": "اتشال",
+      "deprecated": "هيتشال قريب",
       "security": "الأمان",
       "internal": "داخلي",
       "size": "الحجم"

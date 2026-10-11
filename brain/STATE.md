@@ -18,6 +18,7 @@ Not set — owner to choose the next milestone (see Open questions).
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
 - [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code).
+- [ ] Batch after 1.3.1 (uncommitted on `main`): F-016 colorScheme + header tweaks, F-017 language pack, docs-site fixes (logo scroll, footer, Egyptian Arabic by helper agent); next: verify, commit, owner decides release; then competitor gap list (research done 2026-10-12: TTS, page structure, alt tooltips, invert, bold, color-blind filters, report link…) → owner picks.
 - [ ] Docs site go-live: Vercel project created + Git-connected (2026-10-12, CLI), production deploys from `main`; live and smoke-tested, repo website field points to Vercel; next: disable GitHub Pages (needs owner's OK).
 
 ## Next up

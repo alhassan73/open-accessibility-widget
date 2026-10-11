@@ -70,7 +70,7 @@ Enforcement: **[E]** mechanical (hook / settings / lint / CI) · **[G]** approva
 - **P-3 [E]** Every page adjustment is an `a11yw-*` class on `<html>` + `--a11yw-*` var from the one stylesheet; it never reaches `.a11yw-ignore` (the widget).
 - **P-4 [E]** `destroy()` undoes every page change; nothing changes the host layout or behaviour while off.
 - **P-5 [G]** Zero runtime dependencies and no runtime network requests.
-- **P-6 [E]** IIFE bundle ≤ 25 KB gzip (`npm run size`); raising it needs approval.
+- **P-6 [E]** IIFE bundle ≤ 26 KB gzip (`npm run size`); raising it needs approval.
 - **P-7 [R]** Every UI string exists in English and Arabic (`src/labels.ts`); CSS stays RTL-safe (logical properties).
 - **P-8 [E/R]** The widget's own UI meets WCAG 2.2 AA: axe-core clean, keyboard-only, visible focus, ≥ 24 px targets.
 - **P-9 [R]** Injected `<style>` tags honour the `nonce` option (CSP).

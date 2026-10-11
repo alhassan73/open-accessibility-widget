@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### Added
+- 2026-10-12 — F-016 `colorScheme` option (auto/light/dark); F-017 optional language pack (`./languages`, `./global/languages`).
+
+### Changed
+- 2026-10-12 — Icon-only language button, smaller title/subtitle, widget scrollbar isolated; budget 25 → 26 KB (owner-requested features). Docs site: all languages in the demo widget, logo → top of home (JSON-LD after content + `data-scroll-behavior`), footer layout, Egyptian Arabic.
+
 ## [1.3.1] — 2026-10-12 (tag `v1.3.1`, published to npm)
 
 ### Added
