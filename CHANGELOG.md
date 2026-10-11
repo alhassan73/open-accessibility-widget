@@ -2,6 +2,28 @@
 
 All notable changes to this project are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Added
+
+- **`colorScheme` option: the panel follows the site's dark mode.** With `"auto"` (the default) the panel turns dark while the page's own background is dark, whether the site switches themes with a class, a data attribute or `prefers-color-scheme`, and with any color format (`oklch` too). The widget's own contrast modes don't count, and a `theme` that sets the panel colors keeps them. `"light"` and `"dark"` fix the scheme. Brand-colored text, icons and focus rings use a lighter tint of `theme.primary` on the dark panel, so they keep their contrast.
+
+- **Optional language pack** (`open-accessibility-widget/languages`, or `dist/open-accessibility-widget.languages.global.js` → `window.A11yWidgetLanguages`): Spanish, French, German, Italian, Portuguese, Dutch, Polish, Turkish, Russian, Chinese, Japanese, Korean, Hindi and Hebrew (right-to-left), plus `extraLanguages` and `allLanguages`. It stays out of the main bundle; the ESM entry is tree-shakable (about 1 KB gzipped per language). Translations by the maintainers; native-speaker corrections welcome.
+
+### Changed — design
+
+- The language menu button in the header is the globe icon only, a square like the close button; the current language stays its value for screen readers and its tooltip.
+- Smaller panel title and subtitle.
+
+### Fixed
+
+- The panel's scrollbars use the widget's colors instead of inheriting the page's `scrollbar-color`.
+
+### Changed — project
+
+- The bundle-size budget is 26 KB gzipped (was 25 KB).
+- Docs site: the demo widget offers all 16 languages; the logo always opens the home page at the top; tidier footer; the scrollbar follows the light theme; Arabic pages in Egyptian Arabic, with technical terms in English.
+
 ## 1.3.1
 
 ### Added

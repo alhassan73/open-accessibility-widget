@@ -261,6 +261,7 @@
         "position": "Screen side of the launcher and panel.",
         "offset": "Distance from the screen edges, in px (0–1000).",
         "theme": "Colors, radius and font: see Theme below.",
+        "colorScheme": "Light or dark panel. \"auto\" follows the page: dark while the site's own background is dark, however the site switches themes. Panel colors set in theme turn \"auto\" off.",
         "icon": "Launcher logo: an image URL or a DOM element. Pass only trusted elements: they are cloned as they are.",
         "logo": "Logo next to the panel title.",
         "buttonSize": "Launcher diameter, in px (24–160).",
@@ -595,7 +596,7 @@
         },
         "testing": {
           "title": "Testing",
-          "text": "Every release runs in headless Chrome with axe-core (no violations allowed) and keyboard-only scripts, covering focus handling, reflow at 320 pixels and <code>destroy()</code>. Automated tests can't replace real screen readers, so a manual round with NVDA, JAWS, VoiceOver, TalkBack and Windows High Contrast is asked for before major releases and recorded in <code>docs/at-test-matrix.md</code>."
+          "text": "Every release runs in headless Chrome with axe-core (no violations allowed) and keyboard-only scripts, covering focus handling, reflow at 320 pixels and <code>destroy()</code>. Automated tests can't replace real screen readers, so a manual round with NVDA, JAWS, VoiceOver, TalkBack and Windows High Contrast is asked for before major releases and recorded in <code>docs/at-test-matrix.md</code>. The widget's Accessibility Conformance Report (VPAT 2.5 INT: WCAG 2.2, EN 301 549, Section 508) is in <code>docs/ACR.md</code>; it stays a draft, with the results that need people marked Pending, until that round is recorded."
         }
       },
       "keysCaption": "Keyboard shortcuts",

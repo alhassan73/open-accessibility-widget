@@ -17,11 +17,12 @@ const title = "mb-3 text-small font-bold text-foreground";
 const inline =
   "font-bold text-foreground underline underline-offset-4 transition-colors duration-150 hover:text-link";
 
+/** Inline, so a label that wraps keeps its arrow right after the last word. */
 function External({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <a href={href} rel="noreferrer" className={link}>
+    <a href={href} rel="noreferrer" className={link.replace("inline-flex", "inline-block py-1.5 leading-5")}>
       {children}
-      <ArrowUpRight aria-hidden="true" className="size-3.5 rtl:-scale-x-100" />
+      <ArrowUpRight aria-hidden="true" className="ms-1 inline size-3.5 align-[-0.125em] rtl:-scale-x-100" />
     </a>
   );
 }
@@ -95,9 +96,9 @@ export function Footer() {
       <div className="border-t">
         {/* Extra room at the bottom on small screens: the widget's launcher sits in that corner. */}
         <div
-          className={`${CONTAINER} flex flex-col items-center gap-3 pt-6 pb-24 text-center text-small text-muted-foreground lg:flex-row lg:justify-between lg:pb-6 lg:text-start`}
+          className={`${CONTAINER} flex flex-col items-center gap-3 pt-6 pb-24 text-center text-small text-muted-foreground lg:flex-row lg:justify-between lg:gap-8 lg:pb-6 lg:pe-24 lg:text-start xl:pe-0`}
         >
-          <p>
+          <p className="text-balance">
             {t.rich("legal", {
               year: COPYRIGHT_YEAR,
               author,
@@ -108,9 +109,13 @@ export function Footer() {
               ),
             })}
           </p>
-          <div className="flex flex-col items-center gap-x-6 gap-y-2 sm:flex-row lg:pe-20">
-            <p>{t("notCompliance")}</p>
-            <p>
+          {/* Stacked on small screens; one line with a separator next to the copyright on large ones. */}
+          <div className="flex flex-col items-center gap-1 lg:shrink-0 lg:flex-row lg:gap-3">
+            <p className="whitespace-nowrap">{t("notCompliance")}</p>
+            <span aria-hidden="true" className="hidden lg:inline">
+              ·
+            </span>
+            <p className="whitespace-nowrap">
               {t.rich("credit", {
                 author,
                 profile: (chunks) => (

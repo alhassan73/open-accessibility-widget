@@ -14,7 +14,9 @@
 | `src/settings.ts` | Settings schema: defaults, ranges, enums, profiles, validation | `DEFAULT_SETTINGS`, `RANGES`, `PROFILE_*`, `sanitizeSettings`, merge/toggle helpers, `contrast()` | Read storage or DOM |
 | `src/types.ts` | Public types | Types only | Hold values |
 | `src/labels.ts` | UI strings (en + ar), built-in languages | `defaultLabels`, `arabicLabels`, `builtInLanguages`, label types | Hold non-string config |
-| `src/engine/` | Everything applied to the host page: `<html>` classes/vars, font scaler, pointer tools, backdrop filter, media + motion control, open shadow roots (`shadow.ts`), same-origin frames (nested engine); the one stylesheet (`css.ts`) | `createEngine`, `injectStyles`, `removeStyles` | Know about the panel UI |
+| `src/engine/` | Everything applied to the host page: `<html>` classes/vars, font scaler, pointer tools, backdrop filter, media + motion control, open shadow roots (`shadow.ts`), same-origin frames (nested engine); the one stylesheet (`css.ts`) |
+| `src/widget/scheme.ts` | `colorScheme: "auto"`: watches the page's background (canvas color probe), never the widget's own adjustments | `watchPageScheme` | Change the page |
+| `src/languages.ts` | Optional language pack (entry `open-accessibility-widget/languages`, IIFE `window.A11yWidgetLanguages`); not imported by the core | `extraLanguages`, `allLanguages`, one export per language | Be imported by `src/index.ts` (would grow the core bundle) | `createEngine`, `injectStyles`, `removeStyles` | Know about the panel UI |
 | `src/widget/` | The panel: launcher, sections, controls, read mode, focus handling, icons | `createUI`, `widgetZIndex`; `dom.ts` helpers | Change host-page styles |
 | `test/` | Unit + e2e suites, CDP driver | — | Ship in the package |
 | `scripts/` | Build-time checks (size budget), banner rendering | — | Ship in the package |

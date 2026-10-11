@@ -48,6 +48,8 @@ export default async function LocaleLayout({ children, params }: Props) {
       lang={locale}
       dir={DIR[locale]}
       data-theme="dark"
+      // The page scrolls smoothly (globals.css); this tells Next.js to jump instantly on navigation.
+      data-scroll-behavior="smooth"
       className={fontVariables}
       suppressHydrationWarning
     >

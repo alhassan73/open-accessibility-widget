@@ -12,8 +12,10 @@ export default async function Page({ params }: LocaleParams) {
   const locale = await resolveLocale(params);
   return (
     <>
-      <JsonLd locale={locale} />
       <HomePage />
+      {/* After the content: Next.js scrolls to the top only when the page's first element is out of
+          view, and a <script> has no box, so it always looks "in view". */}
+      <JsonLd locale={locale} />
     </>
   );
 }
