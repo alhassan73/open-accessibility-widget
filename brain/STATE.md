@@ -8,7 +8,7 @@ Keep it under ~150 lines — move finished history to `09-knowledge-maintenance/
 
 ## Current phase
 
-Maintenance after release 1.2.0 (tag `v1.2.0`, published to npm with provenance 2026-10-11).
+Maintenance after release 1.3.0 (tag `v1.3.0`, pushed 2026-10-12; npm publish by `release.yml`).
 
 ## Current goal
 
@@ -18,7 +18,7 @@ Not set — owner to choose the next milestone (see Open questions).
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
 - [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code).
-- [ ] Docs site on Vercel (branch `docs/next-site`, uncommitted): built and checked locally (gates green, smoke + axe clean, reviewer: no blockers), plus widget header polish and llms.txt; next: owner reviews, commit/merge on request, owner imports the repo in Vercel (Root Directory `examples`) and disables GitHub Pages in repo settings.
+- [ ] Docs site go-live: merged to `main` in 1.3.0; next: owner imports the repo in Vercel (Root Directory `examples`, Node 22, include files outside the root), then disables GitHub Pages in repo settings.
 
 ## Next up
 
@@ -50,6 +50,7 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
+- 2026-10-12 — Release 1.3.0 (version branch `1.3.0` → `main`, tag `v1.3.0`): design revamp, header polish, docs site.
 - 2026-10-12 — Docs site in `examples/` (Next.js 16 App Router, en/ar, Vercel) replaces the Pages demo and `pages.yml`; README banner via `npm run banner`; README SRI example now `@1.2.0` with its real hash. Approved: `examples` workspace deps, Vercel `*.vercel.app` URL, en+ar, banner via `test/cdp.mjs`.
 - 2026-10-11 — Design revamp (branch `design/widget-revamp`): brand hero header + subtitle, card sections, tile profiles, pill steppers, custom ARIA language combobox (closes P1-2). Approved: direction, custom listbox, size budget 22 → 24 KB (now 22.68 KB).
 - 2026-10-11 — Design refresh, CSS-only motion (merged to `main` 2aeca9d): tinted header, icon tiles, layered shadow, staggered entrance, spring switches and badges, read-mode rise; reduced-motion off; 21.71/22 KB gzip (≈0.3 KB headroom left).

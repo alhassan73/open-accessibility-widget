@@ -5,10 +5,13 @@
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-10-12 (tag `v1.3.0`, published to npm)
+
 ### Added
 - 2026-10-12 — Docs site in `examples/` (Next.js, en/ar, Vercel; sitemap, robots, llms.txt), README banner (`npm run banner`), ADR-0001.
 
 ### Changed
+- 2026-10-11 — Design revamp (brand header + subtitle, cards, custom ARIA language combobox) and CSS-only motion; size budget 24 KB.
 - 2026-10-12 — Widget header: heavier title, soft-tint rounded close button (CSS only). README SRI example pinned to 1.2.0.
 
 ### Removed
