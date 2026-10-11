@@ -8,7 +8,7 @@
 
 | Metric | Budget | Measured by |
 | --- | --- | --- |
-| IIFE bundle (gzip, level 9) | ≤ 26 KB (22 → 24 KB 2026-10-11 design revamp; 24 → 25 KB 2026-10-12 F-015; 25 → 26 KB 2026-10-12 colorScheme; owner-requested; ≈ 25.3 KB). Language pack (separate file) has no budget, ≈ 16 KB | `npm run size` (`scripts/check-size.mjs`) |
+| IIFE bundle (gzip, level 9) | ≤ 28 KB (22 → 24 KB 2026-10-11 design revamp; 24 → 25 KB 2026-10-12 F-015; 25 → 26 KB colorScheme; 26 → 28 KB read aloud, page structure, bold, invert; all owner-requested; ≈ 27.1 KB). Language pack (separate file) has no budget, ≈ 16 KB | `npm run size` (`scripts/check-size.mjs`) |
 | Runtime dependencies | 0 | `package.json` |
 | Host-page layout shift from the widget | none (widget is `display: contents`, fixed-position UI) | e2e "does not change the page layout" |
 | Font scaling | measure each element once; no re-measure on height-only resizes | e2e "font scaling: no inline styles, no re-measure…" |

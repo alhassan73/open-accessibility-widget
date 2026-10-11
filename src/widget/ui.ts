@@ -92,6 +92,16 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     return btn;
   };
 
+  /** A row that opens a dialog (read mode, page structure). */
+  const dialogRow = (iconName: IconName, label: string, onClick: () => void) =>
+    h(
+      "button",
+      { type: "button", className: "a11yw-row", "aria-haspopup": "dialog", onClick },
+      icon(iconName),
+      h("span", { className: "a11yw-row-label" }, label),
+      icon("arrow", "a11yw-flip")
+    );
+
   const toggleRow = (key: BooleanKey, label: string, iconName: IconName) =>
     enabled(key)
       ? switchRow(label, iconName, (s) => s[key], () => set((s) => ({ [key]: !s[key] }) as Partial<S>))
@@ -324,7 +334,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       "text",
       L.textSection,
       "font",
-      ["contentScale", "fontSize", "lineHeight", "letterSpacing", "textAlign", "readableFont"],
+      ["contentScale", "fontSize", "lineHeight", "letterSpacing", "textAlign", "readableFont", "boldText"],
       stepperRow("fontSize", L.fontSize, "fontSize"),
       stepperRow("contentScale", L.contentScale, "scale"),
       stepperRow("lineHeight", L.lineHeight, "lineHeight"),
@@ -336,13 +346,14 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
         ["center", L.alignCenter],
         ["right", L.alignRight],
       ]),
-      toggleRow("readableFont", L.readableFont, "font")
+      toggleRow("readableFont", L.readableFont, "font"),
+      toggleRow("boldText", L.boldText, "bold")
     ),
     section(
       "color",
       L.colorSection,
       "palette",
-      ["colorMode", "saturationMode", "textColor", "titleColor", "backgroundColor"],
+      ["colorMode", "saturationMode", "invertColors", "textColor", "titleColor", "backgroundColor"],
       choiceField("colorMode", L.contrast, "contrast", [
         ["default", L.contrastOff],
         ["dark-contrast", L.darkContrast],
@@ -355,6 +366,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
         ["low-saturation", L.lowSaturation],
         ["high-saturation", L.highSaturation],
       ]),
+      toggleRow("invertColors", L.invertColors, "contrast"),
       ...colorRows,
       colorRows.some(Boolean) ? contrastNote : null
     ),
@@ -362,21 +374,16 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       "reading",
       L.readingSection,
       "book",
-      ["highlightTitles", "highlightLinks", "textMagnifier", "readingGuide", "readingMask"],
+      ["highlightTitles", "highlightLinks", "textMagnifier", "readAloud", "readingGuide", "readingMask"],
       toggleRow("highlightTitles", L.highlightTitles, "heading"),
       toggleRow("highlightLinks", L.highlightLinks, "link"),
       toggleRow("textMagnifier", L.textMagnifier, "magnifier"),
+      // Only where the browser can speak.
+      window.speechSynthesis ? toggleRow("readAloud", L.readAloud, "ear") : null,
       toggleRow("readingGuide", L.readingGuide, "guide"),
       toggleRow("readingMask", L.readingMask, "mask"),
-      enabled("readMode")
-        ? h(
-            "button",
-            { type: "button", className: "a11yw-row", "aria-haspopup": "dialog", onClick: () => openReader() },
-            icon("book"),
-            h("span", { className: "a11yw-row-label" }, L.readMode),
-            icon("arrow", "a11yw-flip")
-          )
-        : null
+      enabled("readMode") ? dialogRow("book", L.readMode, () => openReader()) : null,
+      enabled("pageStructure") ? dialogRow("list", L.pageStructure, () => openStructure()) : null
     ),
     section(
       "motion",
@@ -525,6 +532,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   };
 
   const statementUrl = safeUrl(opts.statementUrl);
+  const feedbackUrl = safeUrl(opts.feedbackUrl);
   const panelId = uid();
   const titleId = uid();
   // Hiding is offered only when the visitor can bring the widget back: a shortcut and a keyboard.
@@ -573,6 +581,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       ),
       h("span", { className: "a11yw-spacer" }),
       statementUrl && h("a", { className: "a11yw-link", href: statementUrl }, L.statement),
+      feedbackUrl && h("a", { className: "a11yw-link", href: feedbackUrl }, L.feedback),
       canHide && h("button", { type: "button", className: "a11yw-link", onClick: hideWidget }, L.hideWidget)
     )
   );
@@ -694,13 +703,13 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     launcher.focus();
   };
 
-  const openReader = () => {
+  /** A modal dialog over the page (read mode, page structure); `body` gets the dialog's title id. */
+  const openDialog = (title: string, closeLabel: string, body: (titleId: string) => HTMLElement) => {
     api.setOpen(false);
     const readerTitleId = uid();
-    const blocks = extractReadableContent(L.image);
     const readerClose = h(
       "button",
-      { type: "button", className: "a11yw-icon-btn", "aria-label": L.closeReadMode, onClick: closeReader },
+      { type: "button", className: "a11yw-icon-btn", "aria-label": closeLabel, onClick: closeReader },
       icon("close")
     );
     const backdrop = h(
@@ -712,22 +721,10 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
         h(
           "div",
           { className: "a11yw-reader-bar" },
-          h("h2", { id: readerTitleId, className: "a11yw-title" }, L.readModeTitle),
+          h("h2", { id: readerTitleId, className: "a11yw-title" }, title),
           readerClose
         ),
-        // The page's own language and direction, so it is read with the right voice (WCAG 3.1.2).
-        h(
-          "div",
-          {
-            className: "a11yw-reader-body",
-            tabindex: "0",
-            role: "document",
-            "aria-labelledby": readerTitleId,
-            lang: document.documentElement.lang || null, // no lang="" when the page has none
-            dir: getComputedStyle(document.body).direction,
-          },
-          ...(blocks.length ? blocks : [h("p", { lang: locale.language }, L.noReadableContent)])
-        )
+        body(readerTitleId)
       )
     );
     backdrop.addEventListener("click", (e) => e.target === backdrop && closeReader());
@@ -738,6 +735,101 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     setPageInert(true);
     behindReader.forEach((el) => (el.inert = true));
     readerClose.focus();
+  };
+
+  const openReader = () => {
+    const blocks = extractReadableContent(L.image);
+    openDialog(L.readModeTitle, L.closeReadMode, (titleId) =>
+      // The page's own language and direction, so it is read with the right voice (WCAG 3.1.2).
+      h(
+        "div",
+        {
+          className: "a11yw-reader-body",
+          tabindex: "0",
+          role: "document",
+          "aria-labelledby": titleId,
+          lang: document.documentElement.lang || null, // no lang="" when the page has none
+          dir: getComputedStyle(document.body).direction,
+        },
+        ...(blocks.length ? blocks : [h("p", { lang: locale.language }, L.noReadableContent)])
+      )
+    );
+  };
+
+  // Page structure: the page's headings, regions and links; choosing one closes the dialog and moves
+  // focus (and the view) to it.
+  const openStructure = () => {
+    const roleNames: Record<string, string> = {
+      banner: L.roleBanner,
+      navigation: L.roleNavigation,
+      main: L.roleMain,
+      complementary: L.roleComplementary,
+      contentinfo: L.roleContentinfo,
+      search: L.roleSearch,
+      form: L.roleForm,
+      region: L.roleRegion,
+    };
+    const item = (el: HTMLElement, label: string, badge?: string) =>
+      h(
+        "li",
+        {},
+        h(
+          "button",
+          {
+            type: "button",
+            className: "a11yw-row",
+            onClick: () => {
+              closeReader();
+              focusElement(el);
+            },
+          },
+          // The space makes the name read "H2 Title", not "H2Title".
+          ...(badge ? [h("span", { className: "a11yw-count" }, badge), " "] : []),
+          h("span", { className: "a11yw-row-label" }, label)
+        )
+      );
+    const seen = new Set<string>();
+    const groups: [string, HTMLElement[]][] = [
+      [
+        L.headings,
+        pageElements('h1,h2,h3,h4,h5,h6,[role="heading"]').flatMap((el) => {
+          const text = textOf(el);
+          const level = el.getAttribute("aria-level") || (/^H[1-6]$/.test(el.tagName) ? el.tagName[1] : "2");
+          return text ? [item(el, text, `H${level}`)] : [];
+        }),
+      ],
+      [
+        L.landmarks,
+        pageElements(LANDMARKS).flatMap((el) => {
+          const role = landmarkRole(el);
+          const name = accessibleName(el);
+          return role && roleNames[role] ? [item(el, name ? `${roleNames[role]}: ${name}` : roleNames[role])] : [];
+        }),
+      ],
+      [
+        L.links,
+        // The same link repeated (header and footer menus) is listed once; at most 300.
+        pageElements("a[href]")
+          .flatMap((el) => {
+            const text = accessibleName(el) || textOf(el);
+            const key = `${text}\n${(el as HTMLAnchorElement).href}`;
+            if (!text || seen.has(key)) return [];
+            seen.add(key);
+            return [item(el, text)];
+          })
+          .slice(0, 300),
+      ],
+    ];
+    const found = groups.filter(([, items]) => items.length);
+    openDialog(L.pageStructure, L.closePageStructure, () =>
+      h(
+        "div",
+        { className: "a11yw-reader-body a11yw-structure" },
+        ...(found.length
+          ? found.flatMap(([title, items]) => [h("h3", { className: "a11yw-block-title" }, title), h("ul", { role: "list" }, ...items)])
+          : [h("p", {}, L.noStructure)])
+      )
+    );
   };
 
   // ── Global listeners ───────────────────────────────────────────────
@@ -893,6 +985,43 @@ function focusElement(el: HTMLElement) {
   el.scrollIntoView?.({ block: "start" });
 }
 
+const LANDMARKS =
+  'header,nav,main,aside,footer,form,section,search,[role="banner"],[role="navigation"],[role="main"],[role="complementary"],[role="contentinfo"],[role="search"],[role="form"],[role="region"]';
+
+/** Rendered page elements (never the widget's, nor hidden ones) matching a selector, in document order. */
+function pageElements(selector: string): HTMLElement[] {
+  return Array.from(document.querySelectorAll<HTMLElement>(selector)).filter(
+    (el) => !el.closest(IGNORE) && !el.closest('[aria-hidden="true"]') && el.getClientRects().length > 0
+  );
+}
+
+const textOf = (el: HTMLElement) => (el.innerText || "").replace(/\s+/g, " ").trim().slice(0, 120);
+
+/** An element's `aria-label`, else the text of its `aria-labelledby` elements. */
+function accessibleName(el: Element): string {
+  const label = el.getAttribute("aria-label")?.trim();
+  if (label) return label;
+  return (el.getAttribute("aria-labelledby") ?? "")
+    .split(/\s+/)
+    .map((id) => (id && document.getElementById(id)?.textContent?.trim()) || "")
+    .filter(Boolean)
+    .join(" ")
+    .slice(0, 120);
+}
+
+/** Landmark role as browsers map it: header/footer only at page level, section/form only when named. */
+function landmarkRole(el: Element): string | null {
+  const explicit = el.getAttribute("role");
+  // An unnamed region is not a landmark.
+  if (explicit) return explicit === "region" && !accessibleName(el) ? null : explicit;
+  const tag = el.tagName.toLowerCase();
+  const scoped = !!el.parentElement?.closest("article,aside,main,nav,section");
+  if (tag === "header") return scoped ? null : "banner";
+  if (tag === "footer") return scoped ? null : "contentinfo";
+  if (tag === "form" || tag === "section") return accessibleName(el) ? (tag === "form" ? "form" : "region") : null;
+  return { nav: "navigation", main: "main", aside: "complementary", search: "search" }[tag] ?? null;
+}
+
 const firstOutside = <T extends Element>(selector: string) =>
   Array.from(document.querySelectorAll<T>(selector)).find((el) => !el.closest(IGNORE)) ?? null;
 
@@ -924,12 +1053,12 @@ function pageHasSkipLink(): boolean {
   return false;
 }
 
-/** Only http(s), relative and same-scheme URLs — never `javascript:` and friends. */
+/** Only http(s), `mailto:`, relative and same-scheme URLs — never `javascript:` and friends. */
 function safeUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   try {
     const { protocol } = new URL(url, window.location.href);
-    return protocol === "http:" || protocol === "https:" || protocol === window.location.protocol ? url : null;
+    return ["http:", "https:", "mailto:", window.location.protocol].includes(protocol) ? url : null;
   } catch {
     return null;
   }

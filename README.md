@@ -20,9 +20,9 @@ A user-preference accessibility menu that works on **any website**: plain HTML/J
 | Area | What the visitor gets |
 | --- | --- |
 | **Quick profiles** | Motion sensitivity · Low vision · Focus mode · Easy reading · Keyboard user · Quiet media · Comfortable reading |
-| **Text** | Text size · Page zoom · Line spacing · Letter spacing · Alignment (left / center / right) · Readable font |
-| **Color** | Contrast (dark / light / high) · Saturation (gray / low / high) · Custom text, heading and background colors (with a low-contrast warning) |
-| **Reading aids** | Highlight headings · Highlight links · Text magnifier · Reading line · Focus window · Read mode |
+| **Text** | Text size · Page zoom · Line spacing · Letter spacing · Alignment (left / center / right) · Readable font · Bold text |
+| **Color** | Contrast (dark / light / high) · Saturation (gray / low / high) · Invert colors (images keep theirs) · Custom text, heading and background colors (with a low-contrast warning) |
+| **Reading aids** | Highlight headings · Highlight links · Text magnifier (shows images' alt text too) · Read aloud (the browser's own speech) · Reading line · Focus window · Read mode · Page structure (jump to a heading, region or link) |
 | **Motion & navigation** | Stop animations · Mute media · Hide images · Highlight focus · Highlight on hover · Large cursor (dark / light) |
 | **Built in** | Reset all · Accessibility statement link · Hide widget · Language menu (English / العربية built in, 14 more in the optional language pack, or your own) · "Skip to main content" link · `Alt+A` shortcut · Settings saved across visits |
 
@@ -299,7 +299,7 @@ init({
 });
 ```
 
-Every setting key can be removed, plus `"profiles"` (the whole quick-profile grid) and `"readMode"`. A profile card is hidden when all of its adjustments are removed.
+Every setting key can be removed, plus `"profiles"` (the whole quick-profile grid), `"readMode"` and `"pageStructure"`. A profile card is hidden when all of its adjustments are removed.
 
 ### All options
 
@@ -319,7 +319,8 @@ Every setting key can be removed, plus `"profiles"` (the whole quick-profile gri
 | `labels` | `Partial<AccessibilityLabels>` | – | Override single strings |
 | `dir` | `"ltr" \| "rtl"` | language's direction | Force widget direction |
 | `shortcut` | `string \| false` | `"Alt+A"` | Toggle shortcut; also restores the widget after "Hide widget" (the button is hidden when `false`) |
-| `statementUrl` | `string` | – | "Accessibility statement" link in the footer (http/https/relative only) |
+| `statementUrl` | `string` | – | "Accessibility statement" link in the footer (http/https/mailto/relative only) |
+| `feedbackUrl` | `string` | – | "Report a problem" link in the footer: a page, a form or `mailto:` (http/https/mailto/relative only) |
 | `showSkipLink` | `boolean` | `true` | "Skip to main content" link. Left out automatically when the page has no `<main>`/`<h1>` or already starts with its own skip link |
 | `zIndex` | `number` | `2147483000` | Stacking order |
 | `persist` | `boolean` | `true` | Save settings in localStorage (kept in sync across tabs). See [Privacy and storage](#privacy-and-storage) |
@@ -407,6 +408,8 @@ What the widget can't do, so you don't promise it:
 - Text size measures each element's original size once. If your app later changes an element's font size through a class change (without replacing the element), it keeps the earlier base size until the page reloads.
 - The launcher is fixed in a bottom corner. When keyboard focus lands on a page control under it, such as the last footer link, the launcher steps aside (it fades out and lets clicks through, but stays in the tab order) until focus moves on (WCAG 2.4.11). It still sits over that corner for mouse and touch users, so keep it free of controls, add bottom padding to your page, or move the launcher with `offset` / `position`.
 - Color adjustments apply to the screen only, not to printing.
+- "Invert colors" inverts images, video, canvas and frames back so they keep their colors, but not photos set as CSS background images or inline SVG drawings. Inside same-origin frames, the page is not inverted at all.
+- "Read aloud" uses the browser's own voices, so voice and language support vary by browser and system. It reads the block you click, tap or tab to; tap the same block again, or press Escape, to stop. It never speaks what is typed in form fields, only their labels.
 
 ## Preferences and precedence
 

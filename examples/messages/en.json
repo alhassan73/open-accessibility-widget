@@ -273,6 +273,7 @@
         "dir": "Force the widget's text direction.",
         "shortcut": "Shortcut that opens and closes the panel and brings the widget back after “Hide widget”. With <code>false</code>, the hide button is removed.",
         "statementUrl": "Link to your accessibility statement in the panel's footer (http, https or relative).",
+        "feedbackUrl": "Where visitors report an accessibility problem (a page, a form or <code>mailto:</code>), shown in the panel's footer.",
         "showSkipLink": "A “Skip to main content” link. Left out when the page has no <code>main</code> or <code>h1</code>, or already starts with its own skip link.",
         "zIndex": "Stacking order of the widget.",
         "persist": "Save settings in localStorage, kept in sync across tabs.",
@@ -324,10 +325,13 @@
         "letterSpacing": "Letter spacing, in percent (not applied to Arabic).",
         "textAlign": "Text alignment.",
         "readableFont": "A plain, readable font.",
+        "boldText": "All page text in bold.",
         "highlight": "Outline headings / links.",
-        "textMagnifier": "Shows the text under the pointer, enlarged.",
+        "textMagnifier": "Shows the text under the pointer or focus, enlarged (an image's alt text for images).",
+        "readAloud": "A click, tap or keyboard focus reads that block aloud with the browser's own speech, in the page's language. Escape stops it.",
         "colorMode": "Contrast mode.",
         "saturationMode": "Saturation filter.",
+        "invertColors": "Inverts the page's colors; images and video keep theirs.",
         "colors": "Custom text, heading and background colors.",
         "media": "Mute media, hide images, stop CSS animations.",
         "guides": "Reading line and focus window.",
@@ -337,7 +341,9 @@
       "entries": {
         "core": "Any framework, or plain JavaScript with a bundler.",
         "react": "React component and hook; <code>react</code> 18 or later is an optional peer dependency.",
-        "global": "Script-tag build, about 23 KB gzipped; exposes <code>window.A11yWidget</code>."
+        "languages": "Optional extra languages (14), tree-shakable, about 1 KB gzipped each.",
+        "global": "Script-tag build, about 27 KB gzipped; exposes <code>window.A11yWidget</code>.",
+        "globalLanguages": "Script-tag language pack, about 17 KB gzipped; exposes <code>window.A11yWidgetLanguages</code>."
       }
     }
   },

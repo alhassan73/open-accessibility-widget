@@ -19,6 +19,7 @@ export const OPTIONS: ApiRow[] = [
   { id: "dir", name: "dir", type: '"ltr" | "rtl"', def: "language's direction" },
   { id: "shortcut", name: "shortcut", type: "string | false", def: '"Alt+A"' },
   { id: "statementUrl", name: "statementUrl", type: "string" },
+  { id: "feedbackUrl", name: "feedbackUrl", type: "string" },
   { id: "showSkipLink", name: "showSkipLink", type: "boolean", def: "true" },
   { id: "zIndex", name: "zIndex", type: "number", def: "2147483000" },
   { id: "persist", name: "persist", type: "boolean", def: "true" },
@@ -75,8 +76,10 @@ export const SETTINGS: ApiRow[] = [
   { id: "letterSpacing", name: "letterSpacing", type: "number (100–200)", def: "100" },
   { id: "textAlign", name: "textAlign", type: '"default" | "left" | "center" | "right" | "justify"', def: '"default"' },
   { id: "readableFont", name: "readableFont", type: "boolean", def: "false" },
+  { id: "boldText", name: "boldText", type: "boolean", def: "false" },
   { id: "highlight", name: "highlightTitles, highlightLinks", type: "boolean", def: "false" },
   { id: "textMagnifier", name: "textMagnifier", type: "boolean", def: "false" },
+  { id: "readAloud", name: "readAloud", type: "boolean", def: "false" },
   {
     id: "colorMode",
     name: "colorMode",
@@ -89,6 +92,7 @@ export const SETTINGS: ApiRow[] = [
     type: '"default" | "monochrome" | "low-saturation" | "high-saturation"',
     def: '"default"',
   },
+  { id: "invertColors", name: "invertColors", type: "boolean", def: "false" },
   { id: "colors", name: "textColor, titleColor, backgroundColor", type: '"#rrggbb" | null', def: "null" },
   { id: "media", name: "muteSounds, hideImages, stopAnimations", type: "boolean", def: "false" },
   { id: "guides", name: "readingGuide, readingMask", type: "boolean", def: "false" },
@@ -99,7 +103,9 @@ export const SETTINGS: ApiRow[] = [
 export const ENTRY_POINTS: ApiRow[] = [
   { id: "core", name: "open-accessibility-widget", type: "ESM + CJS + .d.ts" },
   { id: "react", name: "open-accessibility-widget/react", type: "ESM + CJS + .d.ts" },
+  { id: "languages", name: "open-accessibility-widget/languages", type: "ESM + CJS + .d.ts" },
   { id: "global", name: "dist/open-accessibility-widget.global.js", type: "IIFE" },
+  { id: "globalLanguages", name: "dist/open-accessibility-widget.languages.global.js", type: "IIFE" },
 ];
 
 /** The tables of the API page, in page order. The group is also the section's anchor. */

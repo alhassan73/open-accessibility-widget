@@ -273,6 +273,7 @@
         "dir": "اجبر اتجاه النص بتاع الـ widget.",
         "shortcut": "shortcut بيفتح اللوحة ويقفلها، وبيرجّع الـ widget بعد «إخفاء الأداة». مع <code>false</code>، زرار الإخفاء بيتشال.",
         "statementUrl": "لينك الـ accessibility statement بتاعك في الـ footer بتاع اللوحة (http أو https أو relative).",
+        "feedbackUrl": "المكان اللي الزوار يبلّغوا فيه عن مشكلة accessibility (صفحة أو form أو <code>mailto:</code>)، وبيظهر في الـ footer بتاع اللوحة.",
         "showSkipLink": "لينك «تخطَّ إلى المحتوى الرئيسي». مش بيتضاف لو الصفحة مفيهاش <code>main</code> أو <code>h1</code>، أو لو بتبدأ أصلًا بـ skip link خاص بيها.",
         "zIndex": "ترتيب طبقة الـ widget (stacking order).",
         "persist": "احفظ الإعدادات في الـ localStorage، وخلّيها متزامنة بين الـ tabs.",
@@ -324,10 +325,13 @@
         "letterSpacing": "المسافة بين الحروف، بالنسبة المئوية (مش بتتطبق على العربي).",
         "textAlign": "محاذاة النص.",
         "readableFont": "خط بسيط وسهل في القراية.",
+        "boldText": "كل نص الصفحة يبقى bold.",
         "highlight": "إطار حوالين العناوين / اللينكات.",
-        "textMagnifier": "بيعرض النص اللي تحت المؤشر مكبّر.",
+        "textMagnifier": "بيعرض النص اللي تحت المؤشر أو الـ focus مكبّر (والـ alt text بتاع الصور).",
+        "readAloud": "الضغط أو اللمس أو الـ focus بالكيبورد بيقرا الجزء ده بصوت عالي بالـ speech بتاع المتصفح نفسه، بلغة الصفحة. Escape بيوقفه.",
         "colorMode": "وضع التباين.",
         "saturationMode": "فلتر التشبع.",
+        "invertColors": "بيعكس ألوان الصفحة؛ والصور والفيديو بيفضلوا بألوانهم.",
         "colors": "ألوان مخصصة للنص والعناوين والخلفية.",
         "media": "كتم الميديا، وإخفاء الصور، وإيقاف الـ CSS animations.",
         "guides": "خط القراءة ونافذة التركيز.",
@@ -337,7 +341,9 @@
       "entries": {
         "core": "أي framework، أو JavaScript عادي مع bundler.",
         "react": "React component و hook؛ و<code>react</code> 18 أو أحدث peer dependency اختيارية.",
-        "global": "نسخة الـ script tag، حوالي 23 KB gzipped؛ بتعرض <code>window.A11yWidget</code>."
+        "languages": "لغات إضافية اختيارية (14)، tree-shakable، حوالي 1 KB gzipped لكل لغة.",
+        "global": "نسخة الـ script tag، حوالي 27 KB gzipped؛ بتعرض <code>window.A11yWidget</code>.",
+        "globalLanguages": "باكدج اللغات لنسخة الـ script tag، حوالي 17 KB gzipped؛ بتعرض <code>window.A11yWidgetLanguages</code>."
       }
     }
   },

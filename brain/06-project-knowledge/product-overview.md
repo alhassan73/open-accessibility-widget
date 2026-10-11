@@ -25,7 +25,7 @@ site compliant (BR-001).
 | --- | --- |
 | The widget's own UI is accessible | axe-core: no violations; keyboard e2e passes (`npm test`) |
 | Host pages are never broken | Host-safety e2e tests pass (layout, focus, CSP, re-renders, `<body>` swaps, `destroy()`) |
-| Small and dependency-free | IIFE ≤ 26 KB gzip (`npm run size`); `dependencies` empty |
+| Small and dependency-free | IIFE ≤ 28 KB gzip (`npm run size`); `dependencies` empty |
 
 ## Scope
 
