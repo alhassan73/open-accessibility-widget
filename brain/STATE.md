@@ -18,7 +18,7 @@ Not set — owner to choose the next milestone (see Open questions).
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
 - [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code).
-- [ ] Next features (owner picked 2026-10-12 from the competitor research): read aloud (speechSynthesis), page structure navigator, alt text in magnifier + invert + bold, `feedbackUrl` report link. Labels needed in all 16 languages.
+- [ ] F-018 (read aloud, page structure, bold, invert, alt text, `feedbackUrl`) + dark palette retune: built and green (`npm run check` 54/54, 27.06/28 KB), uncommitted on `main`; next: commit, owner decides release. Not built from the research (by owner's pick or by design): dictionary, translation, voice control, virtual keyboard (need services or low value), dyslexia font (font file), color-blind filters.
 - [ ] Draft ACR `docs/ACR.md`: owner reports manual AT results (`docs/at-test-matrix.md` still "Not tested") → agent records them as reported and replaces every Pending → final ACR (+ PDF).
 - [ ] Docs site go-live: Vercel project created + Git-connected (2026-10-12, CLI), production deploys from `main`; live and smoke-tested, repo website field points to Vercel; next: disable GitHub Pages (needs owner's OK).
 

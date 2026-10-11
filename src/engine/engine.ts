@@ -45,6 +45,7 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
   const backdrop = options.inFrame ? null : createBackdrop(doc, zIndex);
   const media = createMediaControl(doc, shadow.roots);
   const motion = createMotionControl(doc, shadow.roots);
+  const speech = createSpeech(doc);
   const frames = createFrames(doc, shadow.roots, options.nonce, pointer);
   let last: AccessibilitySettings = DEFAULT_SETTINGS;
   const classes = new Set<string>();
@@ -82,6 +83,7 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
     setVar("ws", spacing !== false && `${spacing * 0.3}em`);
     flag("align", s.textAlign !== "default" && s.textAlign);
     flag("readable", s.readableFont);
+    flag("bold", s.boldText);
     flag("titles", s.highlightTitles);
     flag("links", s.highlightLinks);
     flag("focus", s.highlightFocus);
@@ -96,7 +98,12 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
     flag("title-color", s.titleColor ?? false);
     flag("bg-color", s.backgroundColor ?? false);
 
+    // Invert comes from the layer below the widget; media are inverted first, so they end up as they were.
+    // In a frame, the page around it already inverts it.
+    const invert = !options.inFrame && s.invertColors;
+    flag("invert", invert);
     const filters = [
+      invert && "invert(1) hue-rotate(180deg)",
       s.colorMode === "high-contrast" && "contrast(1.4)",
       s.saturationMode === "monochrome" && "grayscale(1)",
       s.saturationMode === "low-saturation" && "saturate(0.5)",
@@ -109,6 +116,7 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
     pointer?.set({ guide: s.readingGuide, mask: s.readingMask, magnifier: s.textMagnifier });
     media.set(s.muteSounds, s.stopAnimations);
     motion.set(s.stopAnimations);
+    speech.set(s.readAloud);
     shadow.style();
     frames.apply(on && s);
     if (!on) shadow.watch(false); // last, after the steps above left the shadow roots
@@ -352,6 +360,69 @@ const TEXT_BLOCKS =
   "p,li,a,button,label,h1,h2,h3,h4,h5,h6,td,th,dt,dd,blockquote,figcaption,summary,legend,caption,span,input,textarea,select";
 
 /**
+ * What the magnifier shows and read-aloud says for the element under the pointer or focus: an image's
+ * alt text, else its text block (a field's value, placeholder or label). Never the widget's own text.
+ * No `instanceof`: the element may be in a frame (another realm).
+ */
+function readableText(target: EventTarget | null): string {
+  if ((target as Node | null)?.nodeType !== 1) return "";
+  const el = target as Element;
+  if (el.closest(IGNORE)) return "";
+  const img = el.closest('img,[role="img"]');
+  let text = img?.getAttribute("alt") || img?.getAttribute("aria-label") || "";
+  if (!text) {
+    const block = el.closest<HTMLElement>(TEXT_BLOCKS);
+    const field = block as HTMLInputElement | null;
+    text = !block
+      ? ""
+      : block.matches("input,textarea")
+        ? field!.value || field!.placeholder || field!.labels?.[0]?.innerText || ""
+        : block.innerText || "";
+  }
+  return text.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Read aloud: a click or tap on the page, or keyboard focus, reads that block (or image's alt text)
+ * with the browser's own speech, in the language of that part of the page. Escape stops it. Nothing
+ * leaves the browser except what the operating system's voices do.
+ */
+function createSpeech(doc: Document) {
+  const win = doc.defaultView!;
+  const synth = win.speechSynthesis as SpeechSynthesis | undefined;
+  let on = false;
+
+  const speak = (target: EventTarget | null) => {
+    const text = readableText(target).slice(0, 2000);
+    if (!text || !synth) return;
+    synth.cancel();
+    const utterance = new win.SpeechSynthesisUtterance(text);
+    utterance.lang = (target as Element).closest("[lang]")?.getAttribute("lang") || "";
+    synth.speak(utterance);
+  };
+  const onClick = (e: MouseEvent) => speak(e.composedPath()[0]);
+  const onFocus = (e: FocusEvent) => {
+    const el = e.composedPath()[0] as Element;
+    if (el.nodeType === 1 && el.matches(":focus-visible")) speak(el);
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === "Escape") synth?.cancel();
+  };
+
+  return {
+    set(next: boolean) {
+      if (!synth || next === on) return;
+      on = next;
+      const fn = on ? doc.addEventListener.bind(doc) : doc.removeEventListener.bind(doc);
+      fn("click", onClick as EventListener);
+      fn("focusin", onFocus as EventListener);
+      fn("keydown", onKey as EventListener);
+      if (!on) synth.cancel();
+    },
+  };
+}
+
+/**
  * Reading guide, reading mask and text magnifier — follow the pointer (on touch screens, a tap)
  * and keyboard focus, also inside open shadow roots and same-origin frames.
  */
@@ -377,15 +448,7 @@ function createPointerTools(doc: Document, zIndex: number) {
     }
     if (target !== lastTarget) {
       lastTarget = target;
-      // No `instanceof`: the target may be in a frame (another realm).
-      const block = (target as Node | null)?.nodeType === 1 ? (target as Element).closest<HTMLElement>(TEXT_BLOCKS) : null;
-      const field = block as HTMLInputElement | null;
-      const text = !block || block.closest(IGNORE)
-        ? ""
-        : block.matches("input,textarea")
-          ? field!.value || field!.placeholder || field!.labels?.[0]?.innerText || ""
-          : block.innerText || "";
-      box.textContent = text.replace(/\s+/g, " ").trim().slice(0, 300);
+      box.textContent = readableText(target).slice(0, 300);
       box.hidden = !box.textContent;
     }
     if (box.hidden) return;

@@ -319,14 +319,14 @@ test("setSettings({ profiles }) applies the profile presets", async () => {
 
 test("features and initialSettings options", async () => {
   await page.goto(HOST_URL);
-  await init(`{ features: { hideImages: false, readMode: false }, initialSettings: { fontSize: 130 } }`);
+  await init(`{ features: { hideImages: false, readMode: false, pageStructure: false }, initialSettings: { fontSize: 130 } }`);
   const out = await page.eval(`(() => {
     __w().setSettings({ hideImages: true });
     const labels = [...document.querySelectorAll('.a11yw-row-label')].map((e) => e.textContent);
     return { hideImages: __w().getSettings().hideImages, fontSize: __w().getSettings().fontSize,
-      hasHideRow: labels.includes('Hide images'), hasReadMode: !!document.querySelector('.a11yw-row[aria-haspopup]') };
+      hasHideRow: labels.includes('Hide images'), dialogs: document.querySelectorAll('.a11yw-row[aria-haspopup]').length };
   })()`);
-  assert.deepEqual(out, { hideImages: false, fontSize: 130, hasHideRow: false, hasReadMode: false });
+  assert.deepEqual(out, { hideImages: false, fontSize: 130, hasHideRow: false, dialogs: 0 });
 });
 
 test("works under a strict Trusted Types CSP without violations", async () => {
@@ -473,7 +473,7 @@ test("the widget itself is never changed by its own adjustments", async () => {
   })()`;
   const before = await page.eval(snapshot);
   await page.eval(`__w().setSettings({ fontSize: 200, contentScale: 150, lineHeight: 200, letterSpacing: 200, textAlign: 'center',
-    readableFont: true, highlightTitles: true, highlightLinks: true, highlightHover: true, highlightFocus: true,
+    readableFont: true, boldText: true, invertColors: true, highlightTitles: true, highlightLinks: true, highlightHover: true, highlightFocus: true,
     colorMode: 'dark-contrast', saturationMode: 'monochrome', textColor: '#ff0000', titleColor: '#00ff00', backgroundColor: '#0000ff',
     hideImages: true, stopAnimations: true, cursor: 'black' }); 1`);
   await sleep(300);
@@ -711,6 +711,73 @@ test("the optional language pack works with the script build (French, Hebrew rig
   assert.deepEqual(await page.eval(look), ["fr", "ltr", "Accessibilité", 16]);
   await page.eval(`__w().setOptions({ language: 'he' }); 1`);
   assert.deepEqual(await page.eval(look), ["he", "rtl", "נגישות", 16]);
+});
+
+test("bold text and invert colors; images keep their colors under invert", async () => {
+  await page.goto(HOST_URL);
+  await init();
+  await page.eval(`__w().setSettings({ boldText: true, invertColors: true, saturationMode: 'monochrome' }); 1`);
+  const out = await page.eval(`(() => ({ weight: getComputedStyle(document.querySelector('main p')).fontWeight,
+    backdrop: getComputedStyle(document.querySelector('.a11yw-backdrop')).backdropFilter,
+    img: getComputedStyle(document.getElementById('iconimg')).filter }))()`);
+  assert.deepEqual(out, { weight: "700", backdrop: "invert(1) hue-rotate(180deg) grayscale(1)", img: "invert(1) hue-rotate(180deg)" });
+  await page.eval(`__w().setSettings({ boldText: false, invertColors: false, saturationMode: 'default' }); 1`);
+  assert.equal(await page.eval(`getComputedStyle(document.getElementById('iconimg')).filter`), "none");
+});
+
+test("read aloud speaks the clicked block or focused control in its language, never the widget; Escape stops", async () => {
+  await page.goto(HOST_URL);
+  await page.eval(`window.__spoken = []; window.__cancelled = 0;
+    speechSynthesis.speak = (u) => __spoken.push([u.text, u.lang]); speechSynthesis.cancel = () => __cancelled++;
+    document.querySelector('footer p').lang = 'fr'; 1`);
+  await init();
+  await page.eval(`__w().setSettings({ readAloud: true }); 1`);
+  await page.click("main p");
+  await page.click("footer p");
+  await page.click(".a11yw-launcher"); // the widget's own controls are never read
+  await page.press(KEYS.Escape); // closes the panel; focus is back on the launcher
+  await page.press(KEYS.Tab); // keyboard focus on the page's first link
+  assert.deepEqual(await page.eval(`__spoken`), [["Paragraph with an inline link inside it.", "en"], ["Footer text", "fr"], ["Link A", "en"]]);
+  await page.eval(`__cancelled = 0; 1`);
+  await page.press(KEYS.Escape);
+  assert.ok(await page.eval(`__cancelled > 0`), "Escape stops speaking");
+  await page.eval(`__w().setSettings({ readAloud: false }); __spoken.length = 0; 1`);
+  await page.click("main p");
+  assert.deepEqual(await page.eval(`__spoken`), []);
+});
+
+test("text magnifier shows an image's alt text", async () => {
+  await page.goto(HOST_URL);
+  await init();
+  await page.eval(`__w().setSettings({ textMagnifier: true }); 1`);
+  const { x, y } = await page.eval(`(() => { const r = document.getElementById('iconimg').getBoundingClientRect(); return { x: r.left + 5, y: r.top + 5 }; })()`);
+  await page.send("Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
+  await sleep(100);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-magnifier').textContent`), "Home");
+});
+
+test("page structure lists headings, regions and links, and jumps to the chosen one", async () => {
+  const axe = fs.readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
+  await page.goto(HOST_URL);
+  await init(`{ feedbackUrl: 'mailto:a11y@example.com', statementUrl: 'javascript:alert(1)' }`);
+  await openPanelAllSections();
+  assert.deepEqual(await page.eval(`[...document.querySelectorAll('.a11yw-footer a')].map((a) => [a.textContent, a.getAttribute('href')])`),
+    [["Report a problem", "mailto:a11y@example.com"]], "javascript: URLs are dropped, mailto: is kept");
+  await page.eval(`[...document.querySelectorAll('.a11yw-row[aria-haspopup]')].find((b) => b.textContent === 'Page structure').click(); 1`);
+  await sleep(100);
+  const list = await page.eval(`(() => { const d = document.querySelector('.a11yw-reader[role=dialog]');
+    return { title: d.querySelector('h2').textContent, groups: [...d.querySelectorAll('h3')].map((h) => h.textContent),
+      items: [...d.querySelectorAll('li button')].map((b) => b.textContent), focus: d.contains(document.activeElement) }; })()`);
+  assert.equal(list.title, "Page structure");
+  assert.deepEqual(list.groups, ["Headings", "Regions", "Links"]);
+  assert.ok(list.items.includes("H1Site title") && list.items.includes("H2Section heading"), list.items.join(" | "));
+  assert.ok(list.items.includes("Header") && list.items.includes("Navigation") && list.items.includes("Main content") && list.items.includes("Footer"));
+  assert.ok(list.items.includes("Link B"));
+  assert.equal(list.focus, true);
+  await page.eval(`${axe}; 1`);
+  assert.deepEqual(await page.eval(`axe.run({ include: [['.a11yw-root']] }).then((r) => r.violations.map((v) => v.id + ': ' + v.nodes.map((n) => n.target).join(' | ')))`), []);
+  await page.eval(`[...document.querySelectorAll('.a11yw-reader li button')].find((b) => b.textContent === 'Link B').click(); 1`);
+  assert.deepEqual(await page.eval(`[!!document.querySelector('.a11yw-reader'), document.activeElement.id]`), [false, "b"]);
 });
 
 test("a frame that runs its own copy of the widget is left to it", async () => {

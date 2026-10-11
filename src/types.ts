@@ -25,13 +25,20 @@ export interface AccessibilitySettings {
   letterSpacing: number;
   textAlign: TextAlign;
   readableFont: boolean;
+  /** All page text in bold. */
+  boldText: boolean;
   highlightTitles: boolean;
   highlightLinks: boolean;
+  /** Shows the text (or an image's alt text) under the pointer or focus, enlarged. */
   textMagnifier: boolean;
+  /** A click, tap or keyboard focus reads that block aloud with the browser's speech. */
+  readAloud: boolean;
 
   // Colors — custom colors are `null` when not set
   colorMode: ColorMode;
   saturationMode: SaturationMode;
+  /** Inverts the page's colors; images and video keep theirs. */
+  invertColors: boolean;
   textColor: string | null;
   titleColor: string | null;
   backgroundColor: string | null;
@@ -53,7 +60,7 @@ export type ProfilePreset = Partial<Omit<AccessibilitySettings, "profiles">>;
 export type SettingKey = Exclude<keyof AccessibilitySettings, "profiles">;
 
 /** A control that can be removed from the panel with `features: { key: false }`. */
-export type FeatureKey = SettingKey | "profiles" | "readMode";
+export type FeatureKey = SettingKey | "profiles" | "readMode" | "pageStructure";
 
 export interface AccessibilityState {
   settings: AccessibilitySettings;
@@ -111,6 +118,8 @@ export interface AccessibilityWidgetOptions {
   shortcut?: string | false;
   /** Link to your accessibility statement, shown in the footer. */
   statementUrl?: string;
+  /** Where visitors report an accessibility problem (a page, `mailto:` or form), shown in the footer. */
+  feedbackUrl?: string;
   /**
    * Render a "Skip to main content" link. Default `true`. It is left out when the page has
    * no `<main>` / `<h1>` to skip to, or already starts with its own in-page skip link.

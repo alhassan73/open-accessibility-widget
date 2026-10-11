@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Added
+
+- **Read aloud** (`readAloud`): a click or tap on the page, or keyboard focus, reads that block (or an image's alt text) with the browser's own speech, in the language of that part of the page. Escape stops it. Shown only in browsers that can speak; nothing is sent anywhere by the widget.
+- **Page structure** (feature key `pageStructure`): a dialog listing the page's headings (with their level), regions (header, navigation, main content, sidebar, footer, search, named forms and regions) and links. Choosing one moves focus and the view to it.
+- **Bold text** (`boldText`) and **Invert colors** (`invertColors`). Invert works on the layer below the widget, like the other color filters; images, video, canvas and frames are inverted twice, so they keep their colors.
+- The text magnifier shows an image's alt text (or a `role="img"` element's label) when the pointer or focus is on it.
+- **`feedbackUrl` option**: a "Report a problem" link in the footer (a page, a form or `mailto:`).
+- Labels for all of the above in English, Arabic and the 14 languages of the language pack.
+
+### Changed — design
+
+- The dark panel uses neutral charcoal surfaces, and a brighter tint of the brand color for icons, links and focus rings.
+
+### Changed
+
+- `statementUrl` (and `feedbackUrl`) accept `mailto:` links too. Other schemes such as `javascript:` are still dropped.
+- The bundle-size budget is 28 KB gzipped (was 26 KB).
+
 ## 1.3.2
 
 ### Added

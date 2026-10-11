@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### Added
+- 2026-10-12 — F-018 from the competitor research: read aloud, page structure, bold text, invert colors, alt text in the magnifier, `feedbackUrl` (labels in 16 languages). Dark panel retuned to the owner's charcoal/teal mock-up.
+
+### Changed
+- 2026-10-12 — Budget 26 → 28 KB (owner picked all four features knowing the cost); `safeUrl` also allows `mailto:`.
+
 ## [1.3.2] — 2026-10-12 (tag `v1.3.2`, published to npm)
 
 ### Added

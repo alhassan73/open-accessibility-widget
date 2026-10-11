@@ -44,7 +44,7 @@ in `06-project-knowledge/`. Keep under ~100 lines.
 | Lint | n/a — no linter configured | Risk logged in `STATE.md` |
 | Format | n/a — no formatter configured | |
 | Build | `npm run build` (`tsup`) | Yes |
-| Size | `npm run size` — IIFE ≤ 26 KB gzip (`scripts/check-size.mjs`); after build | Yes |
+| Size | `npm run size` — IIFE ≤ 28 KB gzip (`scripts/check-size.mjs`); after build | Yes |
 | Test (all) | `npm test` (`node --test "test/*.test.mjs"`); runs against `dist/` — build first | Yes |
 | Test (one) | `node --test test/settings.test.mjs` · `node --test --test-name-pattern="<name>" test/widget.e2e.test.mjs` | While iterating |
 | All gates | `npm run check` = typecheck → build → size → test (also `prepublishOnly`) | Yes |

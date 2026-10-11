@@ -7,10 +7,10 @@
 
 | Entity | Meaning | Key fields | Owned by (module) | Stored in |
 | --- | --- | --- | --- | --- |
-| Settings (`AccessibilitySettings`) | The visitor's adjustments | `profiles`, `fontSize`, `contentScale`, `lineHeight`, `letterSpacing`, `textAlign`, `colorMode`, `saturationMode`, colors, booleans, `cursor` | `src/settings.ts` (schema), `src/widget.ts` (state) | `localStorage` (`a11yw-settings`) |
+| Settings (`AccessibilitySettings`) | The visitor's adjustments | `profiles`, `fontSize`, `contentScale`, `lineHeight`, `letterSpacing`, `textAlign`, `colorMode`, `saturationMode`, colors, booleans (incl. `boldText`, `invertColors`, `readAloud`, added 2026-10-12: additive, old saved data loads with them off, no `STORAGE_VERSION` bump), `cursor` | `src/settings.ts` (schema), `src/widget.ts` (state) | `localStorage` (`a11yw-settings`) |
 | Profile (`ProfileId`, `ProfilePreset`) | Shortcut that switches on several settings | id, preset settings | `src/settings.ts` (`PROFILE_IDS`, `PROFILE_PRESETS`) | Ids inside Settings |
-| Options (`AccessibilityWidgetOptions`) | Site owner's configuration | `position`, `theme`, `icon`, `logo`, `languages`, `labels`, `features`, `initialSettings`, `storageKey`, `persist`, `nonce`, `zIndex`, `statementUrl`, `onChange` | `src/types.ts` | Not stored |
-| Language (`AccessibilityLanguage`) | A set of UI labels with direction | `code`, `name`, `labels`, `dir?` | `src/labels.ts` | Chosen code at `<storageKey>:lang` |
+| Options (`AccessibilityWidgetOptions`) | Site owner's configuration | `position`, `theme`, `icon`, `logo`, `languages`, `labels`, `features`, `initialSettings`, `storageKey`, `persist`, `nonce`, `zIndex`, `statementUrl`, `feedbackUrl`, `colorScheme`, `onChange` | `src/types.ts` | Not stored |
+| Language (`AccessibilityLanguage`) | A set of UI labels with direction | `code`, `name`, `labels`, `dir?` | `src/labels.ts` (en, ar), `src/languages.ts` (optional pack) | Chosen code at `<storageKey>:lang` |
 | Instance (`AccessibilityWidgetInstance`) | The mounted widget and its API | `open/close/toggle`, `get/setSettings`, `toggleProfile`, `reset`, `setOptions`, `subscribe`, `destroy` | `src/widget.ts` | Registry on `globalThis` |
 | State (`AccessibilityState`) | Snapshot given to listeners | `settings`, `isOpen` | `src/widget.ts` | Memory (frozen) |
 
