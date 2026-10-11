@@ -33,5 +33,5 @@ the widget from `src/`, deploy it with Vercel's Git integration (Root Directory 
 - Negative / accepted costs: `npm install` also installs the site; production deploys happen outside
   GitHub Actions (Vercel dashboard); `script-src 'unsafe-inline'` for prerendered pages (Trusted Types
   still enforced).
-- Follow-ups: owner imports the repo in Vercel and disables Pages.
+- Follow-ups: Vercel project created and Git-connected 2026-10-12 (CLI); owner disables Pages.
 - Revisit when: a custom domain is chosen (add HSTS `preload` then), or Vercel stops fitting.

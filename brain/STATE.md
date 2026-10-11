@@ -18,7 +18,7 @@ Not set — owner to choose the next milestone (see Open questions).
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
 - [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code).
-- [ ] Docs site go-live: merged to `main` in 1.3.0; next: owner imports the repo in Vercel (Root Directory `examples`, Node 22, include files outside the root), then disables GitHub Pages in repo settings.
+- [ ] Docs site go-live: Vercel project created + Git-connected (2026-10-12, CLI), production deploys from `main`; next: verify live site, then disable GitHub Pages (needs owner's OK).
 
 ## Next up
 

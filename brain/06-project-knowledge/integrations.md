@@ -11,7 +11,7 @@ Only tooling does:
 | Service | Purpose | Called from | Adapter (only entry point) | Auth (name of secret, never value) | Sandbox? |
 | --- | --- | --- | --- | --- | --- |
 | npm registry | Install deps; publish releases | `npm ci` (CI), `release.yml` | `npm publish --access public` | npm Trusted Publishing (OIDC `id-token: write`) — no token | No |
-| Vercel | Host the docs site + live demo (`examples/`) | Vercel Git integration on push (preview per branch, production from `main`) | Vercel project settings (Root Directory `examples`) | Vercel account of the owner — no secret in the repo | Preview deployments |
+| Vercel | Host the docs site + live demo (`examples/`) | Vercel Git integration on push (preview per branch, production from `main`) | Vercel project settings (Root Directory `examples`) + `examples/vercel.json` | Vercel account of the owner — no secret in the repo | Preview deployments |
 | Dependabot | Weekly update PRs: npm devDeps + SHA-pinned actions | `.github/dependabot.yml` | GitHub | none | n/a |
 | jsDelivr / unpkg | Serve the IIFE build to `<script>` users | Consumers | `unpkg` / `jsdelivr` fields in `package.json` | none | n/a (mirror npm) |
 
@@ -25,11 +25,15 @@ Only tooling does:
 
 ### Vercel (docs site)
 
-- Builds `examples/` with `next build` (installs from the root lockfile; the site reads `../src` and
-  `../CHANGELOG.md`, so files outside the Root Directory must stay included — Vercel's default).
+- Builds `examples/` with `next build`. `examples/vercel.json` installs with `cd .. && npm ci` (the whole
+  workspace from the root lockfile; Vercel's default installed only the workspace's own deps, so `typescript`
+  was missing). The site reads `../src` and `../CHANGELOG.md`, so files outside the Root Directory must stay
+  included (Vercel's default).
 - Pages are prerendered; `src/proxy.ts` only redirects `/` (and paths without a language) to `/en/` or `/ar/`.
 - Security headers (CSP with Trusted Types, HSTS, frame-ancestors) come from `next.config.ts`, production only.
-- The repo holds no Vercel config or token; the project is set up in the Vercel dashboard by the owner.
+- Project `open-accessibility-widget` (team `alhassan73s-projects`, Hobby), created 2026-10-12 with the CLI:
+  Root Directory `examples`, Node 22.x, Git-connected (production from `main`). Only `vercel.json` is in
+  the repo; no token. `vercel link` writes `.vercel/` and a pulled env file — both git-ignored.
 
 ## 3. Rules
 
