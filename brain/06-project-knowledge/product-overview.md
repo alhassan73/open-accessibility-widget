@@ -25,14 +25,14 @@ site compliant (BR-001).
 | --- | --- |
 | The widget's own UI is accessible | axe-core: no violations; keyboard e2e passes (`npm test`) |
 | Host pages are never broken | Host-safety e2e tests pass (layout, focus, CSP, re-renders, `<body>` swaps, `destroy()`) |
-| Small and dependency-free | IIFE ≤ 24 KB gzip (`npm run size`); `dependencies` empty |
+| Small and dependency-free | IIFE ≤ 25 KB gzip (`npm run size`); `dependencies` empty |
 
 ## Scope
 
 - **In scope:** user-preference adjustments applied with CSS on the host page; profiles; read mode;
   theming; languages (en, ar, custom); persistence; framework adapters (React).
 - **Out of scope (deliberately):** fixing a site's markup, compliance claims or "overlays" that
-  promise compliance, iframes and Shadow DOM content, network services, analytics.
+  promise compliance, cross-origin iframes and closed shadow roots, network services, analytics.
 
 ## Feature map
 

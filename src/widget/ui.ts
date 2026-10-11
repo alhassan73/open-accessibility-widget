@@ -761,8 +761,32 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     if (api.getState().isOpen && !panel.contains(t) && !launcher.contains(t)) api.setOpen(false);
   };
 
+  // A page control that gets keyboard focus under the launcher would be hidden by it (WCAG 2.4.11):
+  // the launcher steps aside (invisible, click-through, still in the tab order) until focus moves on.
+  // Checked a frame after focus changes (once the browser has scrolled the control into view) and
+  // after scrolling.
+  let yieldFrame = 0;
+  const checkCovered = () => {
+    yieldFrame = 0;
+    let t = document.activeElement;
+    while (t?.shadowRoot?.activeElement) t = t.shadowRoot.activeElement;
+    let covered = false;
+    if (t && t !== document.body && !root.contains(t) && t.matches(":focus-visible")) {
+      const a = t.getBoundingClientRect();
+      const b = launcher.getBoundingClientRect();
+      covered = a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+    }
+    launcher.toggleAttribute("data-yield", covered);
+  };
+  const scheduleCheck = () => {
+    if (!yieldFrame) yieldFrame = requestAnimationFrame(checkCovered);
+  };
+
   document.addEventListener("keydown", onKeyDown);
   document.addEventListener("pointerdown", onPointerDown);
+  document.addEventListener("focusin", scheduleCheck);
+  document.addEventListener("focusout", scheduleCheck);
+  document.addEventListener("scroll", scheduleCheck, { capture: true, passive: true });
 
   // Open/close with a CSS transition; `hidden` is applied only after it finishes.
   let hideTimer = 0;
@@ -819,6 +843,10 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     destroy() {
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("focusin", scheduleCheck);
+      document.removeEventListener("focusout", scheduleCheck);
+      document.removeEventListener("scroll", scheduleCheck, { capture: true });
+      cancelAnimationFrame(yieldFrame);
       window.clearTimeout(hideTimer);
       if (reader) document.body.style.overflow = bodyOverflow;
       setPageInert(false);

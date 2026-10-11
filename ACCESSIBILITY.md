@@ -24,10 +24,12 @@ What is checked today:
 
 ## Known limitations
 
-- The launcher is fixed in a bottom corner and can cover a focused control that sits in that corner
-  on the host page (WCAG 2.4.11). Sites can move it with `offset` / `position`.
+- The launcher is fixed in a bottom corner. It steps aside when keyboard focus lands on a page control
+  under it (WCAG 2.4.11), but still covers that corner for mouse and touch users. Sites can move it with
+  `offset` / `position`.
 - Firefox and Safari aren't covered by CI; they rely on manual testing.
-- Page adjustments don't reach inside iframes or Shadow DOM.
+- Page adjustments don't reach inside cross-origin iframes or closed shadow roots (same-origin iframes and
+  open Shadow DOM are adjusted).
 - More: the README's [Limitations](./README.md#limitations) section.
 
 ## Feedback

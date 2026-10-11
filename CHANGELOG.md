@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Added
+
+- **Open Shadow DOM.** Adjustments now reach inside web components: each open shadow root gets the page rules as an adopted stylesheet (works under a strict CSP), text size measures its text, and media in it is muted or paused. Components added later are found too. Closed shadow roots stay out of reach.
+- **Same-origin iframes** get the same adjustments while the page is adjusted (content scale and color filters come from the page around them, so nothing is applied twice). Reading aids follow the pointer and focus into them. A frame that runs its own copy of the widget is left to it. Cross-origin iframes (video players, maps, payment forms) can't be reached by any script.
+- **Reading aids on touch screens.** Reading line, focus window and magnifier move to where you tap; the magnifier keeps showing what was tapped.
+- **"Stop animations" also stops script and SVG animations** (Web Animations API, SMIL), including ones started later. Like CSS animations, finite ones jump to their end (content that fades or slides in still arrives); endless ones are paused, and only those are resumed. GIFs, `<canvas>` and `requestAnimationFrame` loops still keep moving.
+
+### Fixed — accessibility
+
+- **The launcher steps aside for a focused control under it (WCAG 2.4.11).** When keyboard focus lands on a page control under the launcher, including after the page scrolls, the launcher fades out and lets clicks through (it stays in the tab order) until focus moves on. It still covers its corner for mouse and touch users.
+
+### Changed — project
+
+- The bundle-size budget is 25 KB gzipped (was 24 KB).
+
 ## 1.3.0
 
 ### Changed — project

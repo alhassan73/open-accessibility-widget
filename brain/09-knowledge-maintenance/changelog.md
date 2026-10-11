@@ -5,6 +5,15 @@
 
 ## [Unreleased]
 
+### Added
+- 2026-10-12 — F-015 page reach: open Shadow DOM, same-origin iframes, touch reading aids, script/SVG animation pause.
+
+### Fixed
+- 2026-10-12 — Compliance review P1-1 (launcher can cover a focused control, WCAG 2.4.11): the launcher steps aside.
+
+### Changed
+- 2026-10-12 — Size budget 24 → 25 KB (approved). Docs site scrollbar follows the light theme.
+
 ## [1.3.0] — 2026-10-12 (tag `v1.3.0`, published to npm)
 
 ### Added

@@ -545,3 +545,137 @@ test("destroy() restores the page", async () => {
   })()`);
   assert.deepEqual(out, { classes: [], style: null, attrs: 0, nodes: 0 });
 });
+
+test("the launcher steps aside for a focused control under it (WCAG 2.4.11)", async () => {
+  await page.goto(BLANK_URL);
+  await page.eval(`document.body.innerHTML = '<button id="corner" style="position:fixed;left:30px;bottom:30px">Corner</button><button id="free">Free</button>'; 1`);
+  await init();
+  const state = `(() => { const l = document.querySelector('.a11yw-launcher');
+    return { focused: __d(document.activeElement), yields: l.hasAttribute('data-yield'), clicks: getComputedStyle(l).pointerEvents }; })()`;
+  for (let i = 0; i < 5 && (await page.eval(`document.activeElement.id`)) !== "corner"; i++) await page.press(KEYS.Tab);
+  await sleep(50);
+  assert.deepEqual(await page.eval(state), { focused: "button#corner", yields: true, clicks: "none" });
+  // Still in the tab order, and shown again once it has focus itself.
+  await page.press(KEYS.Tab, MOD.shift);
+  await sleep(50);
+  assert.deepEqual(await page.eval(state), { focused: "button.a11yw-launcher", yields: false, clicks: "auto" });
+  await page.eval(`document.getElementById('free').focus(); 1`);
+  await sleep(50);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-launcher').hasAttribute('data-yield')`), false);
+  // A control the browser scrolls into view at the bottom edge, under the launcher.
+  await page.eval(`document.body.insertAdjacentHTML('beforeend', '<div style="height:3000px"></div><button id="low">Low</button>'); 1`);
+  for (let i = 0; i < 6 && (await page.eval(`document.activeElement.id`)) !== "low"; i++) await page.press(KEYS.Tab);
+  await sleep(50);
+  assert.deepEqual(await page.eval(state), { focused: "button#low", yields: true, clicks: "none" });
+});
+
+test("stop animations stops script and SVG animations, and resumes only the ones it paused", async () => {
+  await page.goto(BLANK_URL);
+  await page.eval(`document.body.innerHTML = '<div id="spin">Spin</div><div id="own">Own</div><div id="fade">Fade</div><svg id="pulse" width="10" height="10"><circle r="5"><animate attributeName="r" values="1;5" dur="1s" repeatCount="indefinite"/></circle></svg>';
+    window.spinAnim = spin.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1000, iterations: Infinity });
+    window.ownAnim = own.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1000, iterations: Infinity }); ownAnim.pause();
+    window.fadeAnim = fade.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 60000, fill: 'forwards' });
+    fadeAnim.finished.then(() => (window.fadeDone = true)); 1`);
+  await init();
+  const state = `[spinAnim.playState, ownAnim.playState, pulse.animationsPaused()]`;
+  await page.eval(`__w().setSettings({ stopAnimations: true }); 1`);
+  assert.deepEqual(await page.eval(state), ["paused", "paused", true]);
+  // A finite animation (a fade-in) jumps to its end instead of freezing half-way.
+  assert.deepEqual(await page.eval(`Promise.resolve().then(() => [fadeAnim.playState, getComputedStyle(fade).opacity, window.fadeDone === true])`), ["finished", "1", true]);
+  // Started after the setting was switched on: caught by the next sweep.
+  await page.eval(`window.lateAnim = spin.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 1000, iterations: Infinity }); 1`);
+  await sleep(1200);
+  assert.equal(await page.eval(`lateAnim.playState`), "paused");
+  await page.eval(`__w().setSettings({ stopAnimations: false }); 1`);
+  assert.deepEqual(await page.eval(state), ["running", "paused", false], "the page's own paused animation stays paused");
+});
+
+test("reading aids follow a tap on touch screens", async () => {
+  await page.goto(HOST_URL);
+  await init();
+  await page.eval(`__w().setSettings({ readingGuide: true, textMagnifier: true }); 1`);
+  await sleep(50);
+  const guide = `document.querySelector('.a11yw-guide').style.transform`;
+  const start = await page.eval(guide);
+  const { x, y } = await page.eval(`(() => { const r = document.getElementById('lnk').getBoundingClientRect(); return { x: r.left + 5, y: r.top + r.height / 2 }; })()`);
+  await page.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
+  await page.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  await sleep(100);
+  assert.notEqual(await page.eval(guide), start);
+  assert.equal(await page.eval(`(() => { const m = document.querySelector('.a11yw-magnifier'); return m.hidden ? null : m.textContent; })()`), "inline link");
+});
+
+test("adjustments reach open shadow roots, under a strict CSP, and are taken out again", async () => {
+  await page.goto(TT_URL);
+  const out = await page.eval(`new Promise((res) => {
+    const violations = [];
+    document.addEventListener('securitypolicyviolation', (e) => violations.push(e.violatedDirective));
+    customElements.define('x-card', class extends HTMLElement {
+      constructor() { super(); const s = this.attachShadow({ mode: 'open' }), p = document.createElement('p'), a = document.createElement('a');
+        p.style.cssText = 'font-size:20px;line-height:1;background:#fff;color:#000'; p.append('Inside ', a); a.href = '#'; a.textContent = 'link'; s.append(p); }
+    });
+    const main = document.createElement('main');
+    main.append(Object.assign(document.createElement('x-card'), { id: 'one' }));
+    document.body.append(main);
+    A11yWidget.init({ nonce: 't3st' });
+    const p = (id) => document.getElementById(id).shadowRoot.querySelector('p');
+    const look = (id) => { const c = getComputedStyle(p(id)); return [c.fontSize, c.lineHeight, c.backgroundColor, getComputedStyle(p(id).querySelector('a')).textDecorationLine]; };
+    const before = look('one');
+    __w().setSettings({ fontSize: 150, lineHeight: 200, colorMode: 'dark-contrast', highlightLinks: true });
+    // A component added later, and text added later inside a scaled shadow root (no double scaling).
+    main.append(Object.assign(document.createElement('x-card'), { id: 'two' }));
+    p('one').append(Object.assign(document.createElement('span'), { id: 'late', textContent: 'late' }));
+    setTimeout(() => {
+      const on = [look('one'), look('two'), getComputedStyle(p('one').querySelector('#late')).fontSize];
+      __w().setSettings({ fontSize: 100, lineHeight: 100, colorMode: 'default', highlightLinks: false });
+      const root = document.getElementById('one').shadowRoot;
+      res({ before, on, off: [look('one'), root.adoptedStyleSheets.length, root.querySelectorAll('[data-a11yw-fs]').length], violations });
+    }, 300);
+  })`);
+  const dark = ["30px", "90px", "rgb(18, 18, 18)", "underline"];
+  assert.deepEqual(out, { before: ["20px", "20px", "rgb(255, 255, 255)", "underline"], on: [dark, dark, "30px"], off: [out.before, 0, 0], violations: [] });
+});
+
+test("a component defined after the settings were applied is picked up at the next change", async () => {
+  await page.goto(BLANK_URL);
+  await page.eval(`document.body.innerHTML = '<x-late id="late"></x-late>'; 1`);
+  await init();
+  await page.eval(`__w().setSettings({ colorMode: 'dark-contrast' });
+    customElements.define('x-late', class extends HTMLElement { constructor() { super(); this.attachShadow({ mode: 'open' }).innerHTML = '<p style="background:#fff">Late</p>'; } });
+    __w().setSettings({ highlightLinks: true }); 1`);
+  await sleep(700);
+  assert.equal(await page.eval(`getComputedStyle(late.shadowRoot.querySelector('p')).backgroundColor`), "rgb(18, 18, 18)");
+});
+
+test("same-origin iframes get the same adjustments; reading aids follow the pointer into them", async () => {
+  await page.goto(BLANK_URL);
+  await page.eval(`new Promise((res) => { document.body.innerHTML = '<iframe id="f1" srcdoc="<p>In frame</p>"></iframe>'; f1.onload = () => res(1); })`);
+  await init();
+  await page.eval(`__w().setSettings({ fontSize: 150, colorMode: 'dark-contrast', contentScale: 150, readingMask: true }); 1`);
+  await page.eval(`new Promise((res) => { document.body.insertAdjacentHTML('beforeend', '<iframe id="f2" srcdoc="<p>Later</p>"></iframe>'); f2.onload = () => setTimeout(() => res(1), 50); })`);
+  const look = (id) => `(() => { const d = document.getElementById('${id}').contentDocument, c = getComputedStyle(d.querySelector('p'));
+    return [c.fontSize, c.backgroundColor, [...d.documentElement.classList].filter((k) => k.startsWith('a11yw')).sort().join(' ')]; })()`;
+  const on = ["24px", "rgb(18, 18, 18)", "a11yw-dark a11yw-font"]; // no a11yw-scale: the frame is zoomed with the page
+  assert.deepEqual([await page.eval(look("f1")), await page.eval(look("f2"))], [on, on]);
+  // The mask's middle lands where the pointer is in the frame, which the page zoom has scaled.
+  await page.eval(`f1.contentDocument.querySelector('p').dispatchEvent(new PointerEvent('pointermove', { bubbles: true, composed: true, clientX: 5, clientY: 40 })); 1`);
+  await sleep(50);
+  const { middle, expected } = await page.eval(`(() => { const m = document.querySelector('.a11yw-mask').getBoundingClientRect(), r = f1.getBoundingClientRect();
+    return { middle: m.top + m.height / 2, expected: r.top + (f1.clientTop + 40) * (r.height / f1.offsetHeight) }; })()`);
+  assert.ok(Math.abs(middle - expected) < 2, `mask middle ${middle}, pointer at ${expected}`);
+  await page.eval(`__w().setSettings({ fontSize: 100, colorMode: 'default', contentScale: 100, readingMask: false }); 1`);
+  assert.deepEqual(await page.eval(`(() => { const d = f1.contentDocument; return [getComputedStyle(d.querySelector('p')).fontSize,
+    [...d.documentElement.classList].join(' '), d.querySelectorAll('#a11yw-styles,#a11yw-font-sizes,[data-a11yw-fs]').length]; })()`), ["16px", "", 0]);
+});
+
+test("a frame that runs its own copy of the widget is left to it", async () => {
+  await page.goto(BLANK_URL);
+  // Stands in for a same-site page that loads the widget itself.
+  await page.eval(`new Promise((res) => { document.body.innerHTML = '<iframe id="own" srcdoc="<style id=a11yw-styles>p{color:rgb(1,2,3)}</style><p>Own widget</p>"></iframe>'; own.onload = () => res(1); })`);
+  await init();
+  const look = `(() => { const d = own.contentDocument; return [d.querySelectorAll('#a11yw-styles').length, getComputedStyle(d.querySelector('p')).color, d.documentElement.className]; })()`;
+  await page.eval(`__w().setSettings({ colorMode: 'dark-contrast' }); 1`);
+  assert.deepEqual(await page.eval(look), [1, "rgb(1, 2, 3)", ""]);
+  await page.eval(`__w().setSettings({ colorMode: 'default' }); 1`);
+  assert.deepEqual(await page.eval(look), [1, "rgb(1, 2, 3)", ""]);
+});

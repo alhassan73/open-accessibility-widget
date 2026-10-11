@@ -364,9 +364,9 @@ Profiles are shortcuts that switch on a few adjustments at once. They are not me
 
 | Profile (id) | Turns on | Helps with | Watch out for |
 | --- | --- | --- | --- |
-| Motion sensitivity (`seizureSafe`) | Stop animations, low saturation | Distraction and discomfort from CSS motion and bright colors | GIFs, `<canvas>`, video in iframes and JavaScript-driven animation are **not** stopped |
+| Motion sensitivity (`seizureSafe`) | Stop animations, low saturation | Distraction and discomfort from CSS, script and SVG animations and bright colors | GIFs, `<canvas>`, video in cross-origin iframes and animation drawn frame by frame by scripts are **not** stopped |
 | Low vision (`visionImpaired`) | Text 120%, readable font, high contrast | Small or thin text, low-contrast pages | Contrast filter also changes images |
-| Focus mode (`adhdFriendly`) | Focus window, stop animations, low saturation | Keeping your place; fewer moving distractions | The window follows the pointer and keyboard focus |
+| Focus mode (`adhdFriendly`) | Focus window, stop animations, low saturation | Keeping your place; fewer moving distractions | The window follows the pointer, a tap and keyboard focus |
 | Easy reading (`cognitiveDisability`) | Highlight headings and links, reading line, readable font | Seeing page structure and links at a glance | Outlines add visual noise on busy pages |
 | Keyboard user (`keyboardNav`) | Strong focus outline, highlight links | Finding the focused element | – |
 | Quiet media (`screenReader`) | Mute media, strong focus outline | Audio that starts on its own (e.g. over a screen reader) | Media the visitor starts or unmutes keeps playing with sound |
@@ -377,15 +377,15 @@ Profiles are shortcuts that switch on a few adjustments at once. They are not me
 What the widget can't do, so you don't promise it:
 
 - It doesn't fix a page's markup: missing alt text, labels, headings, keyboard support and contrast in your own design still need fixing at the source.
-- Adjustments don't reach inside `<iframe>`s (embedded video, maps, payment forms) or Shadow DOM (web components keep their own styles).
-- Reading line, focus window and magnifier follow the mouse and keyboard focus; on touch screens they move only with focus.
+- Adjustments reach same-origin `<iframe>`s and open Shadow DOM (web components), but not cross-origin iframes (embedded video, maps, payment forms: browsers keep every script out of them) or closed shadow roots. A web component whose shadow root appears later without any change to the page is picked up at the next settings change.
+- "Stop animations" stops CSS animations and transitions, and script (Web Animations API) and SVG animations: finite ones jump to their end, endless ones pause. GIFs, `<canvas>` and animation that scripts draw frame by frame (`requestAnimationFrame`) keep moving.
 - "Page zoom" uses CSS `zoom`, which doesn't trigger your media queries. Browser zoom (Ctrl/Cmd +) reflows better; suggest it in your accessibility statement.
 - "Line spacing" sets an absolute line height of 1.5 × the chosen percentage on all text.
 - Letter spacing is not applied to Arabic and other cursive scripts (it would break joined letters); word spacing still is.
 - Color modes override background colors and remove background images, except on form controls (e.g. checkbox ticks), links and buttons (often their only icon); decorative icons drawn as background images elsewhere disappear. The widget outlines selected/pressed states so they stay visible, but heavily custom-drawn controls can still look different.
 - The custom-color contrast warning checks only the visitor's custom text and heading colors, and only against a known background: the custom background color, or the dark/light mode background.
 - Text size measures each element's original size once. If your app later changes an element's font size through a class change (without replacing the element), it keeps the earlier base size until the page reloads.
-- The launcher is fixed in a bottom corner and can cover a focused link or button that sits in that corner, such as the last footer link (WCAG 2.4.11). Keep that corner free of controls, add bottom padding to your page, or move the launcher with `offset` / `position`.
+- The launcher is fixed in a bottom corner. When keyboard focus lands on a page control under it, such as the last footer link, the launcher steps aside (it fades out and lets clicks through, but stays in the tab order) until focus moves on (WCAG 2.4.11). It still sits over that corner for mouse and touch users, so keep it free of controls, add bottom padding to your page, or move the launcher with `offset` / `position`.
 - Color adjustments apply to the screen only, not to printing.
 
 ## Preferences and precedence

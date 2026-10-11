@@ -1,12 +1,15 @@
-import { DEFAULT_SETTINGS } from "../settings";
+import { DEFAULT_SETTINGS, isDefaultSettings } from "../settings";
 import type { AccessibilitySettings } from "../types";
-import { injectStyles } from "./css";
+import { injectStyles, removeStyles, STYLE_ID } from "./css";
+import { adopt, createShadowRoots } from "./shadow";
 
 export interface EngineOptions {
   /** CSP nonce for injected `<style>` tags. */
   nonce?: string;
   /** The widget's z-index; pointer tools are stacked just below it. */
   zIndex?: number;
+  /** The document is a same-origin iframe of the page: the page's own layers already cover it. */
+  inFrame?: boolean;
 }
 
 export interface Engine {
@@ -25,10 +28,24 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
   injectStyles(doc, options.nonce);
   const html = doc.documentElement;
   const hadStyleAttr = html.hasAttribute("style");
-  const font = createFontScaler(doc, options.nonce);
-  const pointer = createPointerTools(doc, options.zIndex ?? DEFAULT_Z);
-  const backdrop = createBackdrop(doc, options.zIndex ?? DEFAULT_Z);
-  const media = createMediaControl(doc);
+  const zIndex = options.zIndex ?? DEFAULT_Z;
+  // The callbacks run only after everything below exists (shadow roots are found in `apply`).
+  const shadow = createShadowRoots(doc, {
+    found(root) {
+      font.add(root);
+      media.add(root);
+      frames.listen(root);
+    },
+    gone: (root) => font.remove(root),
+    changed: (added) => frames.changed(added),
+  });
+  const font = createFontScaler(doc, shadow.roots, options.nonce);
+  // In a frame, reading aids and color filters come from the page around it.
+  const pointer = options.inFrame ? null : createPointerTools(doc, zIndex);
+  const backdrop = options.inFrame ? null : createBackdrop(doc, zIndex);
+  const media = createMediaControl(doc, shadow.roots);
+  const motion = createMotionControl(doc, shadow.roots);
+  const frames = createFrames(doc, shadow.roots, options.nonce, pointer);
   let last: AccessibilitySettings = DEFAULT_SETTINGS;
   const classes = new Set<string>();
   const vars = new Map<string, string>();
@@ -55,8 +72,11 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
 
   const apply = (s: AccessibilitySettings) => {
     last = s;
+    const on = !isDefaultSettings(s);
+    if (on) shadow.watch(true); // first, so the steps below reach the shadow roots
     const spacing = s.letterSpacing !== 100 && (s.letterSpacing - 100) / 100;
-    flag("scale", s.contentScale !== 100 && String(s.contentScale / 100));
+    // A frame is scaled with the page around it.
+    flag("scale", !options.inFrame && s.contentScale !== 100 && String(s.contentScale / 100));
     flag("lh", s.lineHeight !== 100 && String(1.5 * (s.lineHeight / 100)));
     flag("ls", spacing !== false && `${spacing * 0.2}em`);
     setVar("ws", spacing !== false && `${spacing * 0.3}em`);
@@ -83,11 +103,15 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
       s.saturationMode === "high-saturation" && "saturate(2)",
     ].filter(Boolean);
     flag("filter", filters.length > 0 && filters.join(" "));
-    backdrop.set(filters.length > 0);
+    backdrop?.set(filters.length > 0);
 
     font.set(s.fontSize);
-    pointer.set({ guide: s.readingGuide, mask: s.readingMask, magnifier: s.textMagnifier });
+    pointer?.set({ guide: s.readingGuide, mask: s.readingMask, magnifier: s.textMagnifier });
     media.set(s.muteSounds, s.stopAnimations);
+    motion.set(s.stopAnimations);
+    shadow.style();
+    frames.apply(on && s);
+    if (!on) shadow.watch(false); // last, after the steps above left the shadow roots
   };
 
   // Frameworks that render <html class> / <html style> can wipe the flags: put them back.
@@ -112,8 +136,8 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
       guard.takeRecords();
     },
     setZIndex(zIndex) {
-      pointer.setZIndex(zIndex);
-      backdrop.setZIndex(zIndex);
+      pointer?.setZIndex(zIndex);
+      backdrop?.setZIndex(zIndex);
     },
     destroy() {
       guard.disconnect();
@@ -127,9 +151,10 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
  * Font size: each text element's original size is measured once (with scaling
  * switched off) and stored as `data-a11yw-fs="<px × 100>"`. One generated rule per
  * distinct size multiplies it by `--a11yw-font`, so no inline styles are written.
- * New content is measured as it appears, so SPAs keep working.
+ * New content is measured as it appears, so SPAs keep working. Text in open shadow roots
+ * is measured too, and each root adopts a copy of the rules.
  */
-function createFontScaler(doc: Document, nonce?: string) {
+function createFontScaler(doc: Document, roots: ReadonlySet<ShadowRoot>, nonce?: string) {
   const html = doc.documentElement;
   const win = doc.defaultView!;
   const ATTR = "data-a11yw-fs";
@@ -137,6 +162,8 @@ function createFontScaler(doc: Document, nonce?: string) {
   const SKIP = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE"]);
   const queue = new Set<Node>();
   const known = new Set<number>();
+  // The rules for shadow roots; switched off while measuring, like the class on <html>.
+  const shadowSheet = new win.CSSStyleSheet();
   let sheet: HTMLStyleElement | null = null;
   let observer: MutationObserver | null = null;
   let frame = 0;
@@ -160,24 +187,27 @@ function createFontScaler(doc: Document, nonce?: string) {
       known.add(key);
       if (sheet.sheet) sheet.sheet.insertRule(rule(key), sheet.sheet.cssRules.length);
       else sheet.textContent += `\n${rule(key)}`;
+      shadowSheet.insertRule(rule(key).replace("html.a11yw-font", ":host"), shadowSheet.cssRules.length);
     }
   };
 
-  const measure = (roots: Iterable<Node>) => {
+  const measure = (nodes: Iterable<Node>) => {
     const targets = new Set<HTMLElement>();
-    for (const root of roots) {
-      if (!root.isConnected) continue;
-      if (root.nodeType === Node.TEXT_NODE) {
-        if (root.nodeValue?.trim() && root.parentElement) targets.add(root.parentElement);
+    for (const node of nodes) {
+      if (!node.isConnected) continue;
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (node.nodeValue?.trim() && node.parentElement) targets.add(node.parentElement);
         continue;
       }
-      if (!(root instanceof Element) || root.closest(IGNORE)) continue;
-      const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      // An element (not the widget's) or a shadow root. No `instanceof`: frames are other realms.
+      const el = node.nodeType === 1 ? (node as HTMLElement) : null;
+      if (el ? el.closest(IGNORE) : node.nodeType !== 11) continue;
+      const walker = doc.createTreeWalker(node, NodeFilter.SHOW_TEXT);
       for (let n = walker.nextNode(); n; n = walker.nextNode()) {
         if (n.nodeValue?.trim() && n.parentElement) targets.add(n.parentElement);
       }
-      if (root.matches(FIELDS)) targets.add(root as HTMLElement);
-      root.querySelectorAll<HTMLElement>(FIELDS).forEach((el) => targets.add(el));
+      if (el?.matches(FIELDS)) targets.add(el);
+      (node as ParentNode).querySelectorAll<HTMLElement>(FIELDS).forEach((f) => targets.add(f));
     }
 
     const fresh = [...targets].filter(
@@ -187,6 +217,7 @@ function createFontScaler(doc: Document, nonce?: string) {
 
     // Read every size first with scaling off, then write — one layout pass.
     html.classList.remove("a11yw-font");
+    shadowSheet.disabled = true;
     const sizes = fresh.map((el) => Math.round(parseFloat(win.getComputedStyle(el).fontSize) * 100));
     const keys = new Set<number>();
     fresh.forEach((el, i) => {
@@ -196,15 +227,18 @@ function createFontScaler(doc: Document, nonce?: string) {
     });
     addRules(keys);
     html.classList.add("a11yw-font");
+    shadowSheet.disabled = false;
   };
 
-  const clear = () => doc.querySelectorAll(`[${ATTR}]`).forEach((el) => el.removeAttribute(ATTR));
+  const pageRoots = () => [doc.body, ...roots];
+  const clear = () =>
+    [doc, ...roots].forEach((r) => r.querySelectorAll(`[${ATTR}]`).forEach((el) => el.removeAttribute(ATTR)));
 
   const flush = () => {
     frame = 0;
-    const roots = [...queue];
+    const nodes = [...queue];
     queue.clear();
-    measure(roots);
+    measure(nodes);
   };
 
   const onMutations = (records: MutationRecord[]) => {
@@ -220,8 +254,16 @@ function createFontScaler(doc: Document, nonce?: string) {
     win.clearTimeout(resizeTimer);
     resizeTimer = win.setTimeout(() => {
       clear();
-      measure([doc.body]);
+      measure(pageRoots());
     }, 250);
+  };
+
+  /** Start scaling inside a shadow root: adopt the rules, follow new content, measure with the next batch. */
+  const addRoot = (root: ShadowRoot) => {
+    adopt(root, shadowSheet, true);
+    observer!.observe(root, { childList: true, subtree: true });
+    queue.add(root);
+    if (!frame) frame = win.requestAnimationFrame(flush);
   };
 
   const disable = () => {
@@ -237,6 +279,8 @@ function createFontScaler(doc: Document, nonce?: string) {
     sheet?.remove();
     sheet = null;
     known.clear();
+    shadowSheet.replaceSync(""); // also for removed roots that still hold it
+    roots.forEach((root) => adopt(root, shadowSheet, false));
     html.classList.remove("a11yw-font");
     html.style.removeProperty("--a11yw-font");
   };
@@ -253,8 +297,18 @@ function createFontScaler(doc: Document, nonce?: string) {
       measure([doc.body]);
       observer = new MutationObserver(onMutations);
       observer.observe(doc.body, { childList: true, subtree: true });
+      roots.forEach(addRoot);
       lastWidth = win.innerWidth;
       win.addEventListener("resize", onResize);
+    },
+    /** A shadow root found after scaling started. */
+    add(root: ShadowRoot) {
+      if (observer) addRoot(root);
+    },
+    /** A shadow root that left the page: leave nothing behind in it. */
+    remove(root: ShadowRoot) {
+      adopt(root, shadowSheet, false);
+      root.querySelectorAll(`[${ATTR}]`).forEach((el) => el.removeAttribute(ATTR));
     },
     /** False when the page removed the scaling class, variable or rules while scaling is on. */
     intact: () =>
@@ -292,14 +346,20 @@ function createBackdrop(doc: Document, zIndex: number) {
 }
 
 type PointerTool = "guide" | "mask" | "magnifier";
+type PointerTools = ReturnType<typeof createPointerTools>;
 const POINTER_TOOLS: PointerTool[] = ["guide", "mask", "magnifier"];
 const TEXT_BLOCKS =
   "p,li,a,button,label,h1,h2,h3,h4,h5,h6,td,th,dt,dd,blockquote,figcaption,summary,legend,caption,span,input,textarea,select";
 
-/** Reading guide, reading mask and text magnifier — follow the pointer and keyboard focus. */
+/**
+ * Reading guide, reading mask and text magnifier — follow the pointer (on touch screens, a tap)
+ * and keyboard focus, also inside open shadow roots and same-origin frames.
+ */
 function createPointerTools(doc: Document, zIndex: number) {
   const win = doc.defaultView!;
   const els: Partial<Record<PointerTool, HTMLDivElement>> = {};
+  /** Same-origin frames: their document and listeners. */
+  const frames = new Set<[Document, (e: PointerEvent) => void, (e: FocusEvent) => void]>();
   let layer: HTMLDivElement | null = null;
   let layerZ = String(zIndex - 1);
   let x = win.innerWidth / 2;
@@ -317,11 +377,13 @@ function createPointerTools(doc: Document, zIndex: number) {
     }
     if (target !== lastTarget) {
       lastTarget = target;
-      const block = target instanceof Element ? target.closest<HTMLElement>(TEXT_BLOCKS) : null;
+      // No `instanceof`: the target may be in a frame (another realm).
+      const block = (target as Node | null)?.nodeType === 1 ? (target as Element).closest<HTMLElement>(TEXT_BLOCKS) : null;
+      const field = block as HTMLInputElement | null;
       const text = !block || block.closest(IGNORE)
         ? ""
-        : block instanceof HTMLInputElement || block instanceof HTMLTextAreaElement
-          ? block.value || block.placeholder || block.labels?.[0]?.innerText || ""
+        : block.matches("input,textarea")
+          ? field!.value || field!.placeholder || field!.labels?.[0]?.innerText || ""
           : block.innerText || "";
       box.textContent = text.replace(/\s+/g, " ").trim().slice(0, 300);
       box.hidden = !box.textContent;
@@ -348,24 +410,24 @@ function createPointerTools(doc: Document, zIndex: number) {
     if (!frame) frame = win.requestAnimationFrame(render);
   };
 
-  const onMove = (e: PointerEvent) => {
-    x = e.clientX;
-    y = e.clientY;
-    target = e.target;
+  /** Move the tools to a point of the viewport, over `el`. */
+  const moveTo = (px: number, py: number, el: EventTarget | null) => {
+    x = px;
+    y = py;
+    target = el;
     dismissed = false;
     schedule();
   };
 
-  // Keyboard users: the tools move to whatever receives focus.
-  const onFocus = (e: FocusEvent) => {
-    const el = e.target;
-    if (!(el instanceof Element) || el.closest(IGNORE)) return;
+  // `composedPath()[0]` is the element itself, also inside an open shadow root.
+  const onMove = (e: PointerEvent) => moveTo(e.clientX, e.clientY, e.composedPath()[0]);
+
+  // Keyboard users: the tools move to whatever receives focus. `toPage`: from a frame's coordinates.
+  const onFocus = (e: FocusEvent, toPage = (fx: number, fy: number): [number, number] => [fx, fy]) => {
+    const el = e.composedPath()[0] as Element;
+    if (el.nodeType !== 1 || el.closest(IGNORE)) return;
     const r = el.getBoundingClientRect();
-    x = r.left + Math.min(r.width / 2, 120);
-    y = r.top + r.height / 2;
-    target = el;
-    dismissed = false;
-    schedule();
+    moveTo(...toPage(r.left + Math.min(r.width / 2, 120), r.top + r.height / 2), el);
   };
 
   // Escape dismisses the magnifier until the pointer or focus moves again (WCAG 1.4.13).
@@ -375,9 +437,19 @@ function createPointerTools(doc: Document, zIndex: number) {
     schedule();
   };
 
-  const onLeave = () => {
+  // A touch pointer leaves after every tap: the magnifier keeps showing what was tapped.
+  const onLeave = (e: PointerEvent) => {
+    if (e.pointerType === "touch") return;
     target = null;
     schedule();
+  };
+
+  const listen = (d: Document, on: boolean, move: (e: PointerEvent) => void, focus: (e: FocusEvent) => void) => {
+    const fn = on ? d.addEventListener.bind(d) : d.removeEventListener.bind(d);
+    fn("pointermove", move as EventListener, { passive: true });
+    fn("pointerdown", move as EventListener, { passive: true });
+    fn("focusin", focus as EventListener);
+    fn("keydown", onKey as EventListener);
   };
 
   return {
@@ -404,16 +476,13 @@ function createPointerTools(doc: Document, zIndex: number) {
       }
 
       const active = POINTER_TOOLS.some((tool) => next[tool]);
-      if (active && !listening) {
-        doc.addEventListener("pointermove", onMove, { passive: true });
-        doc.addEventListener("focusin", onFocus);
-        doc.addEventListener("keydown", onKey);
-        doc.documentElement.addEventListener("pointerleave", onLeave);
-      } else if (!active && listening) {
-        doc.removeEventListener("pointermove", onMove);
-        doc.removeEventListener("focusin", onFocus);
-        doc.removeEventListener("keydown", onKey);
-        doc.documentElement.removeEventListener("pointerleave", onLeave);
+      if (active !== listening) {
+        listen(doc, active, onMove, onFocus);
+        frames.forEach(([d, move, focus]) => listen(d, active, move, focus));
+        if (active) doc.documentElement.addEventListener("pointerleave", onLeave);
+        else doc.documentElement.removeEventListener("pointerleave", onLeave);
+      }
+      if (!active && listening) {
         win.cancelAnimationFrame(frame);
         frame = 0;
         layer?.remove();
@@ -426,6 +495,27 @@ function createPointerTools(doc: Document, zIndex: number) {
       layerZ = String(z - 1);
       layer?.style.setProperty("--a11yw-layer-z", layerZ);
     },
+    /** Follow the pointer and focus inside a same-origin frame too. Returns the undo. */
+    frame(el: HTMLIFrameElement, d: Document) {
+      // Frame coordinates → page viewport. Page zoom (content scale) or a transform scales the frame.
+      const toPage = (fx: number, fy: number): [number, number] => {
+        const r = el.getBoundingClientRect();
+        const sx = r.width / el.offsetWidth || 1;
+        const sy = r.height / el.offsetHeight || 1;
+        return [r.left + (el.clientLeft + fx) * sx, r.top + (el.clientTop + fy) * sy];
+      };
+      const entry: [Document, (e: PointerEvent) => void, (e: FocusEvent) => void] = [
+        d,
+        (e) => moveTo(...toPage(e.clientX, e.clientY), e.composedPath()[0]),
+        (e) => onFocus(e, toPage),
+      ];
+      frames.add(entry);
+      if (listening) listen(d, true, entry[1], entry[2]);
+      return () => {
+        frames.delete(entry);
+        listen(d, false, entry[1], entry[2]);
+      };
+    },
   };
 }
 
@@ -434,10 +524,12 @@ type ActivationNavigator = Navigator & { userActivation?: { isActive: boolean } 
 const userStarted = () => (navigator as ActivationNavigator).userActivation?.isActive === true;
 
 /**
- * Mutes page media and pauses playing videos. Media that starts later is caught too,
- * unless the visitor started or unmuted it themselves — that choice is always kept.
+ * Mutes page media and pauses playing videos, also inside open shadow roots. Media that starts later
+ * is caught too, unless the visitor started or unmuted it themselves — that choice is always kept.
  */
-function createMediaControl(doc: Document) {
+function createMediaControl(doc: Document, roots: ReadonlySet<ShadowRoot>) {
+  // The document's own constructor: in a frame, `instanceof HTMLMediaElement` would be false.
+  const Media = doc.defaultView!.HTMLMediaElement;
   const mutedByUs = new Set<HTMLMediaElement>();
   const pausedByUs = new Set<HTMLVideoElement>();
   const unmutedByVisitor = new WeakSet<HTMLMediaElement>();
@@ -459,16 +551,18 @@ function createMediaControl(doc: Document) {
     v.pause();
     track(pausedByUs, v);
   };
+  const all = <T extends Element>(selector: string) =>
+    [doc, ...roots].flatMap((r) => Array.from(r.querySelectorAll<T>(selector)));
 
   const onPlay = (e: Event) => {
     const m = e.target;
-    if (!(m instanceof HTMLMediaElement) || userStarted()) return;
+    if (!(m instanceof Media) || userStarted()) return;
     if (muting) mute(m);
-    if (pausing && m instanceof HTMLVideoElement) pause(m);
+    if (pausing && m.tagName === "VIDEO") pause(m as HTMLVideoElement);
   };
   const onVolume = (e: Event) => {
     const m = e.target;
-    if (!(m instanceof HTMLMediaElement) || m.muted || !muting) return;
+    if (!(m instanceof Media) || m.muted || !muting) return;
     if (userStarted()) {
       mutedByUs.delete(m);
       unmutedByVisitor.add(m);
@@ -477,24 +571,23 @@ function createMediaControl(doc: Document) {
     }
   };
 
+  // `play` and `volumechange` don't bubble, nor leave a shadow root; capture on each catches them all.
+  const listenOn = (target: Document | ShadowRoot, on: boolean) => {
+    const fn = on ? target.addEventListener.bind(target) : target.removeEventListener.bind(target);
+    fn("play", onPlay, true);
+    fn("volumechange", onVolume, true);
+  };
   const listen = (on: boolean) => {
     if (on === listening) return;
     listening = on;
-    // `play` and `volumechange` don't bubble; capture catches them all.
-    if (on) {
-      doc.addEventListener("play", onPlay, true);
-      doc.addEventListener("volumechange", onVolume, true);
-    } else {
-      doc.removeEventListener("play", onPlay, true);
-      doc.removeEventListener("volumechange", onVolume, true);
-    }
+    [doc, ...roots].forEach((r) => listenOn(r, on));
   };
 
   return {
     set(muteSounds: boolean, pauseVideos: boolean) {
       if (muteSounds !== muting) {
         muting = muteSounds;
-        if (muting) doc.querySelectorAll<HTMLMediaElement>("audio, video").forEach(mute);
+        if (muting) all<HTMLMediaElement>("audio, video").forEach(mute);
         else {
           mutedByUs.forEach((m) => (m.muted = false));
           mutedByUs.clear();
@@ -503,7 +596,7 @@ function createMediaControl(doc: Document) {
 
       if (pauseVideos !== pausing) {
         pausing = pauseVideos;
-        if (pausing) doc.querySelectorAll<HTMLVideoElement>("video").forEach(pause);
+        if (pausing) all<HTMLVideoElement>("video").forEach(pause);
         else {
           // Resume only silent videos (background loops); never restart something with sound.
           pausedByUs.forEach((v) => v.isConnected && v.muted && v.play().catch(() => {}));
@@ -511,6 +604,143 @@ function createMediaControl(doc: Document) {
         }
       }
       listen(muting || pausing);
+    },
+    /** A shadow root found while the page is adjusted. */
+    add(root: ShadowRoot) {
+      if (!listening) return;
+      listenOn(root, true);
+      root.querySelectorAll<HTMLMediaElement>("audio, video").forEach((m) => {
+        if (muting) mute(m);
+        if (pausing && m.tagName === "VIDEO") pause(m as HTMLVideoElement);
+      });
+    },
+  };
+}
+
+/**
+ * "Stop animations" for motion that CSS can't stop: animations started by scripts (Web Animations
+ * API) and SVG animations (SMIL). Like the CSS rules, finite ones jump to their end (so content that
+ * fades or slides in still arrives, and `finished` still resolves); endless ones are paused, and only
+ * those are resumed. New ones are caught once a second. Canvas and `requestAnimationFrame` loops
+ * can't be stopped from outside.
+ */
+function createMotionControl(doc: Document, roots: ReadonlySet<ShadowRoot>) {
+  const win = doc.defaultView!;
+  const paused = new Set<Animation>();
+  const svgs = new Set<SVGSVGElement>();
+  let timer = 0;
+
+  const sweep = () => {
+    if (doc.hidden) return;
+    // Forget what the page cancelled, finished or removed meanwhile.
+    paused.forEach((a) => a.playState === "paused" || paused.delete(a));
+    svgs.forEach((svg) => svg.isConnected || svgs.delete(svg));
+    for (const r of [doc, ...roots]) {
+      for (const a of r.getAnimations()) {
+        const effect = a.effect as KeyframeEffect | null;
+        // CSS animations and transitions are already handled by the stylesheet.
+        if (a.playState !== "running" || "animationName" in a || "transitionProperty" in a || effect?.target?.closest(IGNORE)) continue;
+        if (effect?.getComputedTiming().endTime !== Infinity) {
+          try {
+            a.finish();
+          } catch {
+            // A playback rate of 0 can't finish; the page made that animation stand still anyway.
+          }
+        } else {
+          a.pause();
+          paused.add(a);
+        }
+      }
+      r.querySelectorAll("svg").forEach((svg) => {
+        if (svg.animationsPaused() || !svg.querySelector("animate,animateMotion,animateTransform,set") || svg.closest(IGNORE)) return;
+        svg.pauseAnimations();
+        svgs.add(svg);
+      });
+    }
+  };
+
+  return {
+    set(on: boolean) {
+      if (on === !!timer) return;
+      if (on) {
+        sweep();
+        timer = win.setInterval(sweep, 1000);
+        return;
+      }
+      win.clearInterval(timer);
+      timer = 0;
+      paused.forEach((a) => a.playState === "paused" && a.play());
+      svgs.forEach((svg) => svg.unpauseAnimations());
+      paused.clear();
+      svgs.clear();
+    },
+  };
+}
+
+/**
+ * Same-origin iframes get an engine of their own with the same settings while the page is adjusted.
+ * Cross-origin frames (video players, maps, payment forms) can't be reached by any script, and a frame
+ * that runs its own copy of the widget is left to it.
+ */
+function createFrames(
+  doc: Document,
+  roots: ReadonlySet<ShadowRoot>,
+  nonce: string | undefined,
+  pointer: PointerTools | null
+) {
+  const frames = new Map<HTMLIFrameElement, { doc: Document; engine: Engine; undo?: () => void }>();
+  let settings: AccessibilitySettings | null = null;
+
+  const sync = (el: HTMLIFrameElement) => {
+    const d = el.contentDocument; // null when cross-origin
+    const cur = frames.get(el);
+    if (cur && (cur.doc !== d || !settings || !el.isConnected)) {
+      cur.engine.destroy();
+      // The frame's own widget may have started meanwhile and now relies on the same <style>.
+      if (!cur.doc.querySelector(".a11yw-root")) removeStyles(cur.doc);
+      cur.undo?.();
+      frames.delete(el);
+    }
+    if (!settings || !d?.body || !el.isConnected || frames.has(el) || el.closest(IGNORE)) return;
+    if (d.getElementById(STYLE_ID)) return; // the frame's own widget
+    const engine = createEngine(d, { nonce, inFrame: true });
+    engine.apply(settings);
+    frames.set(el, { doc: d, engine, undo: pointer?.frame(el, d) });
+  };
+  const syncIn = (r: ParentNode) => r.querySelectorAll("iframe").forEach(sync);
+
+  // A frame that navigates gets a new document: follow it. (`load` doesn't leave a shadow root.)
+  const onLoad = (e: Event) => {
+    if ((e.target as Element).tagName === "IFRAME") sync(e.target as HTMLIFrameElement);
+  };
+  const listenOn = (target: Document | ShadowRoot, on: boolean) => {
+    if (on) target.addEventListener("load", onLoad, true);
+    else target.removeEventListener("load", onLoad, true);
+  };
+
+  return {
+    apply(next: AccessibilitySettings | false) {
+      if (!!next !== !!settings) [doc, ...roots].forEach((r) => listenOn(r, !!next));
+      settings = next || null;
+      frames.forEach(({ engine }) => settings && engine.apply(settings));
+      frames.forEach((_, el) => sync(el));
+      [doc, ...roots].forEach(syncIn);
+    },
+    /** A shadow root found while the page is adjusted. */
+    listen(root: ShadowRoot) {
+      if (!settings) return;
+      listenOn(root, true);
+      syncIn(root);
+    },
+    /** The page changed: release removed frames, start on added ones. */
+    changed(added: Node[]) {
+      if (!settings) return;
+      frames.forEach((_, el) => el.isConnected || sync(el));
+      for (const node of added) {
+        if (node.nodeType !== 1) continue;
+        if ((node as Element).tagName === "IFRAME") sync(node as HTMLIFrameElement);
+        else syncIn(node as Element);
+      }
     },
   };
 }

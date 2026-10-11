@@ -73,6 +73,6 @@ Must always be true. Breaking one requires an ADR.
 
 | ID | Issue | Impact | Workaround / plan |
 | --- | --- | --- | --- |
-| KI-001 | Adjustments don't reach `<iframe>` or Shadow DOM content | Embedded media/maps/forms and web components are unchanged | Documented in README §Limitations |
+| KI-001 | Adjustments don't reach cross-origin `<iframe>`s or closed shadow roots (same-origin frames and open Shadow DOM are reached since F-015) | Embedded media/maps/payment forms are unchanged | Browser security; documented in README §Limitations |
 | KI-002 | "Page zoom" uses CSS `zoom`, which doesn't trigger media queries | Layouts may not reflow | Suggest browser zoom in the statement (README) |
-| KI-003 | Stop animations doesn't stop GIFs, `<canvas>`, iframe video, or JS-driven animation | Some motion remains | Documented in README §Profiles |
+| KI-003 | Stop animations doesn't stop GIFs, `<canvas>`, cross-origin iframe video, or `requestAnimationFrame` loops (script/SVG animations are paused since F-015) | Some motion remains | Documented in README §Profiles + §Limitations |
