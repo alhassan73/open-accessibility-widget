@@ -8,7 +8,7 @@ Keep it under ~150 lines — move finished history to `09-knowledge-maintenance/
 
 ## Current phase
 
-Maintenance after release 1.1.1 (`package.json` version, `CHANGELOG.md`).
+1.2.0 merged to `main` (branch `1.2.0`); **not tagged / not on npm yet**.
 
 ## Current goal
 
@@ -17,8 +17,7 @@ Not set — owner to choose the next milestone (see Open questions).
 ## In progress
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
-- [ ] Project brain install (+ `.gitattributes` `*.sh eol=lf`, `.gitignore` `.claude/worktrees/`) — uncommitted on `review/compliance`; next: commit on its own branch from `main` (proposed `chore/agent-brain`)
-- [ ] Compliance fixes — uncommitted on `review/compliance`; gates green (38/38, 21.19 KB), independent review done and its findings fixed. Review record: `09-knowledge-maintenance/changelog.md` §Record. Next: owner commits (and merges before the next Pages deploy: the demo's statement link points to `main`); owner-only items: AT test round (`docs/at-test-matrix.md`) → ACR (P0-1), legal view on P0-5
+- [ ] Release 1.2.0 — on `main`; next (owner): manual pre-release checks (`CONTRIBUTING.md` §Manual checks; record in `docs/at-test-matrix.md`), then tag `v1.2.0` to publish. After publishing, the README SRI example can move from `@1.1.1` to `@1.2.0`.
 
 ## Next up
 
@@ -51,7 +50,8 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
-- 2026-10-11 — Compliance fixes (uncommitted): inert behind dialogs, profile-card names (2.5.3), color-mode background images, contrast warning, stepper limits, axe devDep (no skip), strict-CSP test, SHA-pinned actions + Dependabot, privacy/CSP/SRI docs, `ACCESSIBILITY.md`, AT matrix template. Approved gates: axe-core devDep, labels `maximum`/`minimum`/`lowContrast`, workflow edits, privacy docs only.
+- 2026-10-11 — Version branch `1.2.0` from `main`: merged `chore/agent-brain` (1532f0b) and `review/compliance` (373686b), version 1.2.0, merged into `main`.
+- 2026-10-11 — Compliance fixes (373686b): inert behind dialogs, profile-card names (2.5.3), color-mode background images, contrast warning, stepper limits, axe devDep (no skip), strict-CSP test, SHA-pinned actions + Dependabot, privacy/CSP/SRI docs, `ACCESSIBILITY.md`, AT matrix template. Approved gates: axe-core devDep, labels `maximum`/`minimum`/`lowContrast`, workflow edits, privacy docs only.
 - 2026-10-11 — Compliance review (WCAG 2.2 AA, EAA/EN 301 549, ADA, FTC, privacy, supply chain, competitors); the report file was removed after its outcome was recorded in `09-knowledge-maintenance/changelog.md` §Record.
 - 2026-10-11 — Project brain installed and initialized (uncommitted).
 - 2026-10-08 — Release 1.1.1: widget unaffected by its own adjustments; npm Trusted Publishing (27ea5f5, 0aa6a6b, 230fe72).
@@ -63,5 +63,4 @@ Not set — owner to choose the next milestone (see Open questions).
      Half-finished edits, failing checks, hypotheses being tested, commands that were slow/flaky. -->
 - `npm test` runs against `dist/` — build first. e2e needs Chrome/Edge (`CHROME_PATH`); axe-core now
   comes from devDependencies (run `npm ci` after pulling).
-- Working tree holds two unrelated changes: the brain install, and the compliance fixes — commit them separately.
 - Open compliance gaps: §Next up item 2; lawyer questions: §Open questions.

@@ -3,7 +3,7 @@
 > **Load when:** releasing, or needing history older than `STATE.md` §Recently completed.
 > Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Newest first. Absolute dates.
 
-## [Unreleased]
+## [1.2.0] — 2026-10-11 (merged to `main`, not yet tagged)
 
 ### Added
 - 2026-10-11 — Project brain installed and initialized.
