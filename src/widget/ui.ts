@@ -379,7 +379,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       toggleRow("highlightLinks", L.highlightLinks, "link"),
       toggleRow("textMagnifier", L.textMagnifier, "magnifier"),
       // Only where the browser can speak.
-      "speechSynthesis" in window ? toggleRow("readAloud", L.readAloud, "ear") : null,
+      window.speechSynthesis ? toggleRow("readAloud", L.readAloud, "ear") : null,
       toggleRow("readingGuide", L.readingGuide, "guide"),
       toggleRow("readingMask", L.readingMask, "mask"),
       enabled("readMode") ? dialogRow("book", L.readMode, () => openReader()) : null,
@@ -783,10 +783,12 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
               focusElement(el);
             },
           },
-          badge ? h("span", { className: "a11yw-count" }, badge) : null,
+          // The space makes the name read "H2 Title", not "H2Title".
+          ...(badge ? [h("span", { className: "a11yw-count" }, badge), " "] : []),
           h("span", { className: "a11yw-row-label" }, label)
         )
       );
+    const seen = new Set<string>();
     const groups: [string, HTMLElement[]][] = [
       [
         L.headings,
@@ -806,10 +808,16 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       ],
       [
         L.links,
-        pageElements("a[href]").flatMap((el) => {
-          const text = accessibleName(el) || textOf(el);
-          return text ? [item(el, text)] : [];
-        }),
+        // The same link repeated (header and footer menus) is listed once; at most 300.
+        pageElements("a[href]")
+          .flatMap((el) => {
+            const text = accessibleName(el) || textOf(el);
+            const key = `${text}\n${(el as HTMLAnchorElement).href}`;
+            if (!text || seen.has(key)) return [];
+            seen.add(key);
+            return [item(el, text)];
+          })
+          .slice(0, 300),
       ],
     ];
     const found = groups.filter(([, items]) => items.length);
@@ -818,7 +826,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
         "div",
         { className: "a11yw-reader-body a11yw-structure" },
         ...(found.length
-          ? found.flatMap(([title, items]) => [h("h3", { className: "a11yw-block-title" }, title), h("ul", {}, ...items)])
+          ? found.flatMap(([title, items]) => [h("h3", { className: "a11yw-block-title" }, title), h("ul", { role: "list" }, ...items)])
           : [h("p", {}, L.noStructure)])
       )
     );
@@ -1004,7 +1012,8 @@ function accessibleName(el: Element): string {
 /** Landmark role as browsers map it: header/footer only at page level, section/form only when named. */
 function landmarkRole(el: Element): string | null {
   const explicit = el.getAttribute("role");
-  if (explicit) return explicit;
+  // An unnamed region is not a landmark.
+  if (explicit) return explicit === "region" && !accessibleName(el) ? null : explicit;
   const tag = el.tagName.toLowerCase();
   const scoped = !!el.parentElement?.closest("article,aside,main,nav,section");
   if (tag === "header") return scoped ? null : "banner";

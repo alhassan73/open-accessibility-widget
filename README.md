@@ -408,6 +408,8 @@ What the widget can't do, so you don't promise it:
 - Text size measures each element's original size once. If your app later changes an element's font size through a class change (without replacing the element), it keeps the earlier base size until the page reloads.
 - The launcher is fixed in a bottom corner. When keyboard focus lands on a page control under it, such as the last footer link, the launcher steps aside (it fades out and lets clicks through, but stays in the tab order) until focus moves on (WCAG 2.4.11). It still sits over that corner for mouse and touch users, so keep it free of controls, add bottom padding to your page, or move the launcher with `offset` / `position`.
 - Color adjustments apply to the screen only, not to printing.
+- "Invert colors" inverts images, video, canvas and frames back so they keep their colors, but not photos set as CSS background images or inline SVG drawings. Inside same-origin frames, the page is not inverted at all.
+- "Read aloud" uses the browser's own voices, so voice and language support vary by browser and system. It reads the block you click, tap or tab to; tap the same block again, or press Escape, to stop. It never speaks what is typed in form fields, only their labels.
 
 ## Preferences and precedence
 

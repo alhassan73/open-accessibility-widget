@@ -59,6 +59,15 @@ test("exported constants are frozen", () => {
   }
 });
 
+test("settings saved by older versions load, with newer settings off", () => {
+  // Shape saved by 1.3.x, before boldText / invertColors / readAloud existed.
+  const old = sanitizeSettings({ v: 1, profiles: ["olderAdults"], fontSize: 120, readableFont: true, cursor: "black" });
+  assert.equal(old.fontSize, 120);
+  assert.deepEqual(old.profiles, ["olderAdults"]);
+  assert.deepEqual([old.boldText, old.invertColors, old.readAloud], [false, false, false]);
+  assert.equal(sanitizeSettings({ readAloud: "yes", boldText: 1 }).readAloud, false, "only real booleans");
+});
+
 test("every profile preset only uses valid settings", () => {
   for (const [id, preset] of Object.entries(PROFILE_PRESETS)) {
     assert.deepEqual(sanitizeSettings({ ...DEFAULT_SETTINGS, ...preset }), { ...DEFAULT_SETTINGS, ...preset, profiles: [] }, id);

@@ -98,8 +98,8 @@ export function createEngine(doc: Document, options: EngineOptions = {}): Engine
     flag("title-color", s.titleColor ?? false);
     flag("bg-color", s.backgroundColor ?? false);
 
-    // Invert comes from the layer below the widget; media are inverted first, so they end up as they were.
-    // In a frame, the page around it already inverts it.
+    // Invert comes from the layer below the widget; media (frames too) are inverted first, so they end up
+    // as they were. Inside a frame nothing is added: its content keeps its colors, like other media.
     const invert = !options.inFrame && s.invertColors;
     flag("invert", invert);
     const filters = [
@@ -359,12 +359,17 @@ const POINTER_TOOLS: PointerTool[] = ["guide", "mask", "magnifier"];
 const TEXT_BLOCKS =
   "p,li,a,button,label,h1,h2,h3,h4,h5,h6,td,th,dt,dd,blockquote,figcaption,summary,legend,caption,span,input,textarea,select";
 
+/** Fields whose value is plain visible text (never passwords, checkboxes, files…). */
+const TEXT_FIELDS =
+  'textarea,input:not([type]),input:is([type="text" i],[type="search" i],[type="email" i],[type="url" i],[type="tel" i],[type="number" i])';
+
 /**
  * What the magnifier shows and read-aloud says for the element under the pointer or focus: an image's
- * alt text, else its text block (a field's value, placeholder or label). Never the widget's own text.
- * No `instanceof`: the element may be in a frame (another realm).
+ * alt text, else its text block. A form field gives its label or placeholder; the magnifier also shows
+ * the value of plain text fields (`withValue`), but a value is never spoken, and a password never shown.
+ * Never the widget's own text. No `instanceof`: the element may be in a frame (another realm).
  */
-function readableText(target: EventTarget | null): string {
+function readableText(target: EventTarget | null, withValue: boolean): string {
   if ((target as Node | null)?.nodeType !== 1) return "";
   const el = target as Element;
   if (el.closest(IGNORE)) return "";
@@ -375,8 +380,12 @@ function readableText(target: EventTarget | null): string {
     const field = block as HTMLInputElement | null;
     text = !block
       ? ""
-      : block.matches("input,textarea")
-        ? field!.value || field!.placeholder || field!.labels?.[0]?.innerText || ""
+      : block.matches("input,textarea,select")
+        ? (withValue && block.matches(TEXT_FIELDS) && field!.value) ||
+          field!.placeholder ||
+          field!.labels?.[0]?.innerText ||
+          block.getAttribute("aria-label") ||
+          ""
         : block.innerText || "";
   }
   return text.replace(/\s+/g, " ").trim();
@@ -384,29 +393,48 @@ function readableText(target: EventTarget | null): string {
 
 /**
  * Read aloud: a click or tap on the page, or keyboard focus, reads that block (or image's alt text)
- * with the browser's own speech, in the language of that part of the page. Escape stops it. Nothing
- * leaves the browser except what the operating system's voices do.
+ * with the browser's own speech, in the language of that part of the page. Escape, a second tap on the
+ * same block, or leaving the page stops it. Speech the page started itself is never interrupted, and
+ * form values are never spoken.
  */
 function createSpeech(doc: Document) {
   const win = doc.defaultView!;
   const synth = win.speechSynthesis as SpeechSynthesis | undefined;
   let on = false;
+  /** What we are saying now, if anything (speech is shared with the page). */
+  let current = "";
+  /** A press is under way: its click reads the block, so the focus it causes doesn't too. */
+  let pressing = false;
 
+  const stop = () => {
+    if (current) synth?.cancel();
+    current = "";
+  };
   const speak = (target: EventTarget | null) => {
-    const text = readableText(target).slice(0, 2000);
+    const text = readableText(target, false).slice(0, 2000);
     if (!text || !synth) return;
-    synth.cancel();
+    if (text === current) return stop(); // the same block again: stop
+    stop();
     const utterance = new win.SpeechSynthesisUtterance(text);
     utterance.lang = (target as Element).closest("[lang]")?.getAttribute("lang") || "";
+    utterance.onend = utterance.onerror = () => {
+      if (current === text) current = "";
+    };
+    current = text;
     synth.speak(utterance);
   };
-  const onClick = (e: MouseEvent) => speak(e.composedPath()[0]);
+  const onPress = () => (pressing = true);
+  const onClick = (e: MouseEvent) => {
+    pressing = false;
+    speak(e.composedPath()[0]);
+  };
   const onFocus = (e: FocusEvent) => {
     const el = e.composedPath()[0] as Element;
-    if (el.nodeType === 1 && el.matches(":focus-visible")) speak(el);
+    if (!pressing && el.nodeType === 1 && el.matches(":focus-visible")) speak(el);
   };
   const onKey = (e: KeyboardEvent) => {
-    if (e.key === "Escape") synth?.cancel();
+    pressing = false;
+    if (e.key === "Escape") stop();
   };
 
   return {
@@ -414,10 +442,15 @@ function createSpeech(doc: Document) {
       if (!synth || next === on) return;
       on = next;
       const fn = on ? doc.addEventListener.bind(doc) : doc.removeEventListener.bind(doc);
+      fn("pointerdown", onPress);
       fn("click", onClick as EventListener);
       fn("focusin", onFocus as EventListener);
       fn("keydown", onKey as EventListener);
-      if (!on) synth.cancel();
+      if (on) win.addEventListener("pagehide", stop);
+      else {
+        win.removeEventListener("pagehide", stop);
+        stop();
+      }
     },
   };
 }
@@ -448,7 +481,7 @@ function createPointerTools(doc: Document, zIndex: number) {
     }
     if (target !== lastTarget) {
       lastTarget = target;
-      box.textContent = readableText(target).slice(0, 300);
+      box.textContent = readableText(target, true).slice(0, 300);
       box.hidden = !box.textContent;
     }
     if (box.hidden) return;

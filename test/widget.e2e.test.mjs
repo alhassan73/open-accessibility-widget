@@ -716,11 +716,14 @@ test("the optional language pack works with the script build (French, Hebrew rig
 test("bold text and invert colors; images keep their colors under invert", async () => {
   await page.goto(HOST_URL);
   await init();
+  await page.eval(`document.querySelector('main').insertAdjacentHTML('beforeend', '<i class="fa-solid" id="ico" style="font-weight:400">x</i><iframe id="fr" srcdoc="<p>x</p>"></iframe>'); 1`);
   await page.eval(`__w().setSettings({ boldText: true, invertColors: true, saturationMode: 'monochrome' }); 1`);
   const out = await page.eval(`(() => ({ weight: getComputedStyle(document.querySelector('main p')).fontWeight,
+    icon: getComputedStyle(document.getElementById('ico')).fontWeight,
     backdrop: getComputedStyle(document.querySelector('.a11yw-backdrop')).backdropFilter,
-    img: getComputedStyle(document.getElementById('iconimg')).filter }))()`);
-  assert.deepEqual(out, { weight: "700", backdrop: "invert(1) hue-rotate(180deg) grayscale(1)", img: "invert(1) hue-rotate(180deg)" });
+    img: getComputedStyle(document.getElementById('iconimg')).filter, frame: getComputedStyle(document.getElementById('fr')).filter }))()`);
+  assert.deepEqual(out, { weight: "700", icon: "400", backdrop: "invert(1) hue-rotate(180deg) grayscale(1)",
+    img: "invert(1) hue-rotate(180deg)", frame: "invert(1) hue-rotate(180deg)" }, "icon fonts keep their weight; media and frames are inverted back");
   await page.eval(`__w().setSettings({ boldText: false, invertColors: false, saturationMode: 'default' }); 1`);
   assert.equal(await page.eval(`getComputedStyle(document.getElementById('iconimg')).filter`), "none");
 });
@@ -741,9 +744,33 @@ test("read aloud speaks the clicked block or focused control in its language, ne
   await page.eval(`__cancelled = 0; 1`);
   await page.press(KEYS.Escape);
   assert.ok(await page.eval(`__cancelled > 0`), "Escape stops speaking");
+  // Form values are never spoken (passwords, prefilled fields): only labels.
+  await page.eval(`__spoken.length = 0; document.querySelector('main').insertAdjacentHTML('beforeend',
+    '<label>Email <input id="em" value="me@example.com"></label><label>PIN <input type="password" id="pw" value="s3cret"></label>'); 1`);
+  await page.click("#em");
+  await page.click("#pw");
+  assert.deepEqual(await page.eval(`__spoken.map(([t]) => t)`), ["Email", "PIN"]);
+  // Tapping the same block again stops it.
+  await page.eval(`__cancelled = 0; 1`);
+  await page.click("#pw");
+  assert.ok(await page.eval(`__cancelled > 0`));
   await page.eval(`__w().setSettings({ readAloud: false }); __spoken.length = 0; 1`);
   await page.click("main p");
   assert.deepEqual(await page.eval(`__spoken`), []);
+  // destroy() removes the listeners too.
+  await page.eval(`__w().setSettings({ readAloud: true }); __w().destroy(); 1`);
+  await page.click("main p");
+  assert.deepEqual(await page.eval(`__spoken`), []);
+});
+
+test("read aloud is not offered where the browser can't speak", async () => {
+  await page.goto(HOST_URL);
+  await page.eval(`Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }); 1`);
+  await init();
+  await openPanelAllSections();
+  const labels = await page.eval(`[...document.querySelectorAll('.a11yw-row-label')].map((e) => e.textContent)`);
+  assert.equal(labels.includes("Read aloud"), false);
+  assert.equal(labels.includes("Text magnifier"), true);
 });
 
 test("text magnifier shows an image's alt text", async () => {
@@ -754,6 +781,11 @@ test("text magnifier shows an image's alt text", async () => {
   await page.send("Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
   await sleep(100);
   assert.equal(await page.eval(`document.querySelector('.a11yw-magnifier').textContent`), "Home");
+  // A password's value is never shown (nor read aloud): only its label.
+  await page.eval(`document.querySelector('main').insertAdjacentHTML('beforeend', '<label>PIN <input type="password" id="pw" value="s3cret"></label>');
+    document.getElementById('pw').focus(); 1`);
+  await sleep(100);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-magnifier').textContent`), "PIN");
 });
 
 test("page structure lists headings, regions and links, and jumps to the chosen one", async () => {
@@ -770,7 +802,8 @@ test("page structure lists headings, regions and links, and jumps to the chosen 
       items: [...d.querySelectorAll('li button')].map((b) => b.textContent), focus: d.contains(document.activeElement) }; })()`);
   assert.equal(list.title, "Page structure");
   assert.deepEqual(list.groups, ["Headings", "Regions", "Links"]);
-  assert.ok(list.items.includes("H1Site title") && list.items.includes("H2Section heading"), list.items.join(" | "));
+  assert.ok(list.items.includes("H1 Site title") && list.items.includes("H2 Section heading"), list.items.join(" | "));
+  assert.equal(await page.eval(`document.querySelectorAll('.a11yw-structure ul[role=list]').length`), 3);
   assert.ok(list.items.includes("Header") && list.items.includes("Navigation") && list.items.includes("Main content") && list.items.includes("Footer"));
   assert.ok(list.items.includes("Link B"));
   assert.equal(list.focus, true);

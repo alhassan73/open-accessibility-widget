@@ -17,6 +17,8 @@ const STATES =
 /** Form controls draw their state (check marks, arrows) with background images, so those stay.
  * In color modes, links and buttons keep theirs too: often their only visible icon. */
 const NOT_CONTROL = ':not(input,select,textarea,button,[role="checkbox"],[role="switch"],[role="radio"])';
+/** Icon fonts and code: readable font and bold text leave them as they are. */
+const NOT_TEXT = 'i,svg,svg *,code,pre,kbd,samp,[class*="icon"],[class*="Icon"],[class*="fa-"],[class*="material-"]';
 const withDescendants = (list: string) =>
   list
     .split(",")
@@ -44,8 +46,8 @@ html.a11yw-lh body ${OUT}{line-height:var(--a11yw-lh)!important}
 html.a11yw-ls body ${OUT}{letter-spacing:var(--a11yw-ls)!important;word-spacing:var(--a11yw-ws)!important}
 html.a11yw-ls body :is(${CURSIVE})${OUT}{letter-spacing:normal!important}
 html.a11yw-align body ${OUT}{text-align:var(--a11yw-align)!important}
-html.a11yw-readable body ${OUT}:not(i,svg,svg *,code,pre,kbd,samp,[class*="icon"],[class*="Icon"],[class*="fa-"],[class*="material-"]){font-family:Verdana,Tahoma,Arial,sans-serif!important}
-html.a11yw-bold body ${OUT}{font-weight:700!important}
+html.a11yw-readable body ${OUT}:not(${NOT_TEXT}){font-family:Verdana,Tahoma,Arial,sans-serif!important}
+html.a11yw-bold body ${OUT}:not(${NOT_TEXT}){font-weight:700!important}
 html.a11yw-no-motion,html.a11yw-no-motion body,html.a11yw-no-motion body ${OUT},html.a11yw-no-motion body ${OUT}::before,html.a11yw-no-motion body ${OUT}::after{animation-delay:-1ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
 @media screen{
 html.a11yw-titles :is(${HEADINGS}):not(:focus-visible)${OUT}{outline:3px solid var(--a11yw-hl)!important;outline-offset:3px!important}

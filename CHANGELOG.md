@@ -6,12 +6,16 @@ All notable changes to this project are documented here. The project follows [Se
 
 ### Added
 
-- **Read aloud** (`readAloud`): a click or tap on the page, or keyboard focus, reads that block (or an image's alt text) with the browser's own speech, in the language of that part of the page. Escape stops it. Shown only in browsers that can speak; nothing is sent anywhere by the widget.
+- **Read aloud** (`readAloud`): a click or tap on the page, or keyboard focus, reads that block (or an image's alt text) with the browser's own speech, in the language of that part of the page. Escape, or a second tap on the same block, stops it. Form fields are read by their label, never their value. Speech the page started itself is not interrupted. Shown only in browsers that can speak; nothing is sent anywhere by the widget.
 - **Page structure** (feature key `pageStructure`): a dialog listing the page's headings (with their level), regions (header, navigation, main content, sidebar, footer, search, named forms and regions) and links. Choosing one moves focus and the view to it.
-- **Bold text** (`boldText`) and **Invert colors** (`invertColors`). Invert works on the layer below the widget, like the other color filters; images, video, canvas and frames are inverted twice, so they keep their colors.
+- **Bold text** (`boldText`) and **Invert colors** (`invertColors`). Invert works on the layer below the widget, like the other color filters; images, video, canvas and frames are inverted twice, so they keep their colors (not CSS background photos or inline SVG). Bold text leaves icon fonts and code alone.
 - The text magnifier shows an image's alt text (or a `role="img"` element's label) when the pointer or focus is on it.
 - **`feedbackUrl` option**: a "Report a problem" link in the footer (a page, a form or `mailto:`).
 - Labels for all of the above in English, Arabic and the 14 languages of the language pack.
+
+### Fixed — security
+
+- **The text magnifier never shows what is typed in a password field** (it showed the field's value before); read aloud never speaks any field's value. Password fields show their placeholder or label instead.
 
 ### Changed — design
 
