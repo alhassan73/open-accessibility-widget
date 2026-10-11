@@ -181,10 +181,10 @@
   --link: #0d6b63;
   --brand-cyan: #0e7490;
   --brand-teal: #0f766e;
-  /* The scrollbar keeps its dark track in the light theme too. */
+  /* Light track; the thumb is >= 3:1 on it (WCAG 1.4.11) and darkens on hover. */
   --scrollbar-thumb: #0f766e;
-  --scrollbar-thumb-hover: #14b8a6;
-  --scrollbar-track: #0c0f0f;
+  --scrollbar-thumb-hover: #115e59;
+  --scrollbar-track: #e3ebea;
   --gradient-text: linear-gradient(90deg, #0f766e, #0e7490 55%, #115e59);
 
   --header-bg: rgb(246 248 248 / 0.7);
@@ -312,8 +312,8 @@
     -webkit-text-size-adjust: 100%;
     /* Room for the sticky header when a nav link scrolls to a section. */
     scroll-padding-top: 5.5rem;
-    /* Thin brand-blue page scrollbar on a dark track (Chrome 121+, Edge, Firefox); Safari uses the
-       ::-webkit-scrollbar rules below. */
+    /* Thin brand-teal page scrollbar on a track that follows the theme (Chrome 121+, Edge, Firefox);
+       Safari uses the ::-webkit-scrollbar rules below. */
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   }
