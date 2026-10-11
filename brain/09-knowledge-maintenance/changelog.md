@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+## [1.3.1] — 2026-10-12 (tag `v1.3.1`, published to npm)
+
 ### Added
 - 2026-10-12 — F-015 page reach: open Shadow DOM, same-origin iframes, touch reading aids, script/SVG animation pause.
 
