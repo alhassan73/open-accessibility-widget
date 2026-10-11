@@ -1,5 +1,5 @@
 import type { AccessibilityLabels, AccessibilityLanguage } from "../labels";
-import { DEFAULT_SETTINGS, isDefaultSettings, PROFILE_IDS, PROFILE_PRESETS, RANGES, type RangeKey } from "../settings";
+import { contrast, DEFAULT_SETTINGS, isDefaultSettings, PROFILE_IDS, PROFILE_PRESETS, RANGES, type RangeKey } from "../settings";
 import type {
   AccessibilitySettings,
   AccessibilityState,
@@ -105,7 +105,9 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       const before = api.getState().settings[key];
       set((s) => ({ [key]: Math.min(max, Math.max(min, next(s[key]))) }));
       const after = api.getState().settings[key];
-      if (after !== before) announce(`${label} ${percent(after)}`);
+      // A press at a limit says so, instead of staying silent.
+      const limit = after >= max ? L.maximum : after <= min ? L.minimum : "";
+      if (after !== before || limit) announce(`${label} ${percent(after)}${limit && `, ${limit}`}`);
     };
     const value = h("span", { id: valueId, className: "a11yw-step-value" });
     const stepBtn = (name: "minus" | "plus", text: string, delta: number) =>
@@ -195,7 +197,17 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   const colorRow = (key: ColorKey, label: string, fallback: string) => {
     if (!enabled(key)) return null;
     const id = uid();
-    const input = h("input", { id, type: "color", onInput: () => set({ [key]: input.value }) });
+    const input = h("input", {
+      id,
+      type: "color",
+      "aria-describedby": contrastNote.id,
+      onInput: () => set({ [key]: input.value }),
+      onChange: () => {
+        const warning = lowContrast(api.getState().settings);
+        if (warning && warning !== lastWarning) announce(warning); // not again for the same result
+        lastWarning = warning;
+      },
+    });
     const reset = h(
       "button",
       { type: "button", className: "a11yw-mini-btn", "aria-label": withLabel(L.reset, label), onClick: () => set({ [key]: null }) },
@@ -253,29 +265,44 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   const profileCard = (id: ProfileId) => {
     // A profile is offered only while at least one of its adjustments is available.
     if (!Object.keys(PROFILE_PRESETS[id]).some((key) => enabled(key as SettingKey))) return null;
-    const labelId = uid();
-    const descId = uid();
+    // Named by its content (title + description), so the name contains all visible text (WCAG 2.5.3).
     const btn = h(
       "button",
-      {
-        type: "button",
-        className: "a11yw-profile",
-        "aria-labelledby": labelId,
-        "aria-describedby": descId,
-        onClick: () => api.toggleProfile(id),
-      },
+      { type: "button", className: "a11yw-profile", onClick: () => api.toggleProfile(id) },
       icon(PROFILE_ICONS[id]),
       h(
         "span",
         {},
-        h("span", { id: labelId, className: "a11yw-profile-label" }, L[id]),
-        h("span", { id: descId, className: "a11yw-profile-desc" }, L[`${id}Desc`])
+        h("span", { className: "a11yw-profile-label" }, L[id]),
+        h("span", { className: "a11yw-profile-desc" }, ` ${L[`${id}Desc`]}`)
       ),
       h("span", { className: "a11yw-check", "aria-hidden": "true" }, icon("check"))
     );
     sync((s) => btn.setAttribute("aria-pressed", String(s.profiles.includes(id))));
     return btn;
   };
+
+  // Warn when the visitor's own colors make text hard to read (WCAG 1.4.3 asks for 4.5:1).
+  const contrastNote = h("p", { id: uid(), className: "a11yw-note", hidden: true });
+  let lastWarning = "";
+  const lowContrast = (s: S) => {
+    const bg =
+      s.backgroundColor ??
+      (s.colorMode === "dark-contrast" ? "#121212" : s.colorMode === "light-contrast" ? "#ffffff" : null);
+    const ratios = [s.textColor, s.titleColor].map((c) => (c && bg ? contrast(c, bg) ?? 21 : 21));
+    const worst = Math.min(...ratios);
+    // Rounded down, so a failing 4.48:1 never reads as "4.5:1".
+    return worst < 4.5 ? L.lowContrast.replace("{ratio}", (Math.floor(worst * 10) / 10).toFixed(1)) : "";
+  };
+  sync((s) => {
+    contrastNote.textContent = lowContrast(s);
+    contrastNote.hidden = !contrastNote.textContent;
+  });
+  const colorRows = [
+    colorRow("textColor", L.textColor, "#000000"),
+    colorRow("titleColor", L.titleColor, "#000000"),
+    colorRow("backgroundColor", L.backgroundColor, "#ffffff"),
+  ];
 
   // ── Panel body ─────────────────────────────────────────────────────
   const profilesTitleId = uid();
@@ -326,9 +353,8 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
         ["low-saturation", L.lowSaturation],
         ["high-saturation", L.highSaturation],
       ]),
-      colorRow("textColor", L.textColor, "#000000"),
-      colorRow("titleColor", L.titleColor, "#000000"),
-      colorRow("backgroundColor", L.backgroundColor, "#ffffff")
+      ...colorRows,
+      colorRows.some(Boolean) ? contrastNote : null
     ),
     section(
       "reading",
@@ -522,15 +548,47 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
   const root = h("div", { className: "a11yw-ignore a11yw-root" }, widget);
   document.body.prepend(root);
 
+  // aria-modal alone doesn't keep every screen reader's virtual cursor inside a dialog, so the page
+  // behind an open dialog is made inert, including content added while it is open. Elements the page
+  // made inert itself, before or meanwhile, are left as the page set them.
+  const inertPage = new Set<HTMLElement>();
+  const makeInert = (el: Node) => {
+    if (el instanceof HTMLElement && el.parentElement === document.body && !el.matches(IGNORE) && !el.inert) {
+      el.inert = true;
+      inertPage.add(el);
+    }
+  };
+  const onPageMutation = (records: MutationRecord[]) => {
+    for (const r of records) {
+      if (r.type === "childList") r.addedNodes.forEach(makeInert);
+      else inertPage.delete(r.target as HTMLElement); // the page set `inert` itself: its value now
+    }
+    inertObserver.takeRecords(); // drop the records of our own changes above
+  };
+  const inertObserver = new MutationObserver(onPageMutation);
+  const setPageInert = (on: boolean) => {
+    onPageMutation(inertObserver.takeRecords());
+    inertObserver.disconnect();
+    inertPage.forEach((el) => (el.inert = false));
+    inertPage.clear();
+    if (!on) return;
+    Array.from(document.body.children).forEach(makeInert);
+    inertObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["inert"] });
+  };
+
   // ── Read mode ──────────────────────────────────────────────────────
   let reader: HTMLElement | null = null;
   let bodyOverflow = "";
+  /** Widget controls behind read mode. */
+  const behindReader: HTMLElement[] = skipLink ? [launcher, skipLink] : [launcher];
 
   const closeReader = () => {
     if (!reader) return;
     reader.remove();
     reader = null;
     document.body.style.overflow = bodyOverflow;
+    setPageInert(false);
+    behindReader.forEach((el) => (el.inert = false));
     launcher.focus();
   };
 
@@ -563,7 +621,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
             tabindex: "0",
             role: "document",
             "aria-labelledby": readerTitleId,
-            lang: document.documentElement.lang,
+            lang: document.documentElement.lang || null, // no lang="" when the page has none
             dir: getComputedStyle(document.body).direction,
           },
           ...(blocks.length ? blocks : [h("p", { lang: locale.language }, L.noReadableContent)])
@@ -575,6 +633,8 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     widget.append(backdrop);
     bodyOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    setPageInert(true);
+    behindReader.forEach((el) => (el.inert = true));
     readerClose.focus();
   };
 
@@ -610,12 +670,14 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
     window.clearTimeout(hideTimer);
     panel.hidden = false;
     panel.inert = false;
+    setPageInert(true);
     if (animate) void panel.offsetWidth; // commit the start state so the transition runs
     panel.setAttribute("data-open", "");
   };
   const hidePanel = () => {
     panel.removeAttribute("data-open");
     panel.inert = true; // not focusable or clickable while fading out
+    setPageInert(false);
     const ms = transitionMs(panel);
     if (ms === 0) panel.hidden = true;
     else hideTimer = window.setTimeout(() => (panel.hidden = true), ms);
@@ -658,6 +720,7 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       document.removeEventListener("pointerdown", onPointerDown);
       window.clearTimeout(hideTimer);
       if (reader) document.body.style.overflow = bodyOverflow;
+      setPageInert(false);
       root.remove();
     },
   };

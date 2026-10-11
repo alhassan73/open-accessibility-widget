@@ -1,6 +1,7 @@
 // End-to-end tests in headless Chrome against the built <script> bundle (run `npm run build` first).
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { after, before, test } from "node:test";
@@ -12,8 +13,9 @@ const HOST = `
   .toggle[aria-pressed=true]{background:#0a7d00;color:#fff;border:0;padding:6px}
   .bs-check{appearance:none;width:20px;height:20px;border:1px solid #888;background:#fff no-repeat center/contain}
   .bs-check:checked{background-color:#0d6efd;background-image:url("${SVG}")}
-  #anim{transition:opacity .2s}
+  #anim{transition:opacity .2s;background-image:linear-gradient(#fff,#ddd)}
   #playbtn{position:absolute;top:10px;right:10px}
+  #lnk{background-image:linear-gradient(#fff,#fff)}
 </style>
 <header><h1>Site title</h1><nav><a id="a" href="#a">Link A</a> <a id="b" href="#b">Link B</a></nav></header>
 <main id="main">
@@ -38,7 +40,10 @@ before(async () => {
   dir = fs.mkdtempSync(path.join(os.tmpdir(), "a11yw-fixtures-"));
   HOST_URL = fixture(dir, "host", { body: HOST });
   BLANK_URL = fixture(dir, "blank");
-  TT_URL = fixture(dir, "tt", { head: `<meta http-equiv="Content-Security-Policy" content="require-trusted-types-for 'script'">` });
+  // The strict policy documented in the README: Trusted Types, nonce-only styles, data: images.
+  TT_URL = fixture(dir, "tt", {
+    head: `<meta http-equiv="Content-Security-Policy" content="require-trusted-types-for 'script'; default-src 'none'; script-src file:; style-src 'nonce-t3st'; img-src data:">`,
+  });
   browser = await launchBrowser();
   page = browser.page;
 });
@@ -72,13 +77,42 @@ test("keyboard: skip link, open, focus trap, arrow keys, Escape", async () => {
   assert.equal(await page.eval(`__d(document.activeElement)`), "button.a11yw-launcher");
 });
 
-test("axe-core: no violations in the panel or read mode", async (t) => {
-  let axe;
-  try {
-    axe = await (await fetch("https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.2/axe.min.js")).text();
-  } catch {
-    return t.skip("axe-core could not be downloaded");
-  }
+test("open dialogs make the page behind them inert, and restore it", async () => {
+  await page.goto(HOST_URL);
+  await page.eval(`document.querySelector('footer').inert = true; 1`);
+  await init();
+  const inert = () => page.eval(`['header', 'main', 'footer', '.a11yw-root', '.a11yw-launcher'].map((s) => document.querySelector(s).inert)`);
+  await page.eval(`__w().open(); 1`);
+  assert.deepEqual(await inert(), [true, true, true, false, false]);
+  await page.click("#playbtn");
+  assert.equal(await page.eval(`__w().getState().isOpen`), false, "a click outside still closes the panel");
+  assert.deepEqual(await inert(), [false, false, true, false, false], "the page's own inert is kept");
+  await page.eval(`__w().open(); document.querySelector('.a11yw-row[aria-haspopup]').click(); 1`);
+  assert.deepEqual(await inert(), [true, true, true, false, true]);
+  await page.press(KEYS.Escape);
+  assert.deepEqual(await inert(), [false, false, true, false, false]);
+  assert.equal(await page.eval(`__d(document.activeElement)`), "button.a11yw-launcher");
+  assert.equal(await page.eval(`document.querySelector('.a11yw-skip').inert`), false);
+
+  // Content added while open is inert too; inert the page sets meanwhile is kept on close.
+  await page.eval(`__w().open(); const t = document.createElement('div'); t.id = 'toast'; document.body.append(t); 1`);
+  await sleep(50);
+  assert.equal(await page.eval(`toast.inert`), true, "content added while open");
+  await page.eval(`document.querySelector('header').inert = true; 1`);
+  await page.eval(`__w().setOptions({ language: 'ar' }); 1`); // rebuilds the panel while open
+  await sleep(50);
+  assert.deepEqual([await page.eval(`__w().getState().isOpen`), ...(await inert())], [true, true, true, true, false, false]);
+  await page.eval(`__w().close(); 1`);
+  assert.deepEqual(await inert(), [true, false, true, false, false], "the page's own inert, set while open, is kept");
+  assert.equal(await page.eval(`toast.inert`), false);
+
+  await page.eval(`__w().open(); __w().destroy(); 1`);
+  assert.deepEqual(await page.eval(`['main', 'footer'].map((s) => document.querySelector(s).inert)`), [false, true]);
+});
+
+test("axe-core: no violations in the panel or read mode", async () => {
+  // From devDependencies, so it always runs (offline too) and a missing copy fails instead of skipping.
+  const axe = fs.readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
   await page.goto(HOST_URL);
   await init();
   await openPanelAllSections();
@@ -87,6 +121,7 @@ test("axe-core: no violations in the panel or read mode", async (t) => {
   const run = () =>
     page.eval(`axe.run({ include: [['.a11yw-root']] }).then((r) => r.violations.map((v) => v.id + ': ' + v.nodes.map((n) => n.target).join(' | ')))`);
   assert.deepEqual(await run(), []);
+  assert.deepEqual(await page.ax(".a11yw-profile"), { role: "button", name: "Motion sensitivity Stops animations and softens colors" });
   await page.eval(`document.querySelector('.a11yw-row[aria-haspopup]').click(); 1`);
   await sleep(100);
   assert.deepEqual(await run(), []);
@@ -179,6 +214,9 @@ test("dark mode keeps selected states and uses a dark color scheme", async () =>
   await page.eval(`__w().setSettings({ colorMode: 'dark-contrast' }); 1`);
   assert.equal(await page.eval(`getComputedStyle(document.documentElement).colorScheme`), "dark");
   assert.match(await page.eval(`getComputedStyle(btn).boxShadow`), /inset/);
+  assert.equal(await page.eval(`getComputedStyle(anim).backgroundImage`), "none", "text never stays on a background image");
+  assert.match(await page.eval(`getComputedStyle(cb).backgroundImage`), /^url/, "form controls keep their state images");
+  assert.match(await page.eval(`getComputedStyle(lnk).backgroundImage`), /gradient/, "links keep their icons");
 });
 
 test("stop animations still fires transitionend", async () => {
@@ -248,9 +286,29 @@ test("features and initialSettings options", async () => {
   assert.deepEqual(out, { hideImages: false, fontSize: 130, hasHideRow: false, hasReadMode: false });
 });
 
-test("works under a Trusted Types CSP", async () => {
+test("works under a strict Trusted Types CSP without violations", async () => {
   await page.goto(TT_URL);
-  assert.equal(await page.eval(`(A11yWidget.init(), document.querySelectorAll('.a11yw-root svg path').length > 0)`), true);
+  const out = await page.eval(`new Promise((res) => {
+    const violations = [];
+    document.addEventListener('securitypolicyviolation', (e) => violations.push(e.violatedDirective + ' ' + e.blockedURI));
+    A11yWidget.init({ nonce: 't3st' });
+    __w().open();
+    __w().setSettings({ fontSize: 150, readingGuide: true, cursor: 'black', colorMode: 'dark-contrast', saturationMode: 'monochrome' });
+    document.querySelector('.a11yw-row[aria-haspopup]').click();
+    setTimeout(() => res({ icons: document.querySelectorAll('.a11yw-root svg path').length > 0,
+      styled: getComputedStyle(document.querySelector('.a11yw-launcher')).position, violations }), 300);
+  })`);
+  assert.deepEqual(out, { icons: true, styled: "fixed", violations: [] });
+});
+
+test("the widget's own motion follows prefers-reduced-motion", async () => {
+  await page.goto(HOST_URL);
+  await page.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+  await init();
+  await page.eval(`__w().open(); 1`);
+  const out = await page.eval(`['.a11yw-panel', '.a11yw-launcher', '.a11yw-switch'].map((s) => getComputedStyle(document.querySelector(s)).transitionDuration)`);
+  assert.deepEqual(out, ["0s", "0s", "0s"]);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-panel').hidden`), false, "opens at once");
 });
 
 test("survives frameworks resetting <html class> and swapping <body>", async () => {
@@ -332,6 +390,21 @@ test("reflow: panel fits a 320px-wide viewport without horizontal scrolling", as
   assert.deepEqual(out, { fits: true, hScroll: false });
 });
 
+test("reflow: read mode fits a 320px-wide viewport; widget focus is visible", async () => {
+  await page.goto(HOST_URL);
+  await page.send("Emulation.setDeviceMetricsOverride", { width: 320, height: 256, deviceScaleFactor: 1, mobile: false });
+  await init();
+  await page.press(KEYS.Tab);
+  await page.press(KEYS.Tab);
+  assert.match(await page.eval(`(() => { const c = getComputedStyle(document.activeElement); return c.outlineStyle + ' ' + c.outlineWidth; })()`), /^solid 3px$/);
+  await page.eval(`__w().open(); document.querySelector('.a11yw-row[aria-haspopup]').click(); 1`);
+  await sleep(100);
+  const out = await page.eval(`(() => { const r = document.querySelector('.a11yw-reader').getBoundingClientRect();
+    return { fits: r.left >= 0 && r.right <= innerWidth + 1, hScroll: document.documentElement.scrollWidth > innerWidth,
+      focus: document.activeElement.getAttribute('aria-label') }; })()`);
+  assert.deepEqual(out, { fits: true, hScroll: false, focus: "Close read mode" });
+});
+
 test("the widget itself is never changed by its own adjustments", async () => {
   await page.goto(HOST_URL);
   // A statement link guarantees an `.a11yw-link` (the "Hide widget" link only appears with a fine pointer).
@@ -382,6 +455,35 @@ test("stepper announces the new value with its name", async () => {
   await sleep(50);
   assert.equal(await page.eval(`document.querySelector('.a11yw-root [role=status]').textContent`), "Text size 110%");
   assert.equal(await page.eval(`document.querySelector('.a11yw-step-btn').getAttribute('aria-describedby') !== null`), true);
+  await page.eval(`__w().setSettings({ fontSize: 200 }); document.querySelector('.a11yw-step-btn[aria-label="Increase Text size"]').click(); 1`);
+  await sleep(50);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-root [role=status]').textContent`), "Text size 200%, maximum");
+  await page.eval(`__w().setSettings({ fontSize: 60 }); document.querySelector('.a11yw-step-btn[aria-label="Decrease Text size"]').click(); 1`);
+  await sleep(50);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-root [role=status]').textContent`), "Text size 50%, minimum");
+});
+
+test("read mode leaves out lang when the page has none", async () => {
+  await page.goto(BLANK_URL);
+  await page.eval(`document.documentElement.removeAttribute('lang'); document.body.innerHTML = '<main><p>Text</p></main>'; 1`);
+  await init();
+  await page.eval(`__w().open(); document.querySelector('.a11yw-row[aria-haspopup]').click(); 1`);
+  assert.equal(await page.eval(`document.querySelector('.a11yw-reader-body').hasAttribute('lang')`), false);
+});
+
+test("custom colors with low contrast show a warning", async () => {
+  await page.goto(HOST_URL);
+  await init();
+  await openPanelAllSections();
+  const note = `(() => { const n = document.querySelector('.a11yw-note'); return n.hidden ? null : n.textContent; })()`;
+  assert.equal(await page.eval(note), null);
+  await page.eval(`__w().setSettings({ textColor: '#999999', backgroundColor: '#ffffff' }); 1`);
+  assert.equal(await page.eval(note), "Low contrast (2.8:1): text may be hard to read.");
+  assert.equal(await page.eval(`document.querySelector('.a11yw-row input[type=color]').getAttribute('aria-describedby') === document.querySelector('.a11yw-note').id`), true);
+  await page.eval(`__w().setSettings({ textColor: '#000000' }); 1`);
+  assert.equal(await page.eval(note), null);
+  await page.eval(`__w().setSettings({ backgroundColor: null, colorMode: 'dark-contrast', titleColor: '#333333' }); 1`);
+  assert.match(await page.eval(note), /^Low contrast \(1\.\d:1\)/, "dark mode background counts");
 });
 
 test("settings follow changes made in another tab", async () => {

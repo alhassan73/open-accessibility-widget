@@ -155,3 +155,22 @@ export function mergeSettings(base: AccessibilitySettings, patch: Partial<Access
 
 export const isDefaultSettings = (settings: AccessibilitySettings) =>
   JSON.stringify(settings) === JSON.stringify(DEFAULT_SETTINGS);
+
+/** WCAG contrast ratio of two hex colors, or `null` when either isn't a hex color. */
+export function contrast(a: string, b: string): number | null {
+  const la = luminance(a);
+  const lb = luminance(b);
+  if (la === null || lb === null) return null;
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+function luminance(color: string): number | null {
+  const match = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color.trim());
+  if (!match) return null; // named / rgb() colors are not checked
+  const hex = match[1].length === 3 ? [...match[1]].map((c) => c + c).join("") : match[1];
+  const [r, g, b] = [0, 2, 4].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}

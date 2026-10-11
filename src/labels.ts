@@ -40,6 +40,8 @@ export const defaultLabels = Object.freeze({
   increase: "Increase",
   decrease: "Decrease",
   reset: "Reset",
+  maximum: "maximum",
+  minimum: "minimum",
   textAlign: "Alignment",
   alignDefault: "Auto",
   alignLeft: "Left",
@@ -62,6 +64,7 @@ export const defaultLabels = Object.freeze({
   textColor: "Text color",
   titleColor: "Heading color",
   backgroundColor: "Background color",
+  lowContrast: "Low contrast ({ratio}:1): text may be hard to read.",
 
   readingSection: "Reading aids",
   highlightTitles: "Highlight headings",
@@ -127,6 +130,8 @@ export const arabicLabels: AccessibilityLabels = Object.freeze({
   increase: "زيادة",
   decrease: "تقليل",
   reset: "إعادة ضبط",
+  maximum: "الحد الأقصى",
+  minimum: "الحد الأدنى",
   textAlign: "المحاذاة",
   alignDefault: "تلقائي",
   alignLeft: "يسار",
@@ -149,6 +154,7 @@ export const arabicLabels: AccessibilityLabels = Object.freeze({
   textColor: "لون النص",
   titleColor: "لون العناوين",
   backgroundColor: "لون الخلفية",
+  lowContrast: "تباين منخفض ({ratio}:1): قد تصعب قراءة النص.",
 
   readingSection: "أدوات القراءة",
   highlightTitles: "تمييز العناوين",

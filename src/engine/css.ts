@@ -14,6 +14,9 @@ const INTERACTIVE = 'a,button,label,summary,[role="button"],[role="link"],[role=
 /** Selected / current states that sites often show with a background color only. */
 const STATES =
   '[aria-selected="true"],[aria-pressed="true"],[aria-checked="true"],[aria-current]:not([aria-current="false"]),:checked';
+/** Form controls draw their state (check marks, arrows) with background images, so those stay.
+ * In color modes, links and buttons keep theirs too: often their only visible icon. */
+const NOT_CONTROL = ':not(input,select,textarea,button,[role="checkbox"],[role="switch"],[role="radio"])';
 const withDescendants = (list: string) =>
   list
     .split(",")
@@ -49,7 +52,7 @@ html.a11yw-links :is(a[href],[role="link"])${OUT}{text-decoration:underline!impo
 html.a11yw-links :is(a[href],[role="link"]):not(:focus-visible)${OUT}{outline:2px solid var(--a11yw-hl)!important;outline-offset:2px!important}
 html.a11yw-hover :is(a,button,input,select,textarea,label,summary,img,p,li,${HEADINGS},[role="button"],[role="link"]):hover:not(:focus-visible)${OUT}{outline:2px dashed var(--a11yw-hl)!important;outline-offset:2px!important}
 html.a11yw-hide-img :is(img,picture,svg[role="img"],[role="img"]):not(:is(${INTERACTIVE}) *)${OUT}{opacity:0!important}
-html.a11yw-hide-img body :not(input,select,textarea,button,[role="checkbox"],[role="switch"],[role="radio"])${OUT}{background-image:none!important}
+html.a11yw-hide-img body ${NOT_CONTROL}${OUT}{background-image:none!important}
 ${cursorRules("black", "#000", "#fff")}
 ${cursorRules("white", "#fff", "#000")}
 }
@@ -64,6 +67,7 @@ html.a11yw-text-color body ${OUT}{color:var(--a11yw-text-color)!important}
 html.a11yw-text-color :is(a[href],[role="link"])${OUT}{text-decoration:underline!important}
 html.a11yw-title-color :is(${withDescendants(HEADINGS)})${OUT}{color:var(--a11yw-title-color)!important}
 html.a11yw-bg-color,html.a11yw-bg-color body,html.a11yw-bg-color body ${OUT}{background-color:var(--a11yw-bg-color)!important}
+html:is(.a11yw-dark,.a11yw-light,.a11yw-bg-color),html:is(.a11yw-dark,.a11yw-light,.a11yw-bg-color) body,html:is(.a11yw-dark,.a11yw-light,.a11yw-bg-color) body ${NOT_CONTROL}:not(${INTERACTIVE},:is(${INTERACTIVE}) *)${OUT}{background-image:none!important}
 html:is(.a11yw-dark,.a11yw-light,.a11yw-bg-color) :is(${STATES})${OUT}{box-shadow:inset 0 0 0 3px currentColor!important}
 html.a11yw-filter .a11yw-backdrop{display:block;-webkit-backdrop-filter:var(--a11yw-filter);backdrop-filter:var(--a11yw-filter)}
 }
@@ -155,6 +159,7 @@ button.a11yw-row:hover{background:var(--a11yw-surface)!important}
 .a11yw-mini-btn:not([aria-disabled="true"]):hover{background:var(--a11yw-surface)!important;color:var(--a11yw-text)!important}
 .a11yw-widget .a11yw-mini-btn svg{width:16px;height:16px}
 .a11yw-widget .a11yw-row input[type="color"]{width:40px;height:28px;padding:0;border:1px solid var(--a11yw-border);border-radius:8px;background:none;cursor:pointer}
+.a11yw-note{padding:8px 0;font-size:.8125em;font-weight:600}
 .a11yw-field{padding:10px 0}
 .a11yw-field-label{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:.875em;font-weight:500}
 .a11yw-field-label>svg{color:var(--a11yw-muted)}
