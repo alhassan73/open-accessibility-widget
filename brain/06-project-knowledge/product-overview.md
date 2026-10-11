@@ -40,7 +40,7 @@ High-level capabilities → `07-feature-documentation/feature-registry.md` for t
 
 - Quick profiles · Text · Color · Reading aids · Motion & navigation · Read mode
 - Built-ins: reset, statement link, hide widget, language menu, skip link, `Alt+A`, saved settings
-- Distribution: ESM/CJS, React adapter, `<script>` build, live demo
+- Distribution: ESM/CJS, React adapter, `<script>` build; docs site + live playground (en/ar, Vercel)
 
 ## Constraints
 

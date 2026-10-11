@@ -1,0 +1,571 @@
+/*
+ * Documentation site styles. Tailwind v4 + shadcn/ui tokens, dark by default, Plus Jakarta Sans + IBM Plex Sans
+ * Arabic, teal brand (the widget's demo color). Theme is `data-theme="dark|light"` on <html> (set before paint
+ * by the no-flash script). RTL: use logical utilities (ms-* me-* ps-* pe-* start-* end-*), never left/right.
+ *
+ * The accessibility widget injects its own stylesheet and lives in `.a11yw-ignore`; the site never restyles
+ * it. Its page adjustments (text size, contrast, spacing…) apply to this site like to any other.
+ */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* ------------------------------------------------------------------------------------------------
+ * Type scale (root 16px, rem). The site uses exactly three weights: 400 running text, 700 UI and small headings,
+ * 800 display headings (Arabic loads only Plex's 400 and 700; its 700 face also serves 800). Never 500/600. Arabic glyphs read smaller than Latin at the same size, so under :lang(ar) body and small text go
+ * up one step and line heights are taller; negative tracking is never applied to Arabic.
+ * Utilities (see @theme): text-display, text-h2, text-h3, text-lead, text-body, text-small, text-caption, text-mono.
+ * ---------------------------------------------------------------------------------------------- */
+:root {
+  --fs-display: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem);
+  --fs-h2: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --fs-h3: 1.25rem;
+  --fs-lead: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.9375rem;
+  --fs-caption: 0.8125rem; /* the floor: nothing on the site is smaller */
+  --fs-mono: 0.875rem;
+
+  --lh-display: 1.08;
+  --lh-h2: 1.15;
+  --lh-h3: 1.35;
+  --lh-lead: 1.65;
+  --lh-body: 1.7;
+  --lh-small: 1.6;
+  --lh-ui: 1.4;
+
+  --ls-display: -0.025em;
+  --ls-h2: -0.02em;
+
+  /* Motion: hover/colour changes 150ms on the standard curve (colour, background, border only, never
+     layout); entrances 240ms ease-out-expo; exits 150ms. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-enter: 240ms;
+  --dur-exit: 150ms;
+  --dur-hover: 150ms;
+}
+@media (max-width: 639px) {
+  :root {
+    --fs-body: 1rem;
+  }
+}
+:root:lang(ar) {
+  --fs-body: 1.125rem;
+  --fs-small: 1rem;
+  --lh-display: 1.3;
+  --lh-h2: 1.35;
+  --lh-h3: 1.5;
+  --lh-lead: 1.85;
+  --lh-body: 1.9;
+  --lh-small: 1.75;
+  --ls-display: 0;
+  --ls-h2: 0;
+}
+@media (max-width: 639px) {
+  :root:lang(ar) {
+    --fs-body: 1.0625rem;
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Design tokens. Dark is the default (also without JS); [data-theme="light"] overrides it.
+ * Contrast (WCAG 2.2 AA): foreground/muted-foreground >= 5.6:1 on every surface, white on --primary 5.4:1,
+ * --link >= 5.3:1, --ring >= 5.3:1. --brand-cyan / --brand-teal are decorative (>= 3:1 on both themes);
+ * use --link for coloured text.
+ * ---------------------------------------------------------------------------------------------- */
+:root,
+[data-theme="dark"] {
+  /* One font per script (app/fonts.ts). IBM Plex Sans Arabic comes first and covers only Arabic (unicode-range),
+     so Latin text falls through to Plus Jakarta Sans. Jakarta's variable carries its metric-matched fallback,
+     which must come after the Arabic font: it is Arial, which has Arabic glyphs. */
+  --site-font:
+    var(--font-plex-arabic, "IBM Plex Sans Arabic"), var(--font-jakarta, "Plus Jakarta Sans"), system-ui, -apple-system,
+    "Segoe UI", Roboto, "Noto Sans Arabic", "Noto Sans", Tahoma, sans-serif;
+  --site-mono:
+    ui-monospace, "Cascadia Code", "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+
+  --radius: 10px; /* controls: buttons, inputs */
+  --radius-card: 18px; /* cards and panels (16-20px) */
+
+  --background: #0e1111;
+  --foreground: #f6f8f8; /* headings and strong text */
+  --fg-body: #e7ecec; /* running text: softer than headings, no pure-white glare */
+  --card: #151a1a;
+  --card-foreground: #f6f8f8;
+  --popover: #151a1a;
+  --popover-foreground: #f6f8f8;
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+  --primary-hover: #115e59; /* darker, not lighter: white text stays >= 7:1 */
+  --secondary: #1c2222;
+  --secondary-foreground: #f6f8f8;
+  --muted: #1c2222;
+  --muted-foreground: #9aa5a4;
+  --accent: #232a2a; /* subtle hover / selected surface (shadcn meaning), not the brand colour */
+  --accent-foreground: #f6f8f8;
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+  --border: rgb(255 255 255 / 0.08);
+  --input: rgb(255 255 255 / 0.16);
+  --ring: #2dd4bf;
+
+  --link: #2dd4bf;
+  --brand-cyan: #22d3ee;
+  --brand-teal: #2dd4bf;
+  --scrollbar-thumb: #0f766e;
+  --scrollbar-thumb-hover: #14b8a6;
+  --scrollbar-track: #0c0f0f;
+  --brand-gradient: linear-gradient(90deg, #0f766e, #14b8a6 55%, #22d3ee);
+  /* Same hues, legible as text: every stop >= 7:1 on --background. */
+  --gradient-text: linear-gradient(90deg, #2dd4bf, #5eead4 55%, #67e8f9);
+  /* Behind the white icon in the wordmark: every stop >= 5.4:1. */
+  --wm-grad: linear-gradient(135deg, #0f766e, #115e59);
+
+  --header-bg: rgb(14 17 17 / 0.6);
+  /* Dark: surfaces are told apart by borders, shadows stay faint. */
+  --shadow-elevated: 0 12px 32px rgb(0 0 0 / 0.28);
+  --glow:
+    radial-gradient(55% 60% at 12% 0%, rgb(15 118 110 / 0.34), transparent 70%),
+    radial-gradient(50% 55% at 92% 8%, rgb(34 211 238 / 0.14), transparent 70%),
+    radial-gradient(40% 40% at 60% 105%, rgb(45 212 191 / 0.12), transparent 70%);
+
+  /* Code blocks */
+  --code-bg: #0a0d0d;
+  --code-bar: #121616;
+  --code-foreground: #e6e9ec;
+  --code-border: rgb(255 255 255 / 0.1);
+  /* Syntax colours, each >= 6.3:1 on --code-bg. */
+  --tok-keyword: #6fb1ff;
+  --tok-string: #f5b86c;
+  --tok-number: #7ee0a6;
+  --tok-comment: #8d949b;
+  --tok-tag: #4fd0f0;
+  --tok-attr: #7fdacb;
+  --tok-punct: #aeb5bc;
+  --tok-fn: #9cc8ff;
+  --tok-type: #4fdac4;
+  --tok-prop: #b8d4f5;
+  --tok-op: #c5ccd3;
+
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --background: #f6f8f8;
+  --foreground: #0e1111;
+  --fg-body: #1d2424;
+  --card: #ffffff;
+  --card-foreground: #0e1111;
+  --popover: #ffffff;
+  --popover-foreground: #0e1111;
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+  --primary-hover: #115e59;
+  --secondary: #ebf1f0;
+  --secondary-foreground: #0e1111;
+  --muted: #ebf1f0;
+  --muted-foreground: #556261;
+  --accent: #e3ebea;
+  --accent-foreground: #0e1111;
+  --destructive: #c4262b;
+  --destructive-foreground: #ffffff;
+  --border: #dfe6e5;
+  --input: #bfcac9;
+  --ring: #0f766e;
+
+  --link: #0d6b63;
+  --brand-cyan: #0e7490;
+  --brand-teal: #0f766e;
+  /* The scrollbar keeps its dark track in the light theme too. */
+  --scrollbar-thumb: #0f766e;
+  --scrollbar-thumb-hover: #14b8a6;
+  --scrollbar-track: #0c0f0f;
+  --gradient-text: linear-gradient(90deg, #0f766e, #0e7490 55%, #115e59);
+
+  --header-bg: rgb(246 248 248 / 0.7);
+  --shadow-elevated: 0 8px 24px rgb(20 60 56 / 0.08);
+  --glow:
+    radial-gradient(55% 60% at 12% 0%, rgb(15 118 110 / 0.16), transparent 70%),
+    radial-gradient(50% 55% at 92% 8%, rgb(14 116 144 / 0.1), transparent 70%),
+    radial-gradient(40% 40% at 60% 105%, rgb(45 212 191 / 0.1), transparent 70%);
+
+  --code-bg: #f1f5f4;
+  --code-bar: #e7eeed;
+  --code-foreground: #1b1f24;
+  --code-border: #dde1e7;
+  /* Each >= 4.97:1 on --code-bg. */
+  --tok-keyword: #0050cc;
+  --tok-string: #9a4a00;
+  --tok-number: #0b7a3e;
+  --tok-comment: #5b6470;
+  --tok-tag: #00698c;
+  --tok-attr: #0b6e64;
+  --tok-punct: #4b535c;
+  --tok-fn: #1f5fbf;
+  --tok-type: #00706a;
+  --tok-prop: #35597f;
+  --tok-op: #3a4148;
+
+  color-scheme: light;
+}
+
+@theme inline {
+  --font-sans: var(--site-font);
+  --font-mono: var(--site-mono);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-link: var(--link);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-teal: var(--brand-teal);
+  --color-code: var(--code-bg);
+  --color-code-bar: var(--code-bar);
+  --color-code-foreground: var(--code-foreground);
+  --color-code-border: var(--code-border);
+  --color-header: var(--header-bg);
+
+  /* Controls (buttons, inputs) are rounded-md = 10px; cards and panels are rounded-xl / rounded-3xl =
+     18px / 20px; rounded-2xl = 16px (icon tiles, inner panels). Code blocks use 12px. */
+  --radius-sm: 6px;
+  --radius-md: var(--radius);
+  --radius-lg: 14px;
+  --radius-xl: var(--radius-card);
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+
+  /* Only the weights the site loads: medium/semibold map to bold, light to regular (safety net for shadcn). */
+  --font-weight-light: 400;
+  --font-weight-medium: 700;
+  --font-weight-semibold: 700;
+
+  /* Type scale. xs/sm are remapped so any stray shadcn class still respects the 13px floor and 15px small size. */
+  --text-display: var(--fs-display);
+  --text-display--line-height: var(--lh-display);
+  --text-display--font-weight: 800;
+  --text-display--letter-spacing: var(--ls-display);
+  --text-h2: var(--fs-h2);
+  --text-h2--line-height: var(--lh-h2);
+  --text-h2--font-weight: 800;
+  --text-h2--letter-spacing: var(--ls-h2);
+  --text-h3: var(--fs-h3);
+  --text-h3--line-height: var(--lh-h3);
+  --text-h3--font-weight: 700;
+  --text-lead: var(--fs-lead);
+  --text-lead--line-height: var(--lh-lead);
+  --text-body: var(--fs-body);
+  --text-body--line-height: var(--lh-body);
+  --text-small: var(--fs-small);
+  --text-small--line-height: var(--lh-small);
+  --text-caption: var(--fs-caption);
+  --text-caption--line-height: var(--lh-ui);
+  --text-mono: var(--fs-mono);
+  --text-mono--line-height: 1.6;
+  --text-xs: var(--fs-caption);
+  --text-xs--line-height: var(--lh-ui);
+  --text-sm: var(--fs-small);
+  --text-sm--line-height: var(--lh-small);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The track holds its content twice; moving by half its width loops seamlessly. */
+@keyframes marquee {
+  to {
+    transform: translateX(calc(-50% * var(--marquee-dir, 1)));
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Base
+ * ---------------------------------------------------------------------------------------------- */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  [hidden] {
+    display: none !important;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Room for the sticky header when a nav link scrolls to a section. */
+    scroll-padding-top: 5.5rem;
+    /* Thin brand-blue page scrollbar on a dark track (Chrome 121+, Edge, Firefox); Safari uses the
+       ::-webkit-scrollbar rules below. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border: 2px solid var(--scrollbar-track);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    background-color: var(--background);
+    font-family: var(--site-font);
+    color: var(--fg-body);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    font-synthesis: none;
+    overflow-wrap: break-word;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--foreground);
+    text-wrap: balance;
+  }
+  h4 {
+    font-weight: 700;
+  }
+  strong,
+  b,
+  th {
+    font-weight: 700;
+  }
+  /* Versions, sizes and counts line up. */
+  table,
+  output {
+    font-variant-numeric: tabular-nums;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--site-mono);
+  }
+  /* Negative tracking breaks Arabic letter joining; never apply it outside LTR islands (code, wordmark). */
+  :dir(rtl) :not(:dir(ltr)) {
+    letter-spacing: 0 !important;
+  }
+
+  ::selection {
+    background: rgb(45 212 191 / 0.32);
+    color: inherit;
+  }
+  [data-theme="light"] ::selection {
+    background: rgb(15 118 110 / 0.2);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Utilities
+ * ---------------------------------------------------------------------------------------------- */
+/* Brand gradient on text. Pair with a heading at 24px+ or bold 19px+. */
+@utility text-gradient {
+  background-image: var(--gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Soft blue/cyan/teal glow, for an absolutely positioned layer behind the hero. */
+/* Readable line length for prose: 65ch (Latin), 70ch (Arabic). */
+@utility measure {
+  max-width: 65ch;
+  &:lang(ar) {
+    max-width: 70ch;
+  }
+}
+
+@utility bg-glow {
+  background-image: var(--glow);
+}
+
+@utility bg-brand-gradient {
+  background-image: var(--brand-gradient);
+}
+
+@utility shadow-elevated {
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Marquee track: render the items twice inside it. Direction follows the writing direction. */
+@utility animate-marquee {
+  animation: marquee var(--marquee-duration, 45s) linear infinite;
+  &:dir(rtl) {
+    --marquee-dir: -1;
+  }
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+@layer components {
+  /* Reveal: content is visible by default. Reveal.tsx adds .reveal-pending only to elements that start
+     below the fold and removes it when they scroll into view, so nothing is hidden without JS, for
+     elements on screen at load, when printing or with reduced motion. */
+  .reveal {
+    transition:
+      opacity var(--dur-enter) var(--ease-out-expo),
+      transform var(--dur-enter) var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .reveal-pending {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  @media print, (prefers-reduced-motion: reduce) {
+    .reveal-pending {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Links inside running text (paragraphs, definitions, table cells): underlined with a brand-coloured
+     line that gets solid on hover. Buttons opt out with [data-slot] / .no-underline; `.prose-link` opts in
+     anywhere else (list items are not matched, because navigation lists are <li><a> too). Utilities such as
+     `underline-offset-4` still win, being in a later layer. */
+  main :is(p, dd, td) a:not([class*="no-underline"], [data-slot], [role="button"], [role="tab"]),
+  .prose-link {
+    color: var(--link);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in oklab, var(--link) 50%, transparent);
+    transition: text-decoration-color var(--dur-hover) var(--ease-standard);
+  }
+  main
+    :is(p, dd, td)
+    a:not([class*="no-underline"], [data-slot], [role="button"], [role="tab"]):hover,
+  .prose-link:hover {
+    text-decoration-color: var(--link);
+  }
+
+  /* ---------- code tokens (our own highlighter emits these classes) ---------- */
+  .tok-keyword {
+    color: var(--tok-keyword);
+  }
+  .tok-string {
+    color: var(--tok-string);
+  }
+  .tok-number {
+    color: var(--tok-number);
+  }
+  .tok-comment {
+    color: var(--tok-comment);
+    font-style: italic;
+  }
+  .tok-tag {
+    color: var(--tok-tag);
+  }
+  .tok-attr {
+    color: var(--tok-attr);
+  }
+  .tok-punct {
+    color: var(--tok-punct);
+  }
+  .tok-fn {
+    color: var(--tok-fn);
+  }
+  .tok-type {
+    color: var(--tok-type);
+  }
+  .tok-prop {
+    color: var(--tok-prop);
+  }
+  .tok-op {
+    color: var(--tok-op);
+  }
+}
+
+/* Theme switch: ThemeToggle grows the new theme as a circle (clip-path on the new snapshot), so the
+   browser's default cross-fade is turned off. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Every control shows the pointer (Tailwind v4 dropped it for buttons); disabled ones say so. */
+@layer base {
+  :is(
+    button,
+    select,
+    summary,
+    label[for],
+    [role="button"],
+    [role="tab"],
+    [role="radio"],
+    [role="checkbox"],
+    [role="switch"],
+    [role="option"],
+    [role="menuitem"],
+    [role="combobox"],
+    input:is([type="checkbox"], [type="radio"], [type="color"], [type="range"], [type="file"])
+  ):not(:disabled, [aria-disabled="true"], [data-disabled]) {
+    cursor: pointer;
+  }
+  :is(button, select, input, [role="button"], [role="tab"], [role="option"]):is(
+    :disabled,
+    [aria-disabled="true"],
+    [data-disabled]
+  ) {
+    cursor: not-allowed;
+  }
+}

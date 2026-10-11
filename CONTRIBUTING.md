@@ -7,9 +7,12 @@ Thanks for helping! Issues and pull requests are welcome.
 ```bash
 npm install
 npm run check   # typecheck, build, bundle-size budget, unit + end-to-end tests
+npm run dev     # the docs site (examples/) on http://localhost:3000, with the widget from src/
 ```
 
 The end-to-end tests drive a local headless Chrome; set `CHROME_PATH` if it isn't found automatically.
+
+The docs site is a Next.js app in `examples/` (an npm workspace). Its text is in `examples/messages/en.json` and `ar.json`: a docs change needs both languages. Check it with `npm run typecheck -w examples` and `npm run site`.
 
 ## Guidelines
 
@@ -31,7 +34,7 @@ Automated tests can't cover everything. Before a minor/major release, try the de
 
 ## Branches and releasing
 
-`main` always holds the latest release and deploys the demo. Each version also has its own branch named after it (e.g. `1.0.1`, `1.1.0`) that keeps that release's code.
+`main` always holds the latest release, and Vercel deploys the docs site and demo from it. Each version also has its own branch named after it (e.g. `1.0.1`, `1.1.0`) that keeps that release's code.
 
 1. Create the next version branch from `main` (e.g. `1.2.0`) and update `version` in `package.json` and `CHANGELOG.md`.
 2. When it's ready, merge it into `main` (this also deploys the demo).

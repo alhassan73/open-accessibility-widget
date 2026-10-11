@@ -1,6 +1,11 @@
 node_modules/
 dist/
-_site/
 *.tgz
 *.log
 .claude/worktrees/
+
+# Docs site (examples/, deployed on Vercel)
+.next/
+.vercel/
+next-env.d.ts
+*.tsbuildinfo

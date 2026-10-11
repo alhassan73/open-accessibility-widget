@@ -2,7 +2,7 @@
 
 > **Load when:** setting up, running the build/tests, or a command fails for environmental reasons. **Rule:** TOOL-6.
 
-**Last verified:** 2026-10-11
+**Last verified:** 2026-10-12
 
 ## 1. Requirements
 
@@ -22,16 +22,16 @@ defaults to `core.autocrlf=true`). `jq` is optional (hooks fall back to `sed`).
 git clone https://github.com/alhassan73/open-accessibility-widget.git
 npm install
 npm run check        # typecheck → build → size → tests
-open examples/index.html after a build to try the widget
+npm run dev          # docs site + playground on http://localhost:3000 (widget from src/)
 ```
 
 ## 3. Environments
 
 | Env | URL | Data | Agent scope |
 | --- | --- | --- | --- |
-| local | `examples/index.html` (file://) | None | Free: build, test, open the demo |
-| CI | GitHub Actions (`ci.yml`) | None | Read results only |
-| demo (production) | https://alhassan73.github.io/open-accessibility-widget/ — deployed by `pages.yml` on push to `main` | Public | **Never** deploy or dispatch without approval |
+| local | `npm run dev` (:3000), or `npm run site` + `npx next start` in `examples/` (production headers) | None | Free: build, test, run the docs site |
+| CI | GitHub Actions (`ci.yml`, also builds the docs site) | None | Read results only |
+| docs + demo (production) | https://open-accessibility-widget.vercel.app/ — Vercel Git integration, Root Directory `examples`, production branch `main` | Public | **Never** deploy, promote or change the Vercel project without approval |
 | npm registry (production) | `open-accessibility-widget` — published by `release.yml` on a `v*` tag | Public package | **Never** publish or push tags without approval |
 
 ## 4. Configuration

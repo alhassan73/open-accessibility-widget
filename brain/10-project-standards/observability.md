@@ -11,7 +11,7 @@ tracing, error tracking, or alerting service, and no network requests (P-5).
 | Signal | Tool | Where to look |
 | --- | --- | --- |
 | Developer diagnostics | `console.error` / `console.warn` prefixed `[open-accessibility-widget]` | Browser devtools on the host page |
-| Build / test health | GitHub Actions | `ci.yml`, `pages.yml`, `release.yml` runs |
+| Build / test health | GitHub Actions; Vercel deployments | `ci.yml`, `release.yml` runs; Vercel dashboard for the docs site |
 | Bundle size | `npm run size` output | CI log |
 | User reports | GitHub issues; vulnerabilities via private security advisories | `SECURITY.md` |
 

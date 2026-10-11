@@ -1,10 +1,13 @@
 # Open Accessibility Widget
 
+<!-- Absolute URL so the banner also shows on npmjs.com. Regenerate with `npm run banner`. -->
+![Open Accessibility Widget: an accessibility preferences menu for any website. English and Arabic, no dependencies, no tracking.](https://raw.githubusercontent.com/alhassan73/open-accessibility-widget/main/.github/assets/banner.png)
+
 [![npm version](https://img.shields.io/npm/v/open-accessibility-widget)](https://www.npmjs.com/package/open-accessibility-widget)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/open-accessibility-widget)](https://bundlephobia.com/package/open-accessibility-widget)
 [![license](https://img.shields.io/npm/l/open-accessibility-widget)](https://github.com/alhassan73/open-accessibility-widget/blob/main/LICENSE)
 
-**[Live demo →](https://alhassan73.github.io/open-accessibility-widget/)** · [GitHub](https://github.com/alhassan73/open-accessibility-widget) · [npm](https://www.npmjs.com/package/open-accessibility-widget)
+**[Docs and live demo →](https://open-accessibility-widget.vercel.app/)** · [GitHub](https://github.com/alhassan73/open-accessibility-widget) · [npm](https://www.npmjs.com/package/open-accessibility-widget)
 
 A user-preference accessibility menu that works on **any website**: plain HTML/JS, React, Next.js, Vue, Nuxt, Angular, Svelte, Astro, WordPress and more. It has no runtime dependencies, ships its own TypeScript types, supports RTL and Arabic, and you can theme it with your brand colors and logo.
 
@@ -57,11 +60,11 @@ Or with no build step, from a CDN:
 `@1` picks up every 1.x release automatically, so it can't use Subresource Integrity. For production, pin an exact version and add its hash, so the browser refuses the file if the CDN ever serves something else:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/open-accessibility-widget@1.1.1/dist/open-accessibility-widget.global.js"
-        integrity="sha384-HASH" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/open-accessibility-widget@1.2.0/dist/open-accessibility-widget.global.js"
+        integrity="sha384-JDzuwOyIfDD7YlfeWsZBCr6PkdZ6GBcuFhpBWyg9eYrbPlIE0ng5iakzdhWoEnuD" crossorigin="anonymous"></script>
 ```
 
-Replace `HASH` with the output of `curl -s <that URL> | openssl dgst -sha384 -binary | openssl base64 -A` (or copy the SRI hash from the file's page on jsdelivr.com), and update both when you upgrade.
+That hash is for 1.2.0. For another version, use the output of `curl -s <that URL> | openssl dgst -sha384 -binary | openssl base64 -A` (or copy the SRI hash from the file's page on jsdelivr.com), and update both when you upgrade.
 
 ## Usage
 
@@ -425,9 +428,12 @@ Automated tests can't replace a manual check with real screen readers (NVDA, JAW
 npm install
 npm run build      # dist/: ESM, CJS, .d.ts, and the <script> build
 npm run check
+npm run dev        # the docs site on http://localhost:3000 (uses the widget from src/)
+npm run site       # production build of the docs site
+npm run banner     # re-render .github/assets/banner.png and the social preview
 ```
 
-Open `examples/index.html` in a browser after building to try every feature on a sample page, with a playground for theme, logo, position and language. Every push to `main` rebuilds that page and deploys it as the [live demo](https://alhassan73.github.io/open-accessibility-widget/) (`.github/workflows/pages.yml`).
+The [documentation site](https://open-accessibility-widget.vercel.app/) lives in `examples/`: a Next.js App Router app in English and Arabic, an npm workspace of this repository, with a live playground that drives the real widget. Vercel deploys it (project Root Directory: `examples`); CI type-checks and builds it on every pull request.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md) and the [changelog](./CHANGELOG.md).
 
