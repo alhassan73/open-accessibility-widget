@@ -9,7 +9,7 @@ import type { CodeTabItem, Framework } from "@/types";
 // Update it with VERSION on each release.
 const CDN_BASE = `https://cdn.jsdelivr.net/npm/${PKG}`;
 const CDN_FILE = `dist/${PKG}.global.js`;
-const CDN_SRI = "sha384-MIwBPsLr12r/OC6DD504tVwsdOvlrfEyHlhemwKn0ebZl89EbLyiCgr8bf2ADTiE";
+const CDN_SRI = "sha384-RjuUpQvdm6eaWY9dAP/uEGDTKU3A0RAox0L2AQCe/asA6THtA65OGzPtI6GogLVB";
 
 /** Follows every 1.x release; can't carry an integrity hash. */
 export const CDN_TAG_MAJOR = `<script src="${CDN_BASE}@1/${CDN_FILE}"></script>`;
