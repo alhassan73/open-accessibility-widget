@@ -2,6 +2,29 @@
 
 All notable changes to this project are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixed — accessibility
+
+- **Open dialogs make the page behind them inert.** While the panel or read mode is open, the rest of the page is `inert` (content added meanwhile too), so screen-reader virtual cursors can't leave the dialog (`aria-modal` alone doesn't stop them in every screen reader). `inert` the page sets itself, before or meanwhile, is left as the page set it. A click outside still closes the panel.
+- **Profile cards are named by all their visible text** (title + description), so speech-input users can say what they see (WCAG 2.5.3). Found by axe-core 4.14.
+- **Dark, light and custom background modes remove background images** (except on form controls, links and buttons), so text is never left on a photo or gradient with poor contrast (WCAG 1.4.3).
+- **Custom colors warn about low contrast.** When the chosen text or heading color has less than 4.5:1 contrast with the background, the color section shows (and announces) a warning.
+- **Steppers say when a limit is reached** ("Text size 200%, maximum") instead of staying silent.
+- Read mode no longer sets an empty `lang=""` when the page has no language.
+
+### Added
+
+- Labels `maximum`, `minimum` and `lowContrast` (English and Arabic).
+- README: "Privacy and storage", a strict CSP example, a pinned CDN snippet with Subresource Integrity, and placement advice for the launcher (WCAG 2.4.11).
+- `ACCESSIBILITY.md` (accessibility statement for the widget and demo) and `docs/at-test-matrix.md` (manual assistive-technology test record).
+
+### Changed — project
+
+- axe-core is a devDependency: the accessibility test runs offline and fails instead of skipping when axe can't load.
+- The Trusted Types test now also uses a strict CSP (nonce-only styles, `data:` images) and fails on any CSP violation.
+- GitHub Actions are pinned to commit SHAs, the release workflow pins npm to 11.x, and Dependabot keeps both updated.
+
 ## 1.1.1
 
 ### Fixed
@@ -12,7 +35,7 @@ All notable changes to this project are documented here. The project follows [Se
 
 ## 1.1.0
 
-An accessibility, robustness and host-safety release based on a full WCAG 2.2 audit. No breaking API changes.
+An accessibility, robustness and host-safety release, checked against the WCAG 2.2 success criteria (a developer review, not an independent audit). No breaking API changes.
 
 ### Fixed — accessibility
 

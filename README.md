@@ -9,6 +9,8 @@
 A user-preference accessibility menu that works on **any website**: plain HTML/JS, React, Next.js, Vue, Nuxt, Angular, Svelte, Astro, WordPress and more. It has no runtime dependencies, ships its own TypeScript types, supports RTL and Arabic, and you can theme it with your brand colors and logo.
 
 > **Compliance:** this widget lets each visitor adjust the page to their needs. It does **not** make a website ADA, EAA, EN 301 549 or WCAG compliant. Compliance depends on the site's own markup: alt text, labels, contrast, keyboard support and headings. Don't advertise the widget as a compliance solution.
+>
+> **Not an overlay fix:** it doesn't scan, repair or rewrite your markup, and installing it is not a legal defence. Regulators act against products that claim otherwise (for example the FTC's 2025 order against accessiBe). See also the widget's own [accessibility statement](./ACCESSIBILITY.md).
 
 ## Features
 
@@ -16,7 +18,7 @@ A user-preference accessibility menu that works on **any website**: plain HTML/J
 | --- | --- |
 | **Quick profiles** | Motion sensitivity · Low vision · Focus mode · Easy reading · Keyboard user · Quiet media · Comfortable reading |
 | **Text** | Text size · Page zoom · Line spacing · Letter spacing · Alignment (left / center / right) · Readable font |
-| **Color** | Contrast (dark / light / high) · Saturation (gray / low / high) · Custom text, heading and background colors |
+| **Color** | Contrast (dark / light / high) · Saturation (gray / low / high) · Custom text, heading and background colors (with a low-contrast warning) |
 | **Reading aids** | Highlight headings · Highlight links · Text magnifier · Reading line · Focus window · Read mode |
 | **Motion & navigation** | Stop animations · Mute media · Hide images · Highlight focus · Highlight on hover · Large cursor (dark / light) |
 | **Built in** | Reset all · Accessibility statement link · Hide widget · Language menu (English / العربية, add your own) · "Skip to main content" link · `Alt+A` shortcut · Settings saved across visits |
@@ -31,9 +33,9 @@ A small dot on the launcher shows when any adjustment is active.
 
 The widget itself follows WAI-ARIA, and every release is tested in headless Chrome with axe-core and keyboard-only scripts (see [Testing](#testing)):
 
-- The panel is a dialog with a focus trap. Escape, the close button or a click outside closes it, and focus returns to the launcher.
+- The panel is a dialog with a focus trap, and the page behind it is `inert` while it is open (so screen-reader virtual cursors stay inside too). Escape, the close button or a click outside closes it, and focus returns to the launcher.
 - Sections are an accordion (`aria-expanded`), toggles are `role="switch"`, profile cards are toggle buttons (`aria-pressed`), and segmented choices are radio groups with arrow-key support.
-- Steppers announce the new value with its name ("Text size 120%"); reset is announced too.
+- Steppers announce the new value with its name ("Text size 120%") and say when a limit is reached; reset is announced too.
 - Touch targets are at least 30×30px (WCAG 2.2 asks for 24px), and the panel follows the browser's default font size.
 - The widget never changes itself: every adjustment (text, spacing, colors, filters, cursor, animations) applies to the page only, so the panel always looks and behaves the same.
 - It respects `prefers-reduced-motion` and Windows High Contrast (`forced-colors`), where its color filters switch off so the system colors win.
@@ -50,6 +52,15 @@ Or with no build step, from a CDN:
 ```html
 <script src="https://cdn.jsdelivr.net/npm/open-accessibility-widget@1/dist/open-accessibility-widget.global.js"></script>
 ```
+
+`@1` picks up every 1.x release automatically, so it can't use Subresource Integrity. For production, pin an exact version and add its hash, so the browser refuses the file if the CDN ever serves something else:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/open-accessibility-widget@1.1.1/dist/open-accessibility-widget.global.js"
+        integrity="sha384-HASH" crossorigin="anonymous"></script>
+```
+
+Replace `HASH` with the output of `curl -s <that URL> | openssl dgst -sha384 -binary | openssl base64 -A` (or copy the SRI hash from the file's page on jsdelivr.com), and update both when you upgrade.
 
 ## Usage
 
@@ -287,7 +298,7 @@ Every setting key can be removed, plus `"profiles"` (the whole quick-profile gri
 | `statementUrl` | `string` | – | "Accessibility statement" link in the footer (http/https/relative only) |
 | `showSkipLink` | `boolean` | `true` | "Skip to main content" link. Left out automatically when the page has no `<main>`/`<h1>` or already starts with its own skip link |
 | `zIndex` | `number` | `2147483000` | Stacking order |
-| `persist` | `boolean` | `true` | Save settings in localStorage (kept in sync across tabs) |
+| `persist` | `boolean` | `true` | Save settings in localStorage (kept in sync across tabs). See [Privacy and storage](#privacy-and-storage) |
 | `storageKey` | `string` | `"a11yw-settings"` | localStorage key |
 | `nonce` | `string` | – | CSP nonce for the injected `<style>` |
 | `onChange` | `(settings) => void` | – | Called when the visitor changes something |
@@ -320,7 +331,28 @@ The global build exposes the same exports on `window.A11yWidget`, for example `A
 - The widget lives in `.a11yw-ignore`, a `display: contents` wrapper, so it never takes part in your layout (grid or flex `<body>` included), and every adjustment skips it. The saturation and high-contrast filters sit on a page-wide `backdrop-filter` layer just below the widget, so they recolor the page (fixed headers included) but not the widget; elements you stack above the widget's `zIndex` are not filtered.
 - `destroy()` removes everything it added: classes, variables, attributes, styles and listeners.
 - It works with SSR: nothing touches `window` until `init()` runs.
-- It runs under strict CSPs: pass `nonce` for the injected `<style>` tags; no `eval`, no `innerHTML` (Trusted Types safe).
+- It runs under strict CSPs: pass `nonce` for the injected `<style>` tags; no `eval`, no `innerHTML` (Trusted Types safe). See [Content Security Policy](#content-security-policy).
+
+### Content Security Policy
+
+The widget needs no `unsafe-inline` and no `unsafe-eval`. It injects two `<style>` tags (pass their `nonce`), and the large cursor is a `data:` SVG image:
+
+```http
+Content-Security-Policy: script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'nonce-RANDOM'; img-src 'self' data:; require-trusted-types-for 'script'
+```
+
+```js
+A11yWidget.init({ nonce: "RANDOM" }); // the same per-response nonce as in the header
+```
+
+Leave out `https://cdn.jsdelivr.net` when you bundle the package, and `require-trusted-types-for` if you don't use Trusted Types. CI runs the widget under `require-trusted-types-for 'script'; default-src 'none'; style-src 'nonce-…'; img-src data:` and fails on any CSP violation.
+
+## Privacy and storage
+
+- **Nothing leaves the browser.** The widget makes no network requests, sets no cookies and has no analytics.
+- **What is saved.** With `persist: true` (the default) it uses two `localStorage` keys on your origin: `a11yw-settings` holds the visitor's adjustments and active profile ids (for example `{"v":1,"fontSize":120,"profiles":["visionImpaired"],…}`) and is removed again when everything is back to default; `a11yw-settings:lang` holds the chosen language code.
+- **Who can read it.** Any script on the same origin (analytics, tag managers, session-replay tools) can read those keys, the `a11yw-*` classes on `<html>` and the `data-a11yw-fs` attributes. Profile ids such as `visionImpaired` describe adjustments, but they could be read as a hint about a visitor's needs. If you use session replay, mask the widget (`.a11yw-root`) and don't record `<html>` class names.
+- **Consent.** Whether saving preferences counts as "strictly necessary" (ePrivacy Art. 5(3)) and how GDPR applies is for your privacy team to decide. To store nothing, pass `persist: false`. To save only after consent, start with `persist: false` and call `widget.setOptions({ persist: true })` once the visitor agrees; saving starts with their next change.
 
 ## Profiles
 
@@ -346,7 +378,10 @@ What the widget can't do, so you don't promise it:
 - "Page zoom" uses CSS `zoom`, which doesn't trigger your media queries. Browser zoom (Ctrl/Cmd +) reflows better; suggest it in your accessibility statement.
 - "Line spacing" sets an absolute line height of 1.5 × the chosen percentage on all text.
 - Letter spacing is not applied to Arabic and other cursive scripts (it would break joined letters); word spacing still is.
-- Color modes override background colors; the widget outlines selected/pressed states so they stay visible, but heavily custom-drawn controls can still look different.
+- Color modes override background colors and remove background images, except on form controls (e.g. checkbox ticks), links and buttons (often their only icon); decorative icons drawn as background images elsewhere disappear. The widget outlines selected/pressed states so they stay visible, but heavily custom-drawn controls can still look different.
+- The custom-color contrast warning checks only the visitor's custom text and heading colors, and only against a known background: the custom background color, or the dark/light mode background.
+- Text size measures each element's original size once. If your app later changes an element's font size through a class change (without replacing the element), it keeps the earlier base size until the page reloads.
+- The launcher is fixed in a bottom corner and can cover a focused link or button that sits in that corner, such as the last footer link (WCAG 2.4.11). Keep that corner free of controls, add bottom padding to your page, or move the launcher with `offset` / `position`.
 - Color adjustments apply to the screen only, not to printing.
 
 ## Preferences and precedence
@@ -364,13 +399,13 @@ From lowest to highest priority:
 | --- | --- | --- |
 | `open-accessibility-widget` | ESM + CJS + `.d.ts` | Any framework or plain JS with a bundler |
 | `open-accessibility-widget/react` | ESM + CJS + `.d.ts` | React component and hook (`react` ≥ 18 is an optional peer dependency) |
-| `dist/open-accessibility-widget.global.js` | IIFE, about 20 KB gzipped | `<script>` tag; exposes `window.A11yWidget` |
+| `dist/open-accessibility-widget.global.js` | IIFE, about 21 KB gzipped | `<script>` tag; exposes `window.A11yWidget` |
 
 No runtime dependencies.
 
 ## Browser support
 
-Chrome / Edge 120+, Firefox 126+, Safari 16.4+ (desktop and mobile) get every feature. Older versions degrade feature by feature: for example "Page zoom" needs CSS `zoom` (Firefox 126), and keeping visitor-started media unmuted needs `navigator.userActivation` (Firefox 120, Safari 16.4).
+Chrome / Edge 120+, Firefox 126+, Safari 16.4+ (desktop and mobile) get every feature. Older versions degrade feature by feature: for example "Page zoom" needs CSS `zoom` (Firefox 126), and keeping visitor-started media unmuted needs `navigator.userActivation` (Firefox 120, Safari 16.4). CI runs the end-to-end suite in Chrome only; Firefox and Safari support rests on feature support and manual testing (see [`docs/at-test-matrix.md`](./docs/at-test-matrix.md)).
 
 ## Testing
 
@@ -381,7 +416,7 @@ npm test           # unit tests + end-to-end tests in headless Chrome (set CHROM
 
 The end-to-end suite drives a real headless Chrome over the DevTools Protocol (no extra dependencies). It covers keyboard-only use, focus handling, axe-core (no violations allowed), host-page safety (layout, focus indicators, media, CSP, framework re-renders, `<body>` swaps), read mode, reflow at 320px and `destroy()`. CI runs it on every pull request (`.github/workflows/ci.yml`).
 
-Automated tests can't replace a manual check with real screen readers (NVDA, JAWS, VoiceOver, TalkBack) and Windows High Contrast; please do one before major releases.
+Automated tests can't replace a manual check with real screen readers (NVDA, JAWS, VoiceOver, TalkBack) and Windows High Contrast; please do one before major releases and record it in [`docs/at-test-matrix.md`](./docs/at-test-matrix.md).
 
 ## Development
 
