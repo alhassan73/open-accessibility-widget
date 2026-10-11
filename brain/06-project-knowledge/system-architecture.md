@@ -22,7 +22,7 @@ A dependency-free browser library written in TypeScript and bundled by tsup into
 for bundlers and an IIFE (`window.A11yWidget`) for `<script>` tags. All page changes are CSS classes
 and custom properties on `<html>` driven by one injected stylesheet; the widget UI lives in a
 `display: contents` wrapper that every adjustment skips. Distribution: npm (+ jsDelivr/unpkg);
-demo on GitHub Pages.
+docs site and demo on Vercel (ADR-0001).
 
 ## 2. Components
 

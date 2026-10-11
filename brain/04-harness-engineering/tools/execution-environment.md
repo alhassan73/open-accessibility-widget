@@ -45,7 +45,8 @@ npm run dev          # docs site + playground on http://localhost:3000 (widget f
 | Service | Local behaviour | Safe to call? |
 | --- | --- | --- |
 | npm registry | `npm install` / `npm ci` / `npm audit` | Read yes; publish no (TOOL-4) |
-| GitHub Pages / Actions | Only via workflows | No direct calls |
+| GitHub Actions | Only via workflows | No direct calls |
+| Vercel (docs site) | Deploys from `main` (Git integration) | Read yes; deploy only with approval |
 
 ## 6. Known environment failures
 

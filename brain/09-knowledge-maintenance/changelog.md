@@ -3,7 +3,7 @@
 > **Load when:** releasing, or needing history older than `STATE.md` §Recently completed.
 > Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Newest first. Absolute dates.
 
-## [Unreleased]
+## [1.4.0] — 2026-10-12 (tag `v1.4.0`, published to npm)
 
 ### Added
 - 2026-10-12 — F-018 from the competitor research: read aloud, page structure, bold text, invert colors, alt text in the magnifier, `feedbackUrl` (labels in 16 languages). Dark panel retuned to the owner's charcoal/teal mock-up.

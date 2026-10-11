@@ -8,7 +8,7 @@ Keep it under ~150 lines — move finished history to `09-knowledge-maintenance/
 
 ## Current phase
 
-Maintenance after release 1.3.2 (tag `v1.3.2`, pushed 2026-10-12; npm publish by `release.yml`).
+Maintenance after release 1.4.0 (tag `v1.4.0`, pushed 2026-10-12; npm publish by `release.yml`).
 
 ## Current goal
 
@@ -18,9 +18,7 @@ Not set — owner to choose the next milestone (see Open questions).
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
 - [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code).
-- [ ] F-018 (read aloud, page structure, bold, invert, alt text, `feedbackUrl`) + dark palette retune: on `feature/read-aloud-structure` (78f82cf + review fixes: no field values spoken or passwords shown, tap-again stop, own-speech-only cancel, focus+click spoken once, structure names, `role=list`, link cap 300, icon fonts not bolded; `npm run check` 56/56, 27.29/28 KB); next: owner decides release. Not built from the research (by owner's pick or by design): dictionary, translation, voice control, virtual keyboard (need services or low value), dyslexia font (font file), color-blind filters.
 - [ ] Draft ACR `docs/ACR.md`: owner reports manual AT results (`docs/at-test-matrix.md` still "Not tested") → agent records them as reported and replaces every Pending → final ACR (+ PDF).
-- [ ] Docs site go-live: Vercel project created + Git-connected (2026-10-12, CLI), production deploys from `main`; live and smoke-tested, repo website field points to Vercel; next: disable GitHub Pages (needs owner's OK).
 
 ## Next up
 
@@ -52,6 +50,8 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
+- 2026-10-12 — Release 1.4.0 (owner: "push to vercel github and npm"; `feature/read-aloud-structure` → `1.4.0` → `main`, tag `v1.4.0`): F-018 read aloud, page structure, bold, invert, alt text, `feedbackUrl`, dark palette retune; review fixes (field values never spoken, passwords never shown). `npm run check` 56/56, 27.29/28 KB. Not built from the research (owner's pick or by design): dictionary, translation, voice control, virtual keyboard, dyslexia font, color-blind filters.
+- 2026-10-12 — GitHub Pages disabled (owner's OK); the docs site is Vercel only.
 - 2026-10-12 — Release 1.3.2 (owner's choice; `feature/scheme-languages` → `1.3.2` → `main`, tag `v1.3.2`): F-016 colorScheme, F-017 language pack, header tweaks, docs site fixes, Egyptian Arabic, draft ACR.
 - 2026-10-12 — Release 1.3.1 (owner chose the 1.3 line; branch `feature/page-reach` → `1.3.1` → `main`, tag `v1.3.1`).
 - 2026-10-12 — F-015 page reach ( `npm run check` 46/46, 24.64/25 KB, reviewer findings fixed): open Shadow DOM, same-origin iframes, touch reading aids, script/SVG animation pause, launcher steps aside (closes P1-1). Approved: "handle all", budget 25 KB.
