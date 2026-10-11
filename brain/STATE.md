@@ -18,6 +18,7 @@ Not set — owner to choose the next milestone (see Open questions).
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
 - [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code).
+- [ ] F-015 page reach (uncommitted on `main` working tree): gates green; next: resolve reviewer findings, commit, owner decides on release 1.4.0 (npm + site).
 - [ ] Docs site go-live: Vercel project created + Git-connected (2026-10-12, CLI), production deploys from `main`; live and smoke-tested, repo website field points to Vercel; next: disable GitHub Pages (needs owner's OK).
 
 ## Next up
@@ -50,6 +51,7 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
+- 2026-10-12 — F-015 page reach (Unreleased, `npm run check` 46/46, 24.64/25 KB, reviewer findings fixed): open Shadow DOM, same-origin iframes, touch reading aids, script/SVG animation pause, launcher steps aside (closes P1-1). Approved: "handle all", budget 25 KB.
 - 2026-10-12 — Release 1.3.0 (version branch `1.3.0` → `main`, tag `v1.3.0`): design revamp, header polish, docs site.
 - 2026-10-12 — Docs site in `examples/` (Next.js 16 App Router, en/ar, Vercel) replaces the Pages demo and `pages.yml`; README banner via `npm run banner`; README + docs SRI example now `@1.3.0` with its real hash. Approved: `examples` workspace deps, Vercel `*.vercel.app` URL, en+ar, banner via `test/cdp.mjs`.
 - 2026-10-11 — Design revamp (branch `design/widget-revamp`): brand hero header + subtitle, card sections, tile profiles, pill steppers, custom ARIA language combobox (closes P1-2). Approved: direction, custom listbox, size budget 22 → 24 KB (now 22.68 KB).

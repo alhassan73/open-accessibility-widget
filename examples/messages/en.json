@@ -175,7 +175,7 @@
   },
   "Hero": {
     "title": "Let every visitor <em>adjust your site</em> to their needs",
-    "sub": "A free accessibility preferences menu for any website: text size, contrast, spacing, reading aids and motion, in English and Arabic. No dependencies, no tracking, about 23 KB.",
+    "sub": "A free accessibility preferences menu for any website: text size, contrast, spacing, reading aids and motion, in English and Arabic. No dependencies, no tracking, about 24 KB.",
     "start": "Get started",
     "try": "Try the widget",
     "github": "GitHub",
@@ -473,7 +473,7 @@
         },
         "placement": {
           "title": "Position and size",
-          "text": "The launcher sits in a bottom corner, where it can cover a focused link or button (WCAG 2.4.11). Keep that corner free, add bottom padding to your page, or move the launcher with <code>offset</code>."
+          "text": "The launcher sits in a bottom corner. When keyboard focus lands on a page control under it, it steps aside until focus moves on (WCAG 2.4.11), but it still covers that corner for mouse and touch users: keep it free, add bottom padding to your page, or move the launcher with <code>offset</code>."
         }
       }
     },
@@ -536,7 +536,7 @@
         {
           "name": "Motion sensitivity",
           "on": "Stop animations, low saturation",
-          "watch": "GIFs, canvas, video in iframes and animation driven by JavaScript are not stopped"
+          "watch": "GIFs, canvas, video in cross-origin iframes and animation that scripts draw frame by frame are not stopped"
         },
         {
           "name": "Low vision",
@@ -546,7 +546,7 @@
         {
           "name": "Focus mode",
           "on": "Focus window, stop animations, low saturation",
-          "watch": "The window follows the pointer and keyboard focus"
+          "watch": "The window follows the pointer, a tap and keyboard focus"
         },
         {
           "name": "Easy reading",
@@ -588,6 +588,7 @@
             "Steppers announce the new value with its name (“Text size 120%”) and say when a limit is reached. Resetting is announced too.",
             "The language menu is a select-only combobox with a listbox: arrow keys, Home and End, and type-ahead.",
             "Touch targets are at least 30 by 30 pixels, and the panel follows the browser's default font size.",
+            "When keyboard focus lands on a page control under the launcher, the launcher steps aside until focus moves on (WCAG 2.4.11). It still covers its corner for mouse and touch users.",
             "The widget never adjusts itself: text size, spacing, colors and filters apply to the page only, so the panel always looks and works the same.",
             "It respects <code>prefers-reduced-motion</code> and Windows High Contrast (<code>forced-colors</code>), where its color filters switch off so the system colors win."
           ]
@@ -670,10 +671,9 @@
           "title": "Where it can't reach",
           "text": "Some parts of a page are out of the widget's reach.",
           "items": [
-            "Adjustments don't reach inside <code>iframe</code> elements (embedded video, maps, payment forms) or Shadow DOM.",
-            "Reading line, focus window and magnifier follow the mouse and keyboard focus; on touch screens they move only with focus.",
-            "“Stop animations” stops CSS animations and transitions; GIFs, <code>canvas</code> and animation driven by JavaScript keep moving.",
-            "The launcher can cover a focused control in its corner (WCAG 2.4.11): keep that corner free, or move it with <code>offset</code>."
+            "Cross-origin <code>iframe</code> elements (embedded video, maps, payment forms) and closed shadow roots: browsers keep every script out of them. Same-origin iframes and open Shadow DOM are adjusted.",
+            "“Stop animations” stops CSS, script and SVG animations; GIFs, <code>canvas</code> and animation that scripts draw frame by frame keep moving.",
+            "The launcher steps aside when keyboard focus lands on a control under it (WCAG 2.4.11), but still covers its corner for mouse and touch users: keep that corner free, or move it with <code>offset</code>."
           ]
         },
         "display": {
