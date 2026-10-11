@@ -763,6 +763,23 @@ test("read aloud speaks the clicked block or focused control in its language, ne
   assert.deepEqual(await page.eval(`__spoken`), []);
 });
 
+test("switching read aloud on in the panel says how it works; never on load or when switched off", async () => {
+  await page.goto(HOST_URL);
+  await page.eval(`window.__spoken = []; speechSynthesis.speak = (u) => __spoken.push([u.text, u.lang]); 1`);
+  await init();
+  await openPanelAllSections();
+  await page.eval(`[...document.querySelectorAll('.a11yw-widget [role=switch]')].find((b) => b.textContent.includes('Read aloud')).id = 'ra';
+    document.getElementById('ra').scrollIntoView({ block: 'center' }); 1`);
+  await page.click("#ra");
+  assert.equal(await page.eval(`__w().getState().settings.readAloud`), true);
+  assert.deepEqual(await page.eval(`__spoken`), [["Read aloud is on. Click or tap any text to hear it.", "en"]]);
+  await page.click("#ra");
+  assert.equal(await page.eval(`__spoken.length`), 1, "nothing said when switched off");
+  // Saved on: the next page load reads nothing until the visitor clicks.
+  await page.eval(`__w().setSettings({ readAloud: true }); __w().destroy(); __spoken.length = 0; A11yWidget.init({}); 1`);
+  assert.deepEqual(await page.eval(`__spoken`), []);
+});
+
 test("read aloud is not offered where the browser can't speak", async () => {
   await page.goto(HOST_URL);
   await page.eval(`Object.defineProperty(window, 'speechSynthesis', { value: undefined, configurable: true }); 1`);

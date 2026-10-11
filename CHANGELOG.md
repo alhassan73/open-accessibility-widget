@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## 1.4.1
+
+### Fixed
+
+- **Read aloud says how it works when you switch it on**: "Read aloud is on. Click or tap any text to hear it." Before, switching it on gave no sound, so it looked broken until you clicked some text. Only a switch in the panel says it, never a page load with the setting saved. New label `readAloudOn`, in English, Arabic and the 14 languages of the language pack.
+
 ## 1.4.0
 
 ### Added

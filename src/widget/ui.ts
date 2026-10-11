@@ -378,8 +378,16 @@ export function createUI(opts: AccessibilityWidgetOptions, api: UiApi, locale: U
       toggleRow("highlightTitles", L.highlightTitles, "heading"),
       toggleRow("highlightLinks", L.highlightLinks, "link"),
       toggleRow("textMagnifier", L.textMagnifier, "magnifier"),
-      // Only where the browser can speak.
-      window.speechSynthesis ? toggleRow("readAloud", L.readAloud, "ear") : null,
+      // Only where the browser can speak. Switching it on says how it works, which also proves the sound works.
+      window.speechSynthesis && enabled("readAloud")
+        ? switchRow(L.readAloud, "ear", (s) => s.readAloud, () => {
+            set((s) => ({ readAloud: !s.readAloud }));
+            if (!api.getState().settings.readAloud) return;
+            const hint = new SpeechSynthesisUtterance(L.readAloudOn);
+            hint.lang = locale.language || document.documentElement.lang;
+            speechSynthesis.speak(hint);
+          })
+        : null,
       toggleRow("readingGuide", L.readingGuide, "guide"),
       toggleRow("readingMask", L.readingMask, "mask"),
       enabled("readMode") ? dialogRow("book", L.readMode, () => openReader()) : null,

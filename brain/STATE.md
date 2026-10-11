@@ -8,7 +8,7 @@ Keep it under ~150 lines — move finished history to `09-knowledge-maintenance/
 
 ## Current phase
 
-Maintenance after release 1.4.0 (tag `v1.4.0`, pushed 2026-10-12; npm publish by `release.yml`).
+Maintenance after release 1.4.1 (tag `v1.4.1`, pushed 2026-10-12; npm publish by `release.yml`).
 
 ## Current goal
 
@@ -50,6 +50,7 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
+- 2026-10-12 — Release 1.4.1 (owner: "handle this on 1.4.0"; 1.4.0 already on npm, so a patch): read aloud speaks a how-to hint when switched on. `npm run check` 57/57, 27.44/28 KB.
 - 2026-10-12 — Release 1.4.0 (owner: "push to vercel github and npm"; `feature/read-aloud-structure` → `1.4.0` → `main`, tag `v1.4.0`): F-018 read aloud, page structure, bold, invert, alt text, `feedbackUrl`, dark palette retune; review fixes (field values never spoken, passwords never shown). `npm run check` 56/56, 27.29/28 KB. Not built from the research (owner's pick or by design): dictionary, translation, voice control, virtual keyboard, dyslexia font, color-blind filters.
 - 2026-10-12 — GitHub Pages disabled (owner's OK); the docs site is Vercel only.
 - 2026-10-12 — Release 1.3.2 (owner's choice; `feature/scheme-languages` → `1.3.2` → `main`, tag `v1.3.2`): F-016 colorScheme, F-017 language pack, header tweaks, docs site fixes, Egyptian Arabic, draft ACR.

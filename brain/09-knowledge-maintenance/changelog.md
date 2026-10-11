@@ -3,6 +3,11 @@
 > **Load when:** releasing, or needing history older than `STATE.md` §Recently completed.
 > Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Newest first. Absolute dates.
 
+## [1.4.1] — 2026-10-12 (tag `v1.4.1`, published to npm)
+
+### Fixed
+- 2026-10-12 — Read aloud speaks a how-to hint (`readAloudOn`, 16 languages) when switched on in the panel; the owner heard nothing after enabling it and took it as broken (it reads only what is clicked).
+
 ## [1.4.0] — 2026-10-12 (tag `v1.4.0`, published to npm)
 
 ### Added
