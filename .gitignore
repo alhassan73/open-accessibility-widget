@@ -3,3 +3,4 @@ dist/
 _site/
 *.tgz
 *.log
+.claude/worktrees/
