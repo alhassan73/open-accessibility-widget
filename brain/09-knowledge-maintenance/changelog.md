@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+## [1.3.2] — 2026-10-12 (tag `v1.3.2`, published to npm)
+
 ### Added
 - 2026-10-12 — F-016 `colorScheme` option (auto/light/dark); F-017 optional language pack (`./languages`, `./global/languages`).
 

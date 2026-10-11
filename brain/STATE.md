@@ -8,7 +8,7 @@ Keep it under ~150 lines — move finished history to `09-knowledge-maintenance/
 
 ## Current phase
 
-Maintenance after release 1.3.1 (tag `v1.3.1`, pushed 2026-10-12; npm publish by `release.yml`).
+Maintenance after release 1.3.2 (tag `v1.3.2`, pushed 2026-10-12; npm publish by `release.yml`).
 
 ## Current goal
 
@@ -18,7 +18,8 @@ Not set — owner to choose the next milestone (see Open questions).
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
 - [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code).
-- [ ] Batch after 1.3.1 (uncommitted on `main`): F-016 colorScheme + header tweaks, F-017 language pack, docs-site fixes (logo scroll, footer, Egyptian Arabic by helper agent); next: verify, commit, owner decides release; then competitor gap list (research done 2026-10-12: TTS, page structure, alt tooltips, invert, bold, color-blind filters, report link…) → owner picks.
+- [ ] Next features (owner picked 2026-10-12 from the competitor research): read aloud (speechSynthesis), page structure navigator, alt text in magnifier + invert + bold, `feedbackUrl` report link. Labels needed in all 16 languages.
+- [ ] Draft ACR `docs/ACR.md`: owner reports manual AT results (`docs/at-test-matrix.md` still "Not tested") → agent records them as reported and replaces every Pending → final ACR (+ PDF).
 - [ ] Docs site go-live: Vercel project created + Git-connected (2026-10-12, CLI), production deploys from `main`; live and smoke-tested, repo website field points to Vercel; next: disable GitHub Pages (needs owner's OK).
 
 ## Next up
@@ -51,6 +52,7 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
+- 2026-10-12 — Release 1.3.2 (owner's choice; `feature/scheme-languages` → `1.3.2` → `main`, tag `v1.3.2`): F-016 colorScheme, F-017 language pack, header tweaks, docs site fixes, Egyptian Arabic, draft ACR.
 - 2026-10-12 — Release 1.3.1 (owner chose the 1.3 line; branch `feature/page-reach` → `1.3.1` → `main`, tag `v1.3.1`).
 - 2026-10-12 — F-015 page reach ( `npm run check` 46/46, 24.64/25 KB, reviewer findings fixed): open Shadow DOM, same-origin iframes, touch reading aids, script/SVG animation pause, launcher steps aside (closes P1-1). Approved: "handle all", budget 25 KB.
 - 2026-10-12 — Release 1.3.0 (version branch `1.3.0` → `main`, tag `v1.3.0`): design revamp, header polish, docs site.
