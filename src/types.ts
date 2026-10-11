@@ -87,6 +87,12 @@ export interface AccessibilityWidgetOptions {
   offset?: { x?: number; y?: number };
   /** Widget colors and shape. */
   theme?: AccessibilityTheme;
+  /**
+   * Light or dark panel. `"auto"` (default) follows the page: the panel turns dark while the site's
+   * own background is dark, however the site switches themes. Ignored by `"auto"` when `theme` sets
+   * any of `background`, `surface`, `text`, `mutedText` or `border` (your colors are kept as they are).
+   */
+  colorScheme?: "auto" | "light" | "dark";
   /** Launcher logo. Defaults to the built-in accessibility icon. */
   icon?: LogoSource;
   /** Logo shown next to the panel title. Hidden by default. */

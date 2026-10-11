@@ -14,7 +14,7 @@ export default defineConfig([
   // npm package: ESM + CJS + type declarations for both
   {
     ...shared,
-    entry: { index: "src/index.ts", react: "src/react.ts" },
+    entry: { index: "src/index.ts", react: "src/react.ts", languages: "src/languages.ts" },
     format: ["esm", "cjs"],
     dts: true,
     clean: true,
@@ -28,6 +28,14 @@ export default defineConfig([
     entry: { "open-accessibility-widget": "src/index.ts" },
     format: ["iife"],
     globalName: "A11yWidget",
+    outExtension: () => ({ js: ".global.js" }),
+  },
+  // Optional extra languages for the <script> build: exposes window.A11yWidgetLanguages
+  {
+    ...shared,
+    entry: { "open-accessibility-widget.languages": "src/languages.ts" },
+    format: ["iife"],
+    globalName: "A11yWidgetLanguages",
     outExtension: () => ({ js: ".global.js" }),
   },
 ]);

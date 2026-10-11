@@ -5,6 +5,7 @@ import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { after, before, test } from "node:test";
+import { pathToFileURL } from "node:url";
 import { fixture, KEYS, launchBrowser, MOD, sleep } from "./cdp.mjs";
 
 const SVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='20' height='20' fill='red'/%3E%3C/svg%3E";
@@ -164,8 +165,9 @@ test("language menu: custom listbox with keyboard, Escape and pointer", async ()
   assert.deepEqual(await state(), { expanded: "true", list: true, active: "العربية", lang: "en" });
   await page.press(KEYS.Tab);
   assert.deepEqual(await state(), { expanded: "false", list: false, active: null, lang: "en" }, "Tab closes without choosing");
-  // The pill sits on the plain brand color, so its text has the theme's on-primary contrast.
-  assert.equal(await page.eval(`getComputedStyle(document.querySelector('.a11yw-lang')).backgroundColor`), "rgba(0, 0, 0, 0)");
+  // Icon only on screen; the current language is still the combobox's value and its tooltip.
+  assert.deepEqual(await page.eval(`(() => { const b = document.querySelector('.a11yw-lang'), v = b.querySelector('.a11yw-lang-value');
+    return [b.title, v.textContent, v.lang, getComputedStyle(v).position, b.offsetWidth]; })()`), ["English", "English", "en", "absolute", 34]);
 });
 
 test("does not change the page layout (grid body)", async () => {
@@ -666,6 +668,49 @@ test("same-origin iframes get the same adjustments; reading aids follow the poin
   await page.eval(`__w().setSettings({ fontSize: 100, colorMode: 'default', contentScale: 100, readingMask: false }); 1`);
   assert.deepEqual(await page.eval(`(() => { const d = f1.contentDocument; return [getComputedStyle(d.querySelector('p')).fontSize,
     [...d.documentElement.classList].join(' '), d.querySelectorAll('#a11yw-styles,#a11yw-font-sizes,[data-a11yw-fs]').length]; })()`), ["16px", "", 0]);
+});
+
+test("colorScheme auto follows the page's dark mode, passes axe, and ignores its own adjustments", async () => {
+  const axe = fs.readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
+  await page.goto(HOST_URL);
+  // The site's own theme switch (a class on <html>) and its own scrollbar colors.
+  await page.eval(`const s = document.createElement('style'); s.textContent = 'html{scrollbar-color:red blue} html.site-dark body{background:oklch(0.2 0.02 260);color:#eee}'; document.head.append(s); 1`);
+  await init();
+  const dark = `document.querySelector('.a11yw-widget').getAttribute('data-scheme')`;
+  assert.equal(await page.eval(dark), null);
+  await page.eval(`document.documentElement.classList.add('site-dark'); 1`);
+  await sleep(150);
+  assert.equal(await page.eval(dark), "dark", "follows the site's dark theme (an oklch background)");
+  await openPanelAllSections();
+  await sleep(300);
+  await page.eval(`${axe}; 1`);
+  assert.deepEqual(await page.eval(`axe.run({ include: [['.a11yw-root']] }).then((r) => r.violations.map((v) => v.id + ': ' + v.nodes.map((n) => n.target).join(' | ')))`), []);
+  // The panel's scrollbar uses the widget's colors, not the page's.
+  assert.notEqual(await page.eval(`getComputedStyle(document.querySelector('.a11yw-body')).scrollbarColor`), "rgb(255, 0, 0) rgb(0, 0, 255)");
+  await page.eval(`document.documentElement.classList.remove('site-dark'); 1`);
+  await sleep(150);
+  assert.equal(await page.eval(dark), null, "back to light with the site");
+  // The widget's own dark contrast mode darkens the page, but the panel stays as the site is.
+  await page.eval(`__w().setSettings({ colorMode: 'dark-contrast' }); 1`);
+  await sleep(700);
+  assert.equal(await page.eval(dark), null);
+  // Explicit choices: "dark", and "auto" with the owner's own panel colors (kept light).
+  await page.eval(`__w().setSettings({ colorMode: 'default' }); __w().setOptions({ colorScheme: 'dark' }); 1`);
+  assert.equal(await page.eval(dark), "dark");
+  await page.eval(`document.documentElement.classList.add('site-dark'); __w().setOptions({ colorScheme: 'auto', theme: { background: '#ffffff' } }); 1`);
+  await sleep(150);
+  assert.equal(await page.eval(dark), null);
+});
+
+test("the optional language pack works with the script build (French, Hebrew right-to-left)", async () => {
+  const pack = pathToFileURL(path.resolve("dist/open-accessibility-widget.languages.global.js")).href;
+  await page.goto(BLANK_URL);
+  await page.eval(`new Promise((res) => { const s = document.createElement('script'); s.src = '${pack}'; s.onload = res; document.head.append(s); })`);
+  await init(`{ languages: A11yWidgetLanguages.allLanguages, language: 'fr' }`);
+  const look = `(() => { const w = document.querySelector('.a11yw-widget'); return [w.lang, w.dir, document.querySelector('.a11yw-title').textContent, document.querySelectorAll('.a11yw-lang-list [role=option]').length]; })()`;
+  assert.deepEqual(await page.eval(look), ["fr", "ltr", "Accessibilité", 16]);
+  await page.eval(`__w().setOptions({ language: 'he' }); 1`);
+  assert.deepEqual(await page.eval(look), ["he", "rtl", "נגישות", 16]);
 });
 
 test("a frame that runs its own copy of the widget is left to it", async () => {
