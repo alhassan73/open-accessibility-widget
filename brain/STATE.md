@@ -4,7 +4,7 @@ Working memory. The SessionStart notice shows its goal, in-progress items, and o
 read this file only when continuing earlier work. Update after every meaningful change.
 Keep it under ~150 lines — move finished history to `09-knowledge-maintenance/changelog.md`.
 
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-12
 
 ## Current phase
 
@@ -17,7 +17,8 @@ Not set — owner to choose the next milestone (see Open questions).
 ## In progress
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
-- [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code). Then: README SRI example `@1.1.1` → `@1.2.0`.
+- [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code).
+- [ ] Docs site on Vercel (branch `docs/next-site`, uncommitted): built and checked locally (gates green, smoke + axe clean, reviewer: no blockers), plus widget header polish and llms.txt; next: owner reviews, commit/merge on request, owner imports the repo in Vercel (Root Directory `examples`) and disables GitHub Pages in repo settings.
 
 ## Next up
 
@@ -49,6 +50,7 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
+- 2026-10-12 — Docs site in `examples/` (Next.js 16 App Router, en/ar, Vercel) replaces the Pages demo and `pages.yml`; README banner via `npm run banner`; README SRI example now `@1.2.0` with its real hash. Approved: `examples` workspace deps, Vercel `*.vercel.app` URL, en+ar, banner via `test/cdp.mjs`.
 - 2026-10-11 — Design revamp (branch `design/widget-revamp`): brand hero header + subtitle, card sections, tile profiles, pill steppers, custom ARIA language combobox (closes P1-2). Approved: direction, custom listbox, size budget 22 → 24 KB (now 22.68 KB).
 - 2026-10-11 — Design refresh, CSS-only motion (merged to `main` 2aeca9d): tinted header, icon tiles, layered shadow, staggered entrance, spring switches and badges, read-mode rise; reduced-motion off; 21.71/22 KB gzip (≈0.3 KB headroom left).
 - 2026-10-11 — Release 1.2.0 published to npm via tag `v1.2.0` (Trusted Publishing, provenance); CI + demo deploy green.
@@ -66,3 +68,6 @@ Not set — owner to choose the next milestone (see Open questions).
 - `npm test` runs against `dist/` — build first. e2e needs Chrome/Edge (`CHROME_PATH`); axe-core now
   comes from devDependencies (run `npm ci` after pulling).
 - Open compliance gaps: §Next up item 2; lawyer questions: §Open questions.
+- `npm install` now also installs the docs site (workspace `examples`). Docs text lives in
+  `examples/messages/{en,ar}.json` (same keys); the site imports the widget from `src/`, so widget
+  changes show in `npm run dev` without a build.

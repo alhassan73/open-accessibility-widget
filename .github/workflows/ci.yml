@@ -1,4 +1,5 @@
-# Typecheck, build, size budget, unit + headless-Chrome accessibility tests, and dependency audit.
+# Typecheck, build, size budget, unit + headless-Chrome accessibility tests, docs site build, and
+# dependency audit.
 name: CI
 
 on:
@@ -25,6 +26,11 @@ jobs:
       - run: npm run size
       # Uses the Chrome preinstalled on GitHub's Ubuntu runners; axe-core comes from devDependencies.
       - run: npm test
+      # The docs site (examples/, deployed by Vercel) imports the widget from src/, so it is checked here too.
+      - name: Docs site
+        run: npm run typecheck -w examples && npm run site
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
       - run: npm audit --audit-level=moderate
       - name: Package contents
         run: npm pack --dry-run

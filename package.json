@@ -40,13 +40,19 @@
   "publishConfig": {
     "access": "public"
   },
+  "workspaces": [
+    "examples"
+  ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
     "test": "node --test \"test/*.test.mjs\"",
     "size": "node scripts/check-size.mjs",
     "check": "npm run typecheck && npm run build && npm run size && npm test",
-    "prepublishOnly": "npm run check"
+    "prepublishOnly": "npm run check",
+    "dev": "npm run dev -w examples",
+    "site": "npm run build -w examples",
+    "banner": "node scripts/render-banner.mjs"
   },
   "keywords": [
     "accessibility",
@@ -64,7 +70,7 @@
     "rtl"
   ],
   "author": "alhassan-ahmed",
-  "homepage": "https://alhassan73.github.io/open-accessibility-widget/",
+  "homepage": "https://open-accessibility-widget.vercel.app/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alhassan73/open-accessibility-widget.git"

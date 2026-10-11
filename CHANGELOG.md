@@ -4,8 +4,15 @@ All notable changes to this project are documented here. The project follows [Se
 
 ## Unreleased
 
+### Changed — project
+
+- **New documentation site** at [open-accessibility-widget.vercel.app](https://open-accessibility-widget.vercel.app/), in English and Arabic: getting started, a page per framework, guides (theming, languages, controls and profiles, the widget's own accessibility, privacy, CSP and SRI, limitations), the API reference and this changelog, with search and a live playground that drives the real widget. It serves `sitemap.xml` (every page in both languages, with hreflang), `robots.txt` and `llms.txt` (a Markdown map of the docs for language models, generated from the same content). It is a Next.js app in `examples/` (an npm workspace), deployed by Vercel, and replaces the GitHub Pages demo (`examples/index.html`, `pages.yml`). No changes to the package.
+- README banner and social preview, rendered with `npm run banner` (the e2e tests' headless Chrome, no new dependency).
+- README: the Subresource Integrity example pins 1.2.0 with its real hash.
+
 ### Changed — design revamp
 
+- **Header polish.** Heavier title; the close button is a rounded square on a soft tint of the brand color (it was a bare circle), matching the logo tile. The language menu keeps its outlined pill so its text stays at full contrast. CSS only, no class names changed.
 - **New look.** The header is filled with the brand color and has a subtitle; profiles are larger icon tiles; each settings section is its own card on a soft background; steppers are pill groups; "Reset all" is a pill button; the launcher glows in the brand color.
 - **Custom language menu.** The native `<select>` is replaced by a WAI-ARIA select-only combobox with a styled list: arrow keys, Home/End and type-ahead move through languages, and Enter, Space or a click picks one. Arrowing never switches the language (it used to rebuild the panel on every arrow press in Windows browsers), and Escape closes only the list.
 - Label `subtitle` (English and Arabic).

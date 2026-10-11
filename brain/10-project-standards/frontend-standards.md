@@ -41,4 +41,4 @@
 | What | Where |
 | --- | --- |
 | Design source | No design file in the repo — the demo is the reference |
-| Reference screen | `examples/index.html` (after `npm run build`) / https://alhassan73.github.io/open-accessibility-widget/ |
+| Reference screen | `npm run dev` (docs site, widget from `src/`) / https://open-accessibility-widget.vercel.app/ |

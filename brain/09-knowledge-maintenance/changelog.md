@@ -3,6 +3,17 @@
 > **Load when:** releasing, or needing history older than `STATE.md` §Recently completed.
 > Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Newest first. Absolute dates.
 
+## [Unreleased]
+
+### Added
+- 2026-10-12 — Docs site in `examples/` (Next.js, en/ar, Vercel; sitemap, robots, llms.txt), README banner (`npm run banner`), ADR-0001.
+
+### Changed
+- 2026-10-12 — Widget header: heavier title, soft-tint rounded close button (CSS only). README SRI example pinned to 1.2.0.
+
+### Removed
+- 2026-10-12 — GitHub Pages demo (`examples/index.html`, `pages.yml`).
+
 ## [1.2.0] — 2026-10-11 (tag `v1.2.0`, published to npm)
 
 ### Added

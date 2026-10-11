@@ -1,0 +1,22 @@
+/* Shared by banner.html and social-preview.html (rendered by scripts/render-banner.mjs).
+   Almarai comes from the docs site's @fontsource/almarai (installed by `npm install` at the repo root);
+   JetBrains Mono is in ./fonts with its OFL licence. */
+@font-face{font-family:Almarai;font-weight:400;src:url(../../node_modules/@fontsource/almarai/files/almarai-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:Almarai;font-weight:700;src:url(../../node_modules/@fontsource/almarai/files/almarai-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:Almarai;font-weight:800;src:url(../../node_modules/@fontsource/almarai/files/almarai-latin-800-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:Almarai;font-weight:400;src:url(../../node_modules/@fontsource/almarai/files/almarai-arabic-400-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:Almarai;font-weight:700;src:url(../../node_modules/@fontsource/almarai/files/almarai-arabic-700-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:Almarai;font-weight:800;src:url(../../node_modules/@fontsource/almarai/files/almarai-arabic-800-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:JBMono;font-weight:400;src:url(fonts/JetBrainsMono-Regular.ttf)}
+@font-face{font-family:JBMono;font-weight:700;src:url(fonts/JetBrainsMono-Bold.ttf)}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--card:#151A1A;--bd:#243030;--teal:#0F766E;--teal-t:#2DD4BF;--cyan:#22D3EE}
+html,body{background:#041311}
+body{font-family:Almarai,system-ui,sans-serif;color:#fff;overflow:hidden;position:relative;
+ background:radial-gradient(900px 600px at 82% 0%,rgba(34,211,238,.18),transparent 70%),
+ radial-gradient(800px 520px at 0% 110%,rgba(15,118,110,.42),transparent 70%),
+ radial-gradient(500px 400px at 60% 110%,rgba(45,212,191,.18),transparent 70%),
+ linear-gradient(135deg,#041311 0%,#0b0f0f 60%,#0e1111 100%)}
+body::before{content:"";position:absolute;inset:0;
+ background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+ background-size:40px 40px;-webkit-mask-image:radial-gradient(ellipse at 60% 40%,#000 10%,transparent 75%);mask-image:radial-gradient(ellipse at 60% 40%,#000 10%,transparent 75%)}

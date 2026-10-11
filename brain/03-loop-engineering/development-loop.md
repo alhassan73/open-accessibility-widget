@@ -31,7 +31,8 @@
 | --- | --- |
 | Logic | `npm run build`, then its test (`node --test test/settings.test.mjs` or `node --test --test-name-pattern=<name> test/widget.e2e.test.mjs`) — tests run against `dist/` |
 | Types / signatures | `npm run typecheck` |
-| UI / page adjustment | Build, open `examples/index.html`; the matching e2e test |
+| UI / page adjustment | `npm run dev` (docs site uses `src/`), try it there; the matching e2e test |
+| Docs site (`examples/`) | Both message files (same keys); `npm run typecheck -w examples` and `npm run site` |
 | Stored settings format | Old saved JSON still loads (or falls back by design); `STORAGE_VERSION` decision recorded |
 | Config (`tsup`, `tsconfig`) | `npm run check` |
 

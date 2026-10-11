@@ -36,7 +36,7 @@ where listed.
 | Path | Why |
 | --- | --- |
 | `.claude/**`, `AGENTS.md`, `CLAUDE.md` | The harness itself — an agent must not weaken its own guardrails |
-| CI config (`.github/workflows/**`) | Gates for everyone; `release.yml` publishes to npm, `pages.yml` deploys the demo |
+| CI config (`.github/workflows/**`) | Gates for everyone; `release.yml` publishes to npm; Vercel deploys `examples/` from `main` (outside the repo) |
 | `package.json`, `package-lock.json` | Dependencies, `exports`/`files` (what ships), `version` (release) — TOOL-2, ARCH-4 |
 | `tsconfig.json`, `tsup.config.ts` | Type strictness (ENF-2); build outputs, `globalName: A11yWidget`, `"use client"` banner (public contract) |
 | `scripts/check-size.mjs` | The bundle budget (P-6) |

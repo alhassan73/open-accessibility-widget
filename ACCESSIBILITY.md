@@ -1,7 +1,7 @@
 # Accessibility statement
 
 This statement covers the **open-accessibility-widget's own interface** (launcher, panel, read mode) and
-its [live demo](https://alhassan73.github.io/open-accessibility-widget/). It does not cover the websites
+its [documentation site and live demo](https://open-accessibility-widget.vercel.app/). It does not cover the websites
 that embed the widget: each site is responsible for its own accessibility, and the widget does **not**
 make a site ADA, EAA, EN 301 549 or WCAG compliant.
 

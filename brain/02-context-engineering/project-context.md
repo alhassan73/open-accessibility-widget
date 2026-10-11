@@ -29,14 +29,17 @@ in `06-project-knowledge/`. Keep under ~100 lines.
 | Build | tsup ^8.5.1 → ESM + CJS + `.d.ts` (`index`, `react`) and IIFE `open-accessibility-widget.global.js` | `globalName: A11yWidget` |
 | Package manager | npm (`package-lock.json`) | Use only this one. |
 | Tests | `node:test` unit + headless Chrome over CDP (`test/cdp.mjs`) + axe-core 4.x (devDependency) | Node ≥ 22 (global WebSocket) |
-| CI | GitHub Actions: `ci.yml`, `pages.yml`, `release.yml` | Node 22 |
+| CI | GitHub Actions: `ci.yml`, `release.yml` | Node 22 |
+| Docs site | `examples/` npm workspace: Next.js 16 App Router, next-intl (en/ar), Tailwind 4, shadcn/Radix | Deployed by Vercel (Root Directory `examples`); imports the widget from `src/` |
 
 ## Commands
 
 | Purpose | Command | Gate? |
 | --- | --- | --- |
 | Install | `npm install` (CI: `npm ci`) | Approval if it changes the lockfile |
-| Dev | n/a — no dev server; `npm run build`, then open `examples/index.html` | |
+| Dev | `npm run dev` — docs site on :3000, widget from `src/` | |
+| Docs site | `npm run typecheck -w examples` · `npm run site` (production build) | Yes, when `examples/` or `src/` changes |
+| Banner | `npm run banner` — renders `.github/assets/*.png` with `test/cdp.mjs` | |
 | Typecheck | `npm run typecheck` (`tsc --noEmit`) | Yes |
 | Lint | n/a — no linter configured | Risk logged in `STATE.md` |
 | Format | n/a — no formatter configured | |
@@ -61,9 +64,12 @@ src/                 library source (TypeScript)
   engine/            page adjustments: engine.ts (classes/vars, font scaler, pointer tools), css.ts (one stylesheet)
   widget/            panel UI: ui.ts (panel, controls, read mode), dom.ts (h(), focus trap), icons.ts (SVG)
 test/                settings.test.mjs (unit), widget.e2e.test.mjs (e2e), cdp.mjs (Chrome driver)
-scripts/             check-size.mjs (bundle budget)
-examples/index.html  demo + playground; deployed to GitHub Pages
-.github/workflows/   ci.yml, pages.yml, release.yml
+scripts/             check-size.mjs (bundle budget), render-banner.mjs (README banner + social preview)
+examples/            docs site + live playground (Next.js workspace, en/ar); deployed by Vercel
+  messages/          en.json, ar.json: every docs string (both languages, same keys)
+  src/content/       framework snippets, API tables, guide sections (data, English code)
+.github/assets/      banner.html, social-preview.html (+ rendered PNGs, OFL fonts)
+.github/workflows/   ci.yml, release.yml
 dist/                build output (git-ignored; published to npm)
 ```
 

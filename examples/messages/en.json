@@ -1,0 +1,807 @@
+{
+  "Docs": {
+    "sidebar": "Documentation",
+    "menu": "Menu",
+    "menuDescription": "All documentation pages",
+    "close": "Close",
+    "toc": "On this page",
+    "pager": "Previous and next page",
+    "edit": "Edit this page on GitHub",
+    "overview": "Overview",
+    "groups": {
+      "start": "Get started",
+      "frameworks": "Frameworks",
+      "guides": "Guides",
+      "reference": "Reference"
+    }
+  },
+  "Header": {
+    "nav": "Main",
+    "home": "Open Accessibility Widget – home",
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "close": "Close",
+    "menuDescription": "Site pages and project links",
+    "github": "GitHub repository",
+    "npm": "npm package"
+  },
+  "Shell": {
+    "skip": "Skip to content"
+  },
+  "Search": {
+    "trigger": "Search docs…",
+    "open": "Search docs",
+    "title": "Search the documentation",
+    "description": "Type to search pages, guides and the API. Use the arrow keys to choose a result and Enter to open it.",
+    "label": "Search docs",
+    "placeholder": "Search the docs…",
+    "results": "Search results",
+    "count": "{count, plural, =0 {No results} one {# result} other {# results}}",
+    "empty": "No results for “{query}”",
+    "emptyHint": "Check the spelling or try a shorter word.",
+    "close": "Close search",
+    "groups": {
+      "start": "Getting started",
+      "frameworks": "Frameworks",
+      "guides": "Guides",
+      "reference": "Reference",
+      "changelog": "Changelog"
+    },
+    "hints": {
+      "navigate": "to navigate",
+      "open": "to open",
+      "close": "to close"
+    }
+  },
+  "ThemeToggle": {
+    "toggle": "Toggle color theme",
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
+  },
+  "CodeBlock": {
+    "copy": "Copy code",
+    "copied": "Copied"
+  },
+  "Cta": {
+    "title": "Add it to your site in five minutes",
+    "text": "One package, one call. Free and open source under the MIT license: no license key, no tracking, no cloud service.",
+    "start": "Get started",
+    "github": "Star on GitHub",
+    "npm": "View on npm",
+    "newTab": "(opens in a new tab)"
+  },
+  "TrustStrip": {
+    "label": "At a glance",
+    "stats": [
+      {
+        "value": "0 dependencies",
+        "label": "Nothing else to install; TypeScript types included"
+      },
+      {
+        "value": "~23 KB",
+        "label": "The whole widget, gzipped, in one script"
+      },
+      {
+        "value": "axe-core",
+        "label": "Every release tested with axe-core and keyboard-only scripts"
+      },
+      {
+        "value": "EN · AR",
+        "label": "English and Arabic built in, right-to-left ready"
+      }
+    ]
+  },
+  "Features": {
+    "eyebrow": "Features",
+    "title": "Everything visitors expect from an accessibility menu",
+    "description": "And what you need to ship it: your brand, your languages, a strict CSP and no tracking.",
+    "items": [
+      {
+        "title": "Accessible itself",
+        "text": "The panel is a WAI-ARIA dialog with a focus trap, and the page behind it is inert. Switches, radio groups and sections work with the keyboard and screen readers, in Windows High Contrast and with reduced motion."
+      },
+      {
+        "title": "Your brand, your logo",
+        "text": "Set <code>theme.primary</code> and the launcher, header and active states follow. Change colors, radius, font and the launcher's logo, from JavaScript or with CSS variables."
+      },
+      {
+        "title": "23 adjustments, 7 profiles",
+        "text": "Text size, spacing, contrast, saturation, reading line, focus window, read mode, stopping animations and more, plus quick profiles that switch on a few at once."
+      },
+      {
+        "title": "Arabic and RTL",
+        "text": "English and Arabic built in, and you can add your own. The panel mirrors right to left and starts in the page's language."
+      },
+      {
+        "title": "Any website",
+        "text": "Plain HTML, WordPress, React, Next.js, Vue, Angular, Svelte, Astro. Safe with server rendering, and it re-attaches when a page swaps its <code>body</code>."
+      },
+      {
+        "title": "Small, no dependencies",
+        "text": "About 23 KB gzipped. Adjustments are classes and CSS variables on <code>html</code>, and <code>destroy()</code> removes every one of them."
+      },
+      {
+        "title": "Strict CSP, Trusted Types",
+        "text": "No <code>eval</code>, no <code>innerHTML</code>, no inline scripts. Pass a <code>nonce</code> for its style tags and it runs under a strict Content Security Policy."
+      },
+      {
+        "title": "Private by default",
+        "text": "No network requests, no cookies, no analytics. Preferences stay in the visitor's browser, and <code>persist: false</code> stores nothing at all."
+      }
+    ]
+  },
+  "Honest": {
+    "eyebrow": "Honest by design",
+    "title": "A preferences menu, not a compliance tool",
+    "description": "Accessibility overlays are often sold as a fix for lawsuits. This widget isn't one, and it doesn't pretend to be.",
+    "isTitle": "What it is",
+    "is": [
+      "A menu that lets each visitor change text size, spacing, colors, motion and reading aids on your pages.",
+      "A small, open-source script that runs only in the browser and stores preferences only there.",
+      "Accessible itself: tested with axe-core and keyboard-only scripts in every release.",
+      "A convenience to offer on top of an accessible site."
+    ],
+    "isNotTitle": "What it is not",
+    "isNot": [
+      "It doesn't make a website ADA, EAA, EN 301 549 or WCAG compliant.",
+      "It doesn't scan, repair or rewrite your markup: missing alt text, labels and contrast still need fixing at the source.",
+      "It isn't a legal defence, and it shouldn't be advertised as one.",
+      "It doesn't replace testing with real users and assistive technology."
+    ],
+    "more": "Read the limitations"
+  },
+  "Nav": {
+    "home": "Home",
+    "gettingStarted": "Getting started",
+    "frameworks": "Frameworks",
+    "api": "API",
+    "guides": "Guides",
+    "changelog": "Changelog"
+  },
+  "Footer": {
+    "home": "Open Accessibility Widget – home",
+    "about": "A free, open-source accessibility preferences menu for any website. MIT licensed, no dependencies, no tracking.",
+    "sections": "Docs",
+    "project": "Project",
+    "ship": "Before you ship",
+    "statement": "The widget's accessibility statement",
+    "license": "MIT license",
+    "security": "Security policy",
+    "issues": "Report an issue",
+    "authorName": "Alhassan Ahmed",
+    "legal": "© {year} {author} and contributors. Released under the <license>MIT License</license>.",
+    "credit": "Designed and built by <profile>{author}</profile>",
+    "notCompliance": "Not a compliance tool."
+  },
+  "Hero": {
+    "title": "Let every visitor <em>adjust your site</em> to their needs",
+    "sub": "A free accessibility preferences menu for any website: text size, contrast, spacing, reading aids and motion, in English and Arabic. No dependencies, no tracking, about 23 KB.",
+    "start": "Get started",
+    "try": "Try the widget",
+    "github": "GitHub",
+    "newTab": "(opens in a new tab)",
+    "shortcut": "Or press Alt + A on any page of this site.",
+    "worksWith": "Works with",
+    "marquee": "Supported frameworks"
+  },
+  "Install": {
+    "title": "Getting started",
+    "description": "Install the package, add the widget to your pages and give it your brand color. It takes a few minutes.",
+    "sections": {
+      "install": {
+        "title": "Install",
+        "text": "Use your package manager, or load one script from a CDN with no build step. The CDN tag pins an exact version with its integrity hash."
+      },
+      "add": {
+        "title": "Add it to your pages",
+        "text": "Call <code>init()</code> once, in the browser, after the page loads. It mounts the launcher on <code>body</code> and returns the widget. In React and Next.js, render the component in your root layout instead."
+      },
+      "customize": {
+        "title": "Make it yours",
+        "text": "Every option is optional. Pass your brand color, the side of the screen, your logo and a starting language, and remove the controls you don't want to offer."
+      },
+      "statement": {
+        "title": "Link your accessibility statement",
+        "text": "If your site has an accessibility statement, link it from the panel's footer. Only http, https and relative URLs are accepted."
+      }
+    },
+    "tabs": {
+      "bundler": "Bundler",
+      "cdn": "CDN"
+    },
+    "frameworkText": "Using Vue, Angular, Svelte, Astro or a CMS? <link>See the setup for your framework</link>",
+    "customizeMore": "Every option is listed in the <link>API reference</link>",
+    "complianceTitle": "Not a compliance tool",
+    "compliance": "The widget lets visitors adjust your pages. It doesn't make a site compliant with ADA, EAA, EN 301 549 or WCAG: that depends on your own markup. <link>Read the limitations</link>",
+    "privacyTitle": "Privacy",
+    "privacy": "No network requests and no cookies. Preferences are saved in the visitor's localStorage unless you pass <code>persist: false</code>. <link>Privacy and storage</link>"
+  },
+  "Api": {
+    "title": "API reference",
+    "description": "Every option, theme key, method and export of the package, with its type and default.",
+    "scroll": "Scrollable table:",
+    "cols": {
+      "name": "Name",
+      "type": "Type",
+      "def": "Default",
+      "desc": "Description"
+    },
+    "cards": {
+      "options": {
+        "title": "Options",
+        "description": "Passed to <code>init(options)</code>, as props of <code>AccessibilityWidget</code>, or later to <code>widget.setOptions(options)</code>."
+      },
+      "theme": {
+        "title": "Theme",
+        "description": "The keys of the <code>theme</code> option. Colors take any CSS color; only hex colors are checked for contrast."
+      },
+      "methods": {
+        "title": "Instance methods",
+        "description": "<code>init()</code> returns the widget. The script-tag build exposes the same exports on <code>window.A11yWidget</code>."
+      },
+      "react": {
+        "title": "React",
+        "description": "From <code>open-accessibility-widget/react</code>, which also re-exports everything else. The entry is marked <code>\"use client\"</code>."
+      },
+      "exports": {
+        "title": "Exports",
+        "description": "Named exports of the package."
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "What <code>getSettings()</code> returns, and what <code>setSettings()</code> and <code>initialSettings</code> accept. Percentages use 100 for unchanged; values outside the range are clamped and unknown values dropped."
+      },
+      "entries": {
+        "title": "Package contents",
+        "description": "Each entry ships ESM, CommonJS and type declarations. No runtime dependencies."
+      }
+    },
+    "rows": {
+      "options": {
+        "position": "Screen side of the launcher and panel.",
+        "offset": "Distance from the screen edges, in px (0–1000).",
+        "theme": "Colors, radius and font: see Theme below.",
+        "icon": "Launcher logo: an image URL or a DOM element. Pass only trusted elements: they are cloned as they are.",
+        "logo": "Logo next to the panel title.",
+        "buttonSize": "Launcher diameter, in px (24–160).",
+        "features": "Set a control to <code>false</code> to remove it. A removed setting stays off.",
+        "initialSettings": "Settings for visitors with nothing saved.",
+        "languages": "Entries of the language menu, or <code>false</code> to hide the menu.",
+        "language": "Starting language code.",
+        "labels": "Override single strings on top of the active language.",
+        "dir": "Force the widget's text direction.",
+        "shortcut": "Shortcut that opens and closes the panel and brings the widget back after “Hide widget”. With <code>false</code>, the hide button is removed.",
+        "statementUrl": "Link to your accessibility statement in the panel's footer (http, https or relative).",
+        "showSkipLink": "A “Skip to main content” link. Left out when the page has no <code>main</code> or <code>h1</code>, or already starts with its own skip link.",
+        "zIndex": "Stacking order of the widget.",
+        "persist": "Save settings in localStorage, kept in sync across tabs.",
+        "storageKey": "localStorage key.",
+        "nonce": "CSP nonce for the injected <code>style</code> tags.",
+        "onChange": "Called when the visitor changes something."
+      },
+      "theme": {
+        "primary": "Brand color: launcher, header and active states.",
+        "onPrimary": "Text and icon color on top of primary.",
+        "background": "Panel background.",
+        "surface": "Footer, segmented controls and hover states.",
+        "text": "Text and secondary text.",
+        "border": "Borders.",
+        "radius": "Corner radius: a number in px or any CSS length.",
+        "fontFamily": "Font stack of the panel."
+      },
+      "methods": {
+        "open": "Open, close or toggle the panel.",
+        "getSettings": "The current settings, as a frozen snapshot.",
+        "getState": "The settings and whether the panel is open.",
+        "setSettings": "Merge changes: an object, or a function of the previous settings. Input is validated and invalid values are dropped. Setting <code>profiles</code> applies their adjustments too.",
+        "toggleProfile": "Turn a profile on or off.",
+        "reset": "Return every adjustment to the page as authored.",
+        "setOptions": "Change appearance and behaviour options at runtime.",
+        "subscribe": "Listen to settings and open-state changes. Returns a function that stops listening.",
+        "destroy": "Remove the widget and undo every change it made to the page."
+      },
+      "react": {
+        "component": "Mounts the widget with these options. Changed props call <code>setOptions()</code>; unmounting removes the widget. Renders nothing itself.",
+        "hook": "Read and control the widget from any component. <code>widget</code> is <code>null</code> until it mounts."
+      },
+      "exports": {
+        "init": "Mount the widget on <code>body</code> and return it. Calling it again replaces the existing widget.",
+        "getAccessibilityWidget": "The widget that is running, if any.",
+        "onActiveWidgetChange": "Listen for a widget being created or destroyed. Returns a function that stops listening.",
+        "defaults": "Every setting at its default.",
+        "ranges": "Minimum, maximum and step of each percentage setting.",
+        "profiles": "The profile ids, and the adjustments each profile switches on.",
+        "sanitize": "Validate untrusted input into complete settings.",
+        "languages": "English and Arabic, to extend with your own languages.",
+        "labels": "The English and Arabic strings."
+      },
+      "settings": {
+        "profiles": "Active profiles, in the order they were turned on.",
+        "contentScale": "Page zoom, in percent.",
+        "fontSize": "Text size, in percent.",
+        "lineHeight": "Line spacing, in percent.",
+        "letterSpacing": "Letter spacing, in percent (not applied to Arabic).",
+        "textAlign": "Text alignment.",
+        "readableFont": "A plain, readable font.",
+        "highlight": "Outline headings / links.",
+        "textMagnifier": "Shows the text under the pointer, enlarged.",
+        "colorMode": "Contrast mode.",
+        "saturationMode": "Saturation filter.",
+        "colors": "Custom text, heading and background colors.",
+        "media": "Mute media, hide images, stop CSS animations.",
+        "guides": "Reading line and focus window.",
+        "focus": "Strong outline on keyboard focus / on hover.",
+        "cursor": "Large cursor."
+      },
+      "entries": {
+        "core": "Any framework, or plain JavaScript with a bundler.",
+        "react": "React component and hook; <code>react</code> 18 or later is an optional peer dependency.",
+        "global": "Script-tag build, about 23 KB gzipped; exposes <code>window.A11yWidget</code>."
+      }
+    }
+  },
+  "Frameworks": {
+    "eyebrow": "Frameworks",
+    "title": "Works with your stack",
+    "description": "One small package for every framework, CMS and plain HTML page. Pick yours for the setup code.",
+    "package": "Package",
+    "newTab": "(opens in a new tab)",
+    "requires": "Requires <ltr>{version}</ltr>",
+    "installTitle": "Install",
+    "usageTitle": "Usage",
+    "notes": "Notes",
+    "open": "See the setup",
+    "statementTitle": "Accessibility statement",
+    "statement": "Pass <code>statementUrl</code> to link your accessibility statement from the panel's footer.",
+    "items": {
+      "vanilla": {
+        "name": "Plain HTML / JavaScript",
+        "blurb": "One script tag and one call, with no build step. Or import it from npm in any bundler.",
+        "snippets": {
+          "script": "Script tag",
+          "bundler": "Bundler"
+        },
+        "notes": [
+          "The script-tag build exposes every export on <code>window.A11yWidget</code>, for example <code>A11yWidget.getAccessibilityWidget()?.open()</code>.",
+          "Calling <code>init()</code> again replaces the existing widget.",
+          "Pages that swap <code>body</code> (Hotwire Turbo, htmx <code>hx-boost</code>) are supported: the widget re-attaches itself and re-applies the visitor's settings."
+        ]
+      },
+      "react": {
+        "name": "React",
+        "blurb": "A component and a hook, for Vite, Remix, Gatsby and any React 18 or 19 app.",
+        "notes": [
+          "The component renders nothing itself: the widget mounts on <code>body</code>.",
+          "Changing a prop updates the running widget with <code>setOptions()</code>; unmounting the component removes it.",
+          "<code>useAccessibility()</code> returns the current settings, whether the panel is open, and the widget (<code>null</code> until it mounts)."
+        ]
+      },
+      "next": {
+        "name": "Next.js",
+        "blurb": "Put the component in your root layout. The React entry is already marked “use client”.",
+        "notes": [
+          "Works in a Server Component layout, with no wrapper of your own.",
+          "Nothing runs on the server: the widget starts in the browser after hydration.",
+          "With a nonce-based CSP, pass the request's nonce as <code>nonce</code>.",
+          "This site is built with Next.js and uses the component in its own root layout."
+        ]
+      },
+      "vue": {
+        "name": "Vue",
+        "blurb": "Start it in onMounted and remove it in onBeforeUnmount.",
+        "notes": [
+          "Call <code>init()</code> in your root component, so it runs once for the whole app.",
+          "With Nuxt, use a client-only plugin instead (see Nuxt)."
+        ]
+      },
+      "nuxt": {
+        "name": "Nuxt",
+        "blurb": "A client-only plugin starts the widget once for the whole app.",
+        "notes": [
+          "The <code>.client</code> suffix keeps the plugin out of server rendering.",
+          "The widget keeps its state across route changes."
+        ]
+      },
+      "angular": {
+        "name": "Angular",
+        "blurb": "Start it after the first render, outside the zone.",
+        "notes": [
+          "<code>runOutsideAngular</code> keeps the widget's listeners from running change detection. Zoneless apps don't need it.",
+          "With Angular SSR, use <code>afterNextRender</code> or check <code>isPlatformBrowser</code>."
+        ]
+      },
+      "svelte": {
+        "name": "Svelte",
+        "blurb": "Start it in onMount in your root layout; the function it returns removes the widget.",
+        "notes": [
+          "In SvelteKit, <code>onMount</code> runs only in the browser.",
+          "Put it in the root <code>+layout.svelte</code> so it stays across pages."
+        ]
+      },
+      "astro": {
+        "name": "Astro",
+        "blurb": "A script in your layout: Astro bundles it and runs it in the browser.",
+        "notes": [
+          "With view transitions, the widget re-attaches itself and re-applies the visitor's settings after each navigation.",
+          "Astro bundles <code>script</code> tags, so the import works without a client directive."
+        ]
+      },
+      "cms": {
+        "name": "WordPress and CMS",
+        "blurb": "Paste one script before the closing body tag: WordPress, Shopify, Webflow, Wix, PHP or Django templates.",
+        "snippets": {
+          "footer": "Footer"
+        },
+        "notes": [
+          "Use your theme's footer, a header-and-footer plugin, or your CMS's “custom code” setting.",
+          "Keep the <code>integrity</code> attribute: the browser refuses the file if the CDN ever serves anything else.",
+          "To theme it without JavaScript, set its CSS variables (see the guide on colors)."
+        ]
+      }
+    }
+  },
+  "Guides": {
+    "title": "Guides",
+    "description": "Theming, languages, controls, privacy, security, and what the widget can't do.",
+    "read": "Read the guide",
+    "scroll": "Scrollable table:",
+    "theming": {
+      "title": "Colors, logo and placement",
+      "summary": "Match the widget to your brand: colors, radius, font, logo, side of the screen and size.",
+      "intro": "The widget brings its own styles and never inherits your site's CSS, so it looks the same on every page. Theme it with options or with CSS variables.",
+      "sections": {
+        "colors": {
+          "title": "Theme colors",
+          "text": "Pass a <code>theme</code> object. <code>primary</code> colors the launcher, header and active states, and <code>onPrimary</code> is the text and icon color on top of it. Every key is optional."
+        },
+        "css": {
+          "title": "CSS variables",
+          "text": "When a CMS or tag manager adds the widget, theme it from CSS. The variables go on <code>.a11yw-widget</code>; <code>--a11yw-hl</code> on <code>:root</code> sets the outline color of the highlight adjustments."
+        },
+        "contrast": {
+          "title": "Contrast checks",
+          "text": "A console warning tells you when your theme makes part of the widget fail WCAG contrast. Only hex colors are checked.",
+          "items": [
+            "<code>onPrimary</code> on <code>primary</code>: 4.5:1.",
+            "<code>primary</code> as the focus outline on <code>background</code>: 3:1.",
+            "<code>text</code> and <code>mutedText</code> on <code>background</code>, and footer links on <code>surface</code>: 4.5:1."
+          ]
+        },
+        "logo": {
+          "title": "Logo",
+          "text": "<code>icon</code> replaces the launcher's icon and <code>logo</code> adds one next to the panel title. Both take an image URL or a DOM element. Pass only elements you trust: they are cloned as they are."
+        },
+        "placement": {
+          "title": "Position and size",
+          "text": "The launcher sits in a bottom corner, where it can cover a focused link or button (WCAG 2.4.11). Keep that corner free, add bottom padding to your page, or move the launcher with <code>offset</code>."
+        }
+      }
+    },
+    "languages": {
+      "title": "Languages and RTL",
+      "summary": "English and Arabic are built in. Add your own languages, change single strings, or force a direction.",
+      "intro": "Visitors switch languages from the menu in the panel's header, and the panel's direction follows the language.",
+      "sections": {
+        "choose": {
+          "title": "Starting language",
+          "text": "The widget starts in the visitor's last choice, otherwise in the page's <code>html lang</code> (so <code>ar-EG</code> gives Arabic, right to left), otherwise in the first language of the list. Pass <code>language</code> to choose it yourself, or <code>languages: false</code> to hide the menu."
+        },
+        "custom": {
+          "title": "Add a language",
+          "text": "Add your own entries next to <code>builtInLanguages</code>. Strings missing from a language fall back to English."
+        },
+        "strings": {
+          "title": "Change single strings",
+          "text": "<code>labels</code> overrides strings on top of whichever language is active. <code>increase</code>, <code>decrease</code> and <code>reset</code> can place the setting's name with <code>'{'label'}'</code>; without it, the name is added at the end. Percentages are formatted for the active language."
+        },
+        "rtl": {
+          "title": "Direction",
+          "text": "A custom language without <code>dir</code> is shown right to left when its code is a right-to-left language (<code>ar</code>, <code>he</code>, <code>fa</code>, <code>ur</code>…). <code>dir</code> forces one direction for every language."
+        }
+      }
+    },
+    "controls": {
+      "title": "Controls, defaults and profiles",
+      "summary": "Remove controls you don't offer, set first-visit defaults, and know what each quick profile turns on.",
+      "intro": "Every visitor sees the full panel unless you remove parts of it, and their own choices always win over your defaults.",
+      "sections": {
+        "remove": {
+          "title": "Remove controls",
+          "text": "Set a control to <code>false</code> in <code>features</code> to remove it; a removed setting stays off. Every setting can be removed, plus <code>profiles</code> (the whole profile grid) and <code>readMode</code>. A profile card is hidden when all of its adjustments are removed."
+        },
+        "defaults": {
+          "title": "First-visit defaults",
+          "text": "<code>initialSettings</code> applies to visitors who have nothing saved. Once they change something, their choice is saved and wins. “Reset all” returns to the page as you authored it, not to these defaults."
+        },
+        "profiles": {
+          "title": "Quick profiles",
+          "text": "Profiles switch on a few adjustments at once. They are not medical tools and don't make a page safe for any condition. Visitors can change every adjustment afterwards, and turning a profile off keeps the ones they changed. The ids are kept for compatibility; the names say what the profiles do."
+        },
+        "precedence": {
+          "title": "What wins",
+          "text": "From lowest to highest priority:",
+          "items": [
+            "<strong>Your site's styles</strong>: what every visitor gets by default.",
+            "<strong>Operating system and browser settings</strong> (<code>prefers-reduced-motion</code>, <code>forced-colors</code>, zoom, default font size): the widget never overrides them and never switches anything on because of them. In forced-colors mode its color filters are off.",
+            "<strong>initialSettings</strong>: your defaults for first-time visitors.",
+            "<strong>The visitor's saved choices</strong>: always win once made."
+          ]
+        }
+      },
+      "profilesCaption": "Quick profiles",
+      "colProfile": "Profile",
+      "colOn": "Turns on",
+      "colWatch": "Watch out for",
+      "profiles": [
+        {
+          "name": "Motion sensitivity",
+          "on": "Stop animations, low saturation",
+          "watch": "GIFs, canvas, video in iframes and animation driven by JavaScript are not stopped"
+        },
+        {
+          "name": "Low vision",
+          "on": "Text 120%, readable font, high contrast",
+          "watch": "The contrast filter changes images too"
+        },
+        {
+          "name": "Focus mode",
+          "on": "Focus window, stop animations, low saturation",
+          "watch": "The window follows the pointer and keyboard focus"
+        },
+        {
+          "name": "Easy reading",
+          "on": "Highlight headings and links, reading line, readable font",
+          "watch": "Outlines add visual noise on busy pages"
+        },
+        {
+          "name": "Keyboard user",
+          "on": "Highlight focus, highlight links",
+          "watch": "–"
+        },
+        {
+          "name": "Quiet media",
+          "on": "Mute media, highlight focus",
+          "watch": "Media the visitor starts or unmutes keeps its sound"
+        },
+        {
+          "name": "Comfortable reading",
+          "on": "Text 120%, line spacing 130%, readable font, large cursor",
+          "watch": "The large cursor replaces the system cursor size"
+        }
+      ]
+    },
+    "accessibility": {
+      "title": "The widget's own accessibility",
+      "summary": "How the panel works with a keyboard, screen readers, high contrast and reduced motion, and how it is tested.",
+      "intro": "A widget that offers accessibility settings has to be accessible itself. The panel follows WAI-ARIA patterns and is tested in every release.",
+      "sections": {
+        "keyboard": {
+          "title": "Keyboard",
+          "text": "Everything works without a mouse."
+        },
+        "patterns": {
+          "title": "What assistive technology finds",
+          "text": "The panel uses standard roles and states, so screen readers announce it like any other control.",
+          "items": [
+            "The panel is a modal dialog with a focus trap. While it's open, the rest of the page is <code>inert</code>, so screen-reader virtual cursors stay inside. Escape, the close button or a click outside closes it, and focus returns to the launcher.",
+            "Sections are an accordion (<code>aria-expanded</code>), toggles are switches (<code>role=\"switch\"</code>), profile cards are toggle buttons (<code>aria-pressed</code>), and segmented choices are radio groups.",
+            "Steppers announce the new value with its name (“Text size 120%”) and say when a limit is reached. Resetting is announced too.",
+            "The language menu is a select-only combobox with a listbox: arrow keys, Home and End, and type-ahead.",
+            "Touch targets are at least 30 by 30 pixels, and the panel follows the browser's default font size.",
+            "The widget never adjusts itself: text size, spacing, colors and filters apply to the page only, so the panel always looks and works the same.",
+            "It respects <code>prefers-reduced-motion</code> and Windows High Contrast (<code>forced-colors</code>), where its color filters switch off so the system colors win."
+          ]
+        },
+        "testing": {
+          "title": "Testing",
+          "text": "Every release runs in headless Chrome with axe-core (no violations allowed) and keyboard-only scripts, covering focus handling, reflow at 320 pixels and <code>destroy()</code>. Automated tests can't replace real screen readers, so a manual round with NVDA, JAWS, VoiceOver, TalkBack and Windows High Contrast is asked for before major releases and recorded in <code>docs/at-test-matrix.md</code>."
+        }
+      },
+      "keysCaption": "Keyboard shortcuts",
+      "colKeys": "Keys",
+      "colAction": "What they do",
+      "keys": [
+        "Open or close the panel. Also brings the widget back after “Hide widget”.",
+        "Close the panel (or the language list, or read mode); focus returns to where it was.",
+        "Move between controls. Focus stays inside the panel while it's open.",
+        "Press buttons, switches and profile cards; open and close sections.",
+        "Move between the options of a segmented choice.",
+        "Move through the language list; type a letter to jump to a language."
+      ],
+      "noteTitle": "Accessibility statement",
+      "note": "The widget's own accessibility statement, with its known issues, is <code>ACCESSIBILITY.md</code> in the repository."
+    },
+    "privacy": {
+      "title": "Privacy and storage",
+      "summary": "What the widget stores, who can read it, and how to wait for consent.",
+      "intro": "The widget runs entirely in the visitor's browser.",
+      "sections": {
+        "network": {
+          "title": "No network, no cookies",
+          "text": "It makes no network requests, sets no cookies and has no analytics. The only request is the script itself, from your server or the CDN."
+        },
+        "stored": {
+          "title": "What is saved",
+          "text": "With <code>persist: true</code> (the default) it uses two localStorage keys on your origin: <code>a11yw-settings</code> holds the visitor's adjustments and active profiles, and is removed when everything is back to default; <code>a11yw-settings:lang</code> holds the chosen language. <code>storageKey</code> changes the name."
+        },
+        "readers": {
+          "title": "Who can read it",
+          "text": "Any script on the same origin (analytics, tag managers, session replay) can read those keys, the <code>a11yw-*</code> classes on <code>html</code> and the <code>data-a11yw-fs</code> attributes. Profile ids such as <code>visionImpaired</code> describe adjustments, but could be read as a hint about a visitor's needs. If you use session replay, mask the widget (<code>.a11yw-root</code>) and don't record the class names of <code>html</code>."
+        },
+        "consent": {
+          "title": "Consent",
+          "text": "Whether saving preferences is strictly necessary (ePrivacy Art. 5(3)) and how GDPR applies is for your privacy team to decide. To store nothing, pass <code>persist: false</code>. To save only after consent, start with <code>persist: false</code> and turn it on once the visitor agrees."
+        }
+      }
+    },
+    "security": {
+      "title": "Content Security Policy and SRI",
+      "summary": "Run the widget under a strict CSP, and pin the CDN file with Subresource Integrity.",
+      "intro": "The widget needs no <code>unsafe-inline</code> and no <code>unsafe-eval</code>.",
+      "sections": {
+        "csp": {
+          "title": "Content Security Policy",
+          "text": "It injects two <code>style</code> tags, so pass their <code>nonce</code>, and the large cursor is a <code>data:</code> SVG image. Leave out the CDN host when you bundle the package. CI runs the widget under <code>default-src ''none''</code> with Trusted Types and fails on any violation."
+        },
+        "sri": {
+          "title": "Subresource Integrity",
+          "text": "<code>@1</code> on the CDN follows every 1.x release, so it can't carry an integrity hash. For production, pin an exact version with its hash: the browser refuses the file if the CDN ever serves something else. Compute the hash yourself or copy it from the file's page on jsdelivr.com, and update both when you upgrade."
+        },
+        "trusted-types": {
+          "title": "Trusted Types",
+          "text": "The widget builds its interface with <code>createElement</code> and never assigns HTML strings, so it works under <code>require-trusted-types-for ''script''</code> with no policy of its own."
+        }
+      }
+    },
+    "limitations": {
+      "title": "Limitations",
+      "summary": "What the widget can't do, so you don't promise it.",
+      "intro": "Read this before you describe the widget on your site or in your accessibility statement.",
+      "sections": {
+        "markup": {
+          "title": "It doesn't fix your site",
+          "text": "The widget changes how a page is displayed for one visitor. It doesn't make a site compliant with ADA, EAA, EN 301 549 or WCAG, and installing it is not a legal defence. Regulators act against products that claim otherwise, such as the FTC's 2025 order against accessiBe.",
+          "items": [
+            "Missing alt text, form labels, headings, keyboard support and contrast in your own design still need fixing at the source.",
+            "Don't advertise the widget as a compliance solution, and don't present it as one in your accessibility statement."
+          ]
+        },
+        "reach": {
+          "title": "Where it can't reach",
+          "text": "Some parts of a page are out of the widget's reach.",
+          "items": [
+            "Adjustments don't reach inside <code>iframe</code> elements (embedded video, maps, payment forms) or Shadow DOM.",
+            "Reading line, focus window and magnifier follow the mouse and keyboard focus; on touch screens they move only with focus.",
+            "“Stop animations” stops CSS animations and transitions; GIFs, <code>canvas</code> and animation driven by JavaScript keep moving.",
+            "The launcher can cover a focused control in its corner (WCAG 2.4.11): keep that corner free, or move it with <code>offset</code>."
+          ]
+        },
+        "display": {
+          "title": "How adjustments display",
+          "text": "Some adjustments trade precision for safety.",
+          "items": [
+            "“Page zoom” uses CSS <code>zoom</code>, which doesn't trigger your media queries. Browser zoom reflows better: suggest it in your accessibility statement.",
+            "“Line spacing” sets a line height of 1.5 times the chosen percentage on all text.",
+            "Letter spacing is not applied to Arabic and other joined scripts (it would break the letters apart); word spacing still is.",
+            "Color modes override backgrounds and remove background images, except on form controls, links and buttons. Decorative icons drawn as background images elsewhere disappear.",
+            "Text size measures each element's size once. If your app later changes an element's font size through a class change, it keeps the earlier size until the page reloads.",
+            "Color adjustments apply to the screen only, not to printing."
+          ]
+        },
+        "browsers": {
+          "title": "Browser support",
+          "text": "Chrome and Edge 120+, Firefox 126+ and Safari 16.4+ (desktop and mobile) get every feature; older versions lose single features, such as page zoom. CI runs the end-to-end tests in Chrome only; Firefox and Safari rest on feature support and manual testing."
+        }
+      }
+    }
+  },
+  "Playground": {
+    "eyebrow": "Playground",
+    "title": "Change the widget on this page",
+    "description": "Every control below changes the real widget in the corner of this page. Open it to see the result, and copy the code that matches.",
+    "position": "Position",
+    "left": "Left",
+    "right": "Right",
+    "brand": "Brand color",
+    "brandHint": "The launcher's icon turns black or white, whichever has more contrast.",
+    "custom": "Custom color",
+    "colors": {
+      "teal": "Teal",
+      "blue": "Blue",
+      "emerald": "Emerald",
+      "amber": "Amber",
+      "rose": "Rose",
+      "slate": "Slate"
+    },
+    "size": "Launcher size",
+    "language": "Widget language",
+    "pageLanguage": "Page language",
+    "open": "Open the widget",
+    "reset": "Reset",
+    "hint": "These changes last until you leave the page. Your own adjustments in the widget, like text size or contrast, are separate: the widget saves them in this browser.",
+    "codeLabel": "Code"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "body": "This page does not exist or has moved.",
+    "home": "Back to the home page"
+  },
+  "Metadata": {
+    "title": "Open Accessibility Widget – accessibility preferences menu for any website",
+    "description": "Free, open-source accessibility preferences widget: text size, contrast, spacing, reading aids and motion controls, in English and Arabic, with no dependencies. For plain JavaScript, React, Next.js, Vue, Angular, Svelte and more.",
+    "keywords": [
+      "accessibility widget",
+      "accessibility menu",
+      "a11y",
+      "user preferences",
+      "text size",
+      "contrast",
+      "RTL",
+      "Arabic",
+      "open source",
+      "React",
+      "Next.js",
+      "Vue",
+      "Nuxt",
+      "Angular",
+      "Svelte",
+      "Astro",
+      "WordPress",
+      "TypeScript",
+      "npm"
+    ],
+    "ogAlt": "Open Accessibility Widget: an accessibility preferences menu for any website"
+  },
+  "LanguageSwitch": {
+    "names": {
+      "en": "English",
+      "ar": "العربية"
+    }
+  },
+  "Pages": {
+    "breadcrumb": "Breadcrumb",
+    "home": "Home",
+    "prev": "Previous",
+    "next": "Next",
+    "allFrameworks": "All frameworks",
+    "gettingStarted": {
+      "title": "Getting started"
+    },
+    "frameworks": {
+      "title": "Frameworks"
+    },
+    "api": {
+      "title": "API reference"
+    },
+    "guides": {
+      "title": "Guides"
+    },
+    "framework": {
+      "title": "{name} accessibility widget",
+      "description": "Add the Open Accessibility Widget to {name}: install it, copy the setup code and read the notes."
+    },
+    "guide": {
+      "description": "{summary} A guide to the Open Accessibility Widget."
+    }
+  },
+  "Changelog": {
+    "title": "Changelog",
+    "description": "Every release of the widget: what was added, what changed and what was fixed.",
+    "latest": "Latest",
+    "unreleased": "Unreleased",
+    "upcoming": "Next release",
+    "englishNote": "",
+    "source": "CHANGELOG.md on GitHub",
+    "npmVersions": "All versions on npm",
+    "kinds": {
+      "added": "Added",
+      "changed": "Changed",
+      "fixed": "Fixed",
+      "removed": "Removed",
+      "deprecated": "Deprecated",
+      "security": "Security",
+      "internal": "Internal",
+      "size": "Size"
+    }
+  }
+}

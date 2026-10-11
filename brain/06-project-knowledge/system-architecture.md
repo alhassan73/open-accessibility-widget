@@ -30,8 +30,8 @@ demo on GitHub Pages.
 | --- | --- | --- | --- |
 | Core (`index.ts` and below) | TypeScript → ESM/CJS/IIFE | Widget, engine, settings | Visitor's browser |
 | React adapter (`react.ts`) | React ≥ 18, `"use client"` banner | Component + `useAccessibility` hook | Browser (renders `null` on server) |
-| Demo (`examples/index.html`) | Static HTML + IIFE build | Try every feature, theme playground | GitHub Pages |
-| CI / release (`.github/workflows/`) | GitHub Actions, Node 22 | Gates, demo deploy, npm publish | GitHub |
+| Docs site (`examples/`) | Next.js 16 App Router, next-intl (en/ar), widget from `src/` via tsconfig paths | Docs, search, live playground (`widget.setOptions`) | Vercel |
+| CI / release (`.github/workflows/`) | GitHub Actions, Node 22 | Gates (incl. docs build), npm publish | GitHub |
 
 Module ownership inside the codebase: `04-harness-engineering/architecture/module-boundaries.md`.
 
@@ -53,8 +53,8 @@ Module ownership inside the codebase: `04-harness-engineering/architecture/modul
 
 ## 5. Deployment
 
-- Hosting: npm registry + CDNs (package), GitHub Pages (demo) · Pipeline: `ci.yml` on PRs and pushes
-  to `main`/version branches; `pages.yml` on push to `main`; `release.yml` on `v*` tags.
+- Hosting: npm registry + CDNs (package), Vercel (docs site, production from `main`) · Pipeline:
+  `ci.yml` on PRs and pushes to `main`/version branches; `release.yml` on `v*` tags.
   Environments: `04-harness-engineering/tools/execution-environment.md`.
 
 ## 6. Invariants (ARCH-6)

@@ -1,7 +1,7 @@
 # Integrations
 
 > **Load when:** calling, changing, or debugging an external service (build, test, release, demo).
-> **Last verified:** 2026-10-11
+> **Last verified:** 2026-10-12
 
 ## 1. Services
 
@@ -11,7 +11,7 @@ Only tooling does:
 | Service | Purpose | Called from | Adapter (only entry point) | Auth (name of secret, never value) | Sandbox? |
 | --- | --- | --- | --- | --- | --- |
 | npm registry | Install deps; publish releases | `npm ci` (CI), `release.yml` | `npm publish --access public` | npm Trusted Publishing (OIDC `id-token: write`) — no token | No |
-| GitHub Pages | Host the live demo | `pages.yml` on push to `main` | `actions/deploy-pages` | `GITHUB_TOKEN` scopes `pages`, `id-token` | No |
+| Vercel | Host the docs site + live demo (`examples/`) | Vercel Git integration on push (preview per branch, production from `main`) | Vercel project settings (Root Directory `examples`) | Vercel account of the owner — no secret in the repo | Preview deployments |
 | Dependabot | Weekly update PRs: npm devDeps + SHA-pinned actions | `.github/dependabot.yml` | GitHub | none | n/a |
 | jsDelivr / unpkg | Serve the IIFE build to `<script>` users | Consumers | `unpkg` / `jsdelivr` fields in `package.json` | none | n/a (mirror npm) |
 
@@ -23,9 +23,13 @@ Only tooling does:
 - Versions already on npm are skipped. `prepublishOnly` runs `npm run check`. Provenance attached.
 - One-time setup lives on npmjs.com (Trusted Publisher: GitHub Actions, `alhassan73/open-accessibility-widget`, `release.yml`).
 
-### GitHub Pages (demo)
+### Vercel (docs site)
 
-- Builds, copies `dist/open-accessibility-widget.global.js` and `examples/index.html` (path rewritten) into `_site/`.
+- Builds `examples/` with `next build` (installs from the root lockfile; the site reads `../src` and
+  `../CHANGELOG.md`, so files outside the Root Directory must stay included — Vercel's default).
+- Pages are prerendered; `src/proxy.ts` only redirects `/` (and paths without a language) to `/en/` or `/ar/`.
+- Security headers (CSP with Trusted Types, HSTS, frame-ancestors) come from `next.config.ts`, production only.
+- The repo holds no Vercel config or token; the project is set up in the Vercel dashboard by the owner.
 
 ## 3. Rules
 

@@ -17,7 +17,8 @@
 | F-010 | Built-ins: reset all, statement link, hide widget, skip link, `Alt+A` shortcut | existing — undocumented | — | `src/widget/ui.ts` | 2026-10-11 |
 | F-011 | Owner controls: `features`, `initialSettings`, `onChange`, instance API, `subscribe` | existing — undocumented | — | `src/widget.ts`, `src/types.ts` | 2026-10-11 |
 | F-012 | React adapter (`AccessibilityWidget`, `useAccessibility`) | existing — undocumented | — | `src/react.ts` | 2026-10-11 |
-| F-013 | `<script>` build (`window.A11yWidget`) and demo page | existing — undocumented | — | `tsup.config.ts`, `examples/index.html` | 2026-10-11 |
+| F-013 | `<script>` build (`window.A11yWidget`) | existing — undocumented | — | `tsup.config.ts` | 2026-10-12 |
+| F-014 | Docs site + live playground (en/ar, Vercel) and README banner | done | — | `examples/`, `scripts/render-banner.mjs`, `.github/assets/` | 2026-10-12 |
 
 **Status values:** `planned` → `in-progress` → `done` · `existing — undocumented` (found by
 `/brain-init`, no folder yet) · `deprecated` · `removed <date>`.
