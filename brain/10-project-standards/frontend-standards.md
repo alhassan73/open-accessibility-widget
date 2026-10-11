@@ -22,6 +22,11 @@
   widget (`OUT`).
 - No inline styles on host elements; CSS variables on `<html>` only (P-3).
 - Keep CSS within the bundle budget (P-6); `!important` only where host styles must be overridden.
+- Motion is CSS-only, using the tokens `--a11yw-ease` (arrive) and `--a11yw-spring` (state changes) and
+  the keyframes `a11yw-up` / `a11yw-pop` / `a11yw-dim`. Animate `transform`, colors, and `opacity` on
+  small non-text elements only: axe measures contrast through opacity, and the e2e snapshot reads
+  computed `opacity`. Exit is faster than enter (panel 0.16s / 0.26s). Stagger with `--a11yw-d`.
+  `prefers-reduced-motion` turns every `transition` and `animation` off.
 - Every string through `labels.ts` (English + Arabic) — P-7.
 - SEO: not applicable (library).
 - The bundle never contains secrets or network calls.

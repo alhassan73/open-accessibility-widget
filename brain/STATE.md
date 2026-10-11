@@ -8,7 +8,7 @@ Keep it under ~150 lines — move finished history to `09-knowledge-maintenance/
 
 ## Current phase
 
-1.2.0 merged to `main` (branch `1.2.0`); **not tagged / not on npm yet**.
+Maintenance after release 1.2.0 (tag `v1.2.0`, published to npm with provenance 2026-10-11).
 
 ## Current goal
 
@@ -17,7 +17,7 @@ Not set — owner to choose the next milestone (see Open questions).
 ## In progress
 
 <!-- One line per active unit: what, owner/branch, status, next step. -->
-- [ ] Release 1.2.0 — on `main`; next (owner): manual pre-release checks (`CONTRIBUTING.md` §Manual checks; record in `docs/at-test-matrix.md`), then tag `v1.2.0` to publish. After publishing, the README SRI example can move from `@1.1.1` to `@1.2.0`.
+- [ ] Record the 1.2.0 manual AT round — owner reported the checks done (2026-10-11) but `docs/at-test-matrix.md` still says "Not tested"; next: owner sends results, agent records them (never filled from tools/code). Then: README SRI example `@1.1.1` → `@1.2.0`.
 
 ## Next up
 
@@ -50,6 +50,8 @@ Not set — owner to choose the next milestone (see Open questions).
 ## Recently completed
 
 <!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
+- 2026-10-11 — Design refresh, CSS-only motion (branch `design/widget-refresh`, not merged): tinted header, icon tiles, layered shadow, staggered entrance, spring switches and badges, read-mode rise; reduced-motion off; 21.71/22 KB gzip (≈0.3 KB headroom left).
+- 2026-10-11 — Release 1.2.0 published to npm via tag `v1.2.0` (Trusted Publishing, provenance); CI + demo deploy green.
 - 2026-10-11 — Version branch `1.2.0` from `main`: merged `chore/agent-brain` (1532f0b) and `review/compliance` (373686b), version 1.2.0, merged into `main`.
 - 2026-10-11 — Compliance fixes (373686b): inert behind dialogs, profile-card names (2.5.3), color-mode background images, contrast warning, stepper limits, axe devDep (no skip), strict-CSP test, SHA-pinned actions + Dependabot, privacy/CSP/SRI docs, `ACCESSIBILITY.md`, AT matrix template. Approved gates: axe-core devDep, labels `maximum`/`minimum`/`lowContrast`, workflow edits, privacy docs only.
 - 2026-10-11 — Compliance review (WCAG 2.2 AA, EAA/EN 301 549, ADA, FTC, privacy, supply chain, competitors); the report file was removed after its outcome was recorded in `09-knowledge-maintenance/changelog.md` §Record.

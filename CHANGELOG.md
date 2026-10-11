@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Changed — design
+
+- **Refined panel design.** Brand-tinted header, layered shadow, profile icons on tinted tiles that fill with the brand color when the profile is on, a soft shadow on the selected option, and hover tints on steppers.
+- **CSS-only motion throughout.** The panel opens with a springy rise and closes faster than it opens; profile cards and sections slide in one after another; sections slide open; switches, the check mark, counters and the "adjustments are on" dot spring into place; buttons press in; the close and reset icons turn on hover; read mode rises over a dimming backdrop.
+- Motion uses only `transform`, `opacity` and colors (no layout changes), never animates text transparency, and is switched off completely by `prefers-reduced-motion`.
+
 ## 1.2.0
 
 ### Fixed — accessibility

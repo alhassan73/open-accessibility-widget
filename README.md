@@ -23,7 +23,7 @@ A user-preference accessibility menu that works on **any website**: plain HTML/J
 | **Motion & navigation** | Stop animations · Mute media · Hide images · Highlight focus · Highlight on hover · Large cursor (dark / light) |
 | **Built in** | Reset all · Accessibility statement link · Hide widget · Language menu (English / العربية, add your own) · "Skip to main content" link · `Alt+A` shortcut · Settings saved across visits |
 
-The panel is a compact card that opens above the launcher with a short fade-and-rise animation. It has:
+The panel is a compact card that opens above the launcher with a fade-and-rise animation; its cards and sections slide in one after another, and switches, checks, counters and buttons respond with small CSS-only animations (all turned off by `prefers-reduced-motion`). It has:
 
 - A plain header with logo, title, language menu and close button.
 - A grid of profile cards.
