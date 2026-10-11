@@ -10,7 +10,7 @@ export const npmUrl = (pkg: string) => `https://www.npmjs.com/package/${pkg}`;
 export const STATEMENT_URL = `${REPO}/blob/main/ACCESSIBILITY.md`;
 
 /** The published version the docs describe. Update on each release (with the CDN hash in content/frameworks.ts). */
-export const VERSION = "1.3.0";
+export const VERSION = "1.3.2";
 
 /**
  * Absolute URL of a page, used for canonical, hreflang, Open Graph, breadcrumbs and the sitemap.
