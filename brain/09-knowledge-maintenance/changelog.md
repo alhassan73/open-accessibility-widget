@@ -12,7 +12,7 @@
 
 ### Changed
 - 2026-10-11 — Design revamp (brand header + subtitle, cards, custom ARIA language combobox) and CSS-only motion; size budget 24 KB.
-- 2026-10-12 — Widget header: heavier title, soft-tint rounded close button (CSS only). README SRI example pinned to 1.2.0.
+- 2026-10-12 — Widget header: heavier title, soft-tint rounded close button (CSS only). README and docs SRI example pinned to 1.3.0.
 
 ### Removed
 - 2026-10-12 — GitHub Pages demo (`examples/index.html`, `pages.yml`).

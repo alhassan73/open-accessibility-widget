@@ -8,7 +8,7 @@ All notable changes to this project are documented here. The project follows [Se
 
 - **New documentation site** at [open-accessibility-widget.vercel.app](https://open-accessibility-widget.vercel.app/), in English and Arabic: getting started, a page per framework, guides (theming, languages, controls and profiles, the widget's own accessibility, privacy, CSP and SRI, limitations), the API reference and this changelog, with search and a live playground that drives the real widget. It serves `sitemap.xml` (every page in both languages, with hreflang), `robots.txt` and `llms.txt` (a Markdown map of the docs for language models, generated from the same content). It is a Next.js app in `examples/` (an npm workspace), deployed by Vercel, and replaces the GitHub Pages demo (`examples/index.html`, `pages.yml`). No changes to the package.
 - README banner and social preview, rendered with `npm run banner` (the e2e tests' headless Chrome, no new dependency).
-- README: the Subresource Integrity example pins 1.2.0 with its real hash.
+- README and docs: the Subresource Integrity example pins 1.3.0 with its real hash.
 
 ### Changed — design revamp
 
