@@ -1,0 +1,67 @@
+# Project State
+
+Working memory. The SessionStart notice shows its goal, in-progress items, and open-question count;
+read this file only when continuing earlier work. Update after every meaningful change.
+Keep it under ~150 lines — move finished history to `09-knowledge-maintenance/changelog.md`.
+
+**Last updated:** 2026-10-11
+
+## Current phase
+
+Maintenance after release 1.1.1 (`package.json` version, `CHANGELOG.md`).
+
+## Current goal
+
+Not set — owner to choose the next milestone (see Open questions).
+
+## In progress
+
+<!-- One line per active unit: what, owner/branch, status, next step. -->
+- [ ] Project brain install (+ `.gitattributes` `*.sh eol=lf`, `.gitignore` `.claude/worktrees/`) — uncommitted on `review/compliance`; next: commit on its own branch from `main` (proposed `chore/agent-brain`)
+- [ ] Compliance fixes — uncommitted on `review/compliance`; gates green (38/38, 21.19 KB), independent review done and its findings fixed. Review record: `09-knowledge-maintenance/changelog.md` §Record. Next: owner commits (and merges before the next Pages deploy: the demo's statement link points to `main`); owner-only items: AT test round (`docs/at-test-matrix.md`) → ACR (P0-1), legal view on P0-5
+
+## Next up
+
+1. Owner answers the open questions below; agent folds the answers into the named files.
+2. Open compliance gaps (2026-10-11 review; record in `09-knowledge-maintenance/changelog.md`):
+   - P0-1 ACR / VPAT 2.5 (WCAG 2.2 AA + EN 301 549) — after an AT round in `docs/at-test-matrix.md`; owner/evaluator only.
+   - P0-2 AT round: NVDA+Firefox/Chrome, JAWS+Chrome, VoiceOver macOS/iOS, TalkBack, speech input, Windows contrast, 200/400 % zoom.
+   - P0-5 ⚖️ default `persist` + profile ids in `localStorage` — docs only until legal advice; options: save adjustments without profile ids (STORAGE_VERSION 2), or a consent API.
+   - P1-2 (Low) language `<select>` rebuilds the panel on each arrow-key `change` in Windows browsers.
+   - P2-2 live region recreated on rebuild (announcement can be lost) · P2-5 control borders ≈1.2:1 (passes; icons carry meaning) · P2-6 optional visible label for the language select.
+
+## Open questions
+
+<!-- Every **Open question:** raised anywhere in the brain, with where it lives. Remove when answered. -->
+- Next goal / milestone after 1.1.1 — this file §Current goal.
+- Branch naming for non-release work (observed `review/compliance`) — `04-harness-engineering/coding/coding-conventions.md` §5. Default: `<topic>/<slug>` from `main`.
+- Why `overrides.esbuild ^0.28.2` was added (commit 11e58d7, 1.1.0) — `04-harness-engineering/tools/dependency-management.md` §3. Assumption: an `npm audit` advisory.
+- Deprecation policy for public API — `10-project-standards/compatibility.md`. Default: breaking changes only in a major; deprecate in a minor first with a CHANGELOG note.
+- Allowed licenses for devDependencies — `dependency-management.md` §2. Default: MIT, ISC, BSD-2/3, Apache-2.0. Note: `axe-core` (approved 2026-10-11) is MPL-2.0, test-only.
+- Not approved in the 2026-10-11 round, still open: P1-5 text-spacing preset (stored format), P1-8 CodeQL/Scorecard/SBOM, P1-11 Firefox CI, P2-10 React 18 CI, protected `environment: npm` for release.
+- Questions for a lawyer ⚖️ (2026-10-11 review): is default `localStorage` persistence "strictly necessary" (ePrivacy Art. 5(3)); are profile ids (`visionImpaired`, `cognitiveDisability`…) health data under GDPR Art. 9; can README/npm/demo read as a compliance claim under the FTC standard; does the widget provider have direct EAA/AODA/PSBAR duties; which EN 301 549 version should the ACR target while v4.1.1 isn't in the OJ; any Egyptian rules for private websites.
+- Lint/format: none configured — `quality-enforcement.md` §1. Default: keep none; adding one is a TOOL-2 gate.
+- Manual `bash .claude/hooks/brain-check.sh` is blocked in agent shells by the lean-ctx allowlist — owner may run `lean-ctx allow bash` (hooks themselves are unaffected).
+
+## Blocked
+
+<!-- What is blocked, on what/whom, since when. -->
+- None.
+
+## Recently completed
+
+<!-- Last ~10 items, newest first, with date and commit/PR. Older → changelog. -->
+- 2026-10-11 — Compliance fixes (uncommitted): inert behind dialogs, profile-card names (2.5.3), color-mode background images, contrast warning, stepper limits, axe devDep (no skip), strict-CSP test, SHA-pinned actions + Dependabot, privacy/CSP/SRI docs, `ACCESSIBILITY.md`, AT matrix template. Approved gates: axe-core devDep, labels `maximum`/`minimum`/`lowContrast`, workflow edits, privacy docs only.
+- 2026-10-11 — Compliance review (WCAG 2.2 AA, EAA/EN 301 549, ADA, FTC, privacy, supply chain, competitors); the report file was removed after its outcome was recorded in `09-knowledge-maintenance/changelog.md` §Record.
+- 2026-10-11 — Project brain installed and initialized (uncommitted).
+- 2026-10-08 — Release 1.1.1: widget unaffected by its own adjustments; npm Trusted Publishing (27ea5f5, 0aa6a6b, 230fe72).
+- 2026-10-08 — Release 1.1.0: accessibility, host-safety and robustness fixes (11e58d7).
+
+## Session handoff
+
+<!-- Overwrite at the end of each session: what the next session must know that is not elsewhere.
+     Half-finished edits, failing checks, hypotheses being tested, commands that were slow/flaky. -->
+- `npm test` runs against `dist/` — build first. e2e needs Chrome/Edge (`CHROME_PATH`); axe-core now
+  comes from devDependencies (run `npm ci` after pulling).
+- Working tree holds two unrelated changes: the brain install, and the compliance fixes — commit them separately.
+- Open compliance gaps: §Next up item 2; lawyer questions: §Open questions.

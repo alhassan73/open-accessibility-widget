@@ -1,0 +1,2 @@
+# Claude Code hook scripts run in bash (Git Bash on Windows): CRLF breaks them.
+*.sh text eol=lf
