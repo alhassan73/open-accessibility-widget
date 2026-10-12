@@ -60,11 +60,11 @@ Or with no build step, from a CDN:
 `@1` picks up every 1.x release automatically, so it can't use Subresource Integrity. For production, pin an exact version and add its hash, so the browser refuses the file if the CDN ever serves something else:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/open-accessibility-widget@1.4.0/dist/open-accessibility-widget.global.js"
-        integrity="sha384-RjuUpQvdm6eaWY9dAP/uEGDTKU3A0RAox0L2AQCe/asA6THtA65OGzPtI6GogLVB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/open-accessibility-widget@1.4.1/dist/open-accessibility-widget.global.js"
+        integrity="sha384-dO9rT4vwimvvXQt0APugeYB/UVAs+WxY4DskABQA/kETXVreihc0vfYY0S0lSW9G" crossorigin="anonymous"></script>
 ```
 
-That hash is for 1.4.0. For another version, use the output of `curl -s <that URL> | openssl dgst -sha384 -binary | openssl base64 -A` (or copy the SRI hash from the file's page on jsdelivr.com), and update both when you upgrade.
+That hash is for 1.4.1. For another version, use the output of `curl -s <that URL> | openssl dgst -sha384 -binary | openssl base64 -A` (or copy the SRI hash from the file's page on jsdelivr.com), and update both when you upgrade.
 
 ## Usage
 
